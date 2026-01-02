@@ -1,0 +1,13 @@
+{
+  "name": "@baseflow-nodes/return",
+  "version": "0.0.1",
+  "baseflow": {
+    "type": "Return",
+    "name": "流程返回",
+    "icon": "",
+    "desc": "流程返回：流程提前终止执行并返回，可以设置返回数据"
+  },
+  "executor": {
+    "node": "@baseflow-executors/return@0.0.1"
+  }
+}

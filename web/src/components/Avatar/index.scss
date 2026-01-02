@@ -1,0 +1,16 @@
+.comp-Avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  color: var(--bf-bg-body);
+  background: var(--bf-primary);
+  border-radius: 1000px;
+
+  &.guest {
+    color: var(--bf-tx-placeholder);
+    background: var(--bf-bg-filled2);
+  }
+}

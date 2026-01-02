@@ -1,0 +1,42 @@
+// For Nodes Panel
+.nd-form {
+  .ant-form-item-label {
+    font-weight: 500;
+  }
+}
+
+.nd-form-layout {
+  .form-item {
+    margin-bottom: 20px;
+  }
+
+  .label-item {
+    padding-bottom: 15px;
+    font-weight: 500;
+    line-height: 1.4;
+
+    &::after {
+      content: ":";
+    }
+
+    &.require {
+      &::before {
+        margin-right: 3px;
+        color: var(--bf-special);
+        content: "*";
+      }
+    }
+
+    em {
+      margin-right: 3px;
+      font-style: normal;
+      color: var(--bf-special);
+    }
+  }
+
+  .label-item-remark {
+    float: right;
+    font-size: 12px;
+    color: var(--bf-tx-lesser);
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@baseflow-nodes/end",
+  "version": "0.0.1",
+  "baseflow": {
+    "type": "End",
+    "name": "流程结束",
+    "icon": "",
+    "desc": "流程结束：流程正常执行完成，可以设置返回数据"
+  },
+  "executor": {
+    "node": "@baseflow-executors/end@0.0.1"
+  }
+}

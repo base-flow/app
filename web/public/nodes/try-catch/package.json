@@ -1,0 +1,13 @@
+{
+  "name": "@baseflow-nodes/try-catch",
+  "version": "0.0.1",
+  "baseflow": {
+    "type": "Group",
+    "name": "TryCatch",
+    "icon": "",
+    "desc": "TryCatch：提供一个可以捕获子节点运行时错误的容器节点"
+  },
+  "executor": {
+    "node": "@baseflow-executors/try-catch@0.0.1"
+  }
+}

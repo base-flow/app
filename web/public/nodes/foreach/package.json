@@ -1,0 +1,13 @@
+{
+  "name": "@baseflow-nodes/foreach",
+  "version": "0.0.1",
+  "baseflow": {
+    "type": "Loop",
+    "name": "Foreach循环",
+    "icon": "",
+    "desc": "Foreach循环：通过指定一个迭代源来循环执行子节点"
+  },
+  "executor": {
+    "node": "@baseflow-executors/foreach@0.0.1"
+  }
+}

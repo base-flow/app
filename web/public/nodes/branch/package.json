@@ -1,0 +1,13 @@
+{
+  "name": "@baseflow-nodes/branch",
+  "version": "0.0.2",
+  "baseflow": {
+    "type": "Branch",
+    "icon": "",
+    "name": "条件分支",
+    "desc": "条件分支：放置于[条件选择]中，通过设置执行条件来决定是否执行"
+  },
+  "executor": {
+    "node": "@baseflow-executors/branch@0.0.1"
+  }
+}

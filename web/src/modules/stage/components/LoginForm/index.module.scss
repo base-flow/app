@@ -1,0 +1,59 @@
+:global {
+  :local(.LoginForm) {
+    &:global(__svg) {
+      position: absolute;
+      right: 40%;
+      bottom: -10%;
+      font-size: 100vh;
+      color: #fff;
+      opacity: 0.5;
+    }
+
+    > .panel {
+      position: absolute;
+      top: -50%;
+      left: 60%;
+      width: 200%;
+      height: 200%;
+      transform: rotate(15deg);
+      transform-origin: left top;
+    }
+
+    &:global(__shadow) {
+      margin-left: -10px;
+      background: linear-gradient(
+        var(--bf-bg-filled) 30%,
+        var(--bf-bg-side) 50%,
+        var(--bf-bg-filled) 70%
+      );
+    }
+
+    &:global(__wrap) {
+      background: var(--bf-bg-body);
+    }
+
+    &:global(__form) {
+      position: absolute;
+      top: 50%;
+      left: 150px;
+      width: 280px;
+      font-size: 14px;
+      transform: rotate(-15deg) translateY(-50%);
+
+      .ant-form-item-label > label {
+        font-size: 14px;
+      }
+    }
+
+    &:global(__keep) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 3px;
+
+      a {
+        color: var(--bf-primary);
+      }
+    }
+  }
+}

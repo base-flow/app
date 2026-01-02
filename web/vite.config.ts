@@ -1,0 +1,47 @@
+import path from "node:path";
+import { devtools } from "@tanstack/devtools-vite";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+import pluginExternal from "vite-plugin-external";
+// import { viteExternalsPlugin } from "vite-plugin-externals";
+import viteTsConfigPaths from "vite-tsconfig-paths";
+
+const cdnExternals = {
+  react: "React",
+  "react-dom": "ReactDOM",
+  "react-dom/client": "ReactDOM",
+  dayjs: "dayjs",
+  antd: "antd",
+  "@baseflow/react": "Baseflow",
+  "@baseflow/widgets": "BaseflowWidgets",
+};
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  // resolve: {
+  //   alias: {
+  //     "@": path.resolve(__dirname, "src"),
+  //   },
+  // },
+  plugins: [
+    devtools(),
+    viteTsConfigPaths({
+      projects: ["./tsconfig.json"],
+    }),
+    tanstackRouter({
+      target: "react",
+      autoCodeSplitting: true,
+    }),
+    react({
+      jsxRuntime: "classic",
+    }),
+    pluginExternal({ externals: cdnExternals }),
+    //viteExternalsPlugin(cdnExternals),
+  ],
+  build: {
+    rollupOptions: {
+      external: Object.keys(cdnExternals),
+    },
+  },
+});
