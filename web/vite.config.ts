@@ -11,6 +11,7 @@ const cdnExternals = {
   react: "React",
   "react-dom": "ReactDOM",
   "react-dom/client": "ReactDOM",
+  axios: "axios",
   dayjs: "dayjs",
   antd: "antd",
   "@baseflow/react": "Baseflow",

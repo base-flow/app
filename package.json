@@ -13,7 +13,8 @@
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check",
-    "web:groute": "npm run tsr generate -w web",
+    "web:gcdn": "npm run gcdn -w web",
+    "web:groute": "npm run groute -w web",
     "web:dev": "npm run dev -w web",
     "sev:dev": "npm run dev -w server",
     "dev": "run-p web:dev sev:dev",
@@ -30,6 +31,7 @@
     "lint-staged": "^15.0.0",
     "mockjs": "^1.1.0",
     "npm-run-all": "^4.1.5",
+    "replace-in-file": "^8.4.0",
     "rimraf": "^6.1.2",
     "typescript": "^5.7.2"
   }

@@ -2,8 +2,8 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useCallback, useLayoutEffect } from "react";
 import { z } from "zod";
 import { useShallow } from "zustand/react/shallow";
-import LoginForm from "~/_core/components/LoginForm";
-import { useCoreStore } from "~/_core/store";
+import LoginForm from "@/modules/stage/components/LoginForm";
+import { useStageStore } from "@/modules/stage/store";
 
 export const Route = createFileRoute("/login")({
   validateSearch: z.object({
@@ -14,11 +14,11 @@ export const Route = createFileRoute("/login")({
 
 function LoginComponent() {
   const router = useRouter();
-  const [auth, login] = useCoreStore(useShallow(({ auth, login }) => [auth, login]));
+  const [auth, login] = useStageStore(useShallow(({ auth, login }) => [auth, login]));
   const search = Route.useSearch();
 
   const onLogin = useCallback(
-    (data: Core.AuthLogin) => {
+    (data: Stage.AuthLogin) => {
       login(data).then(() => router.invalidate());
     },
     [login, router],

@@ -57,7 +57,6 @@ const Header: FC = () => {
   }
   return (
     <div className={styles.Header}>
-      {/* <Logo className={`${styles.Header}__logo shadown`} /> */}
       <Logo className={`${styles.Header}__logo`} />
       <div className="main">
         <nav className={`${styles.Header}__nav`}>

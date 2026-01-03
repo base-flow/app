@@ -10,14 +10,14 @@ import { Button, ConfigProvider, Modal, message, Segmented, Spin, Switch } from 
 // import zhCN from "antd/locale/zh_CN";
 // import 'dayjs/locale/zh-cn';
 // import Header from "~/_core/components/Header";
-// import { useCoreStore } from "~/_core/store";
+import { useStageStore } from "@/modules/stage/store";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({
-  // beforeLoad: () => {
-  //   return useCoreStore.getState().authCheck();
-  // },
+  beforeLoad: () => {
+    return useStageStore.getState().authCheck();
+  },
   component: RootComponent,
 });
 
@@ -86,7 +86,13 @@ const expressionUtils: SchemaModel = {
 function RootComponent() {
   return (
     <>
-      <ConfigProvider>
+      <ConfigProvider
+        theme={{
+          token: {
+            fontSize: 13,
+          },
+        }}
+      >
         <FlowConfigProvider locale={Locale} widgets={widgets} monacoEditorUrl="/monaco/index.html" expressionUtils={expressionUtils}>
           <header>
             <div />
