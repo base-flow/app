@@ -6,6 +6,9 @@ import { defineConfig } from "vite";
 import pluginExternal from "vite-plugin-external";
 // import { viteExternalsPlugin } from "vite-plugin-externals";
 import viteTsConfigPaths from "vite-tsconfig-paths";
+import { getLocalIP } from "./scripts/utils";
+
+console.log(getLocalIP());
 
 const cdnExternals = {
   react: "React",

@@ -1,0 +1,13 @@
+jwt:
+  secret: weq324$#%retdfsg345mnbm
+  expiresIn: '3000'
+
+redis:
+  host: localhost
+  port: 6379
+
+database:
+  host: localhost
+  port: 5432
+  username: user
+  password: pass

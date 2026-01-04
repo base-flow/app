@@ -13,7 +13,7 @@ export interface AvatarProps {
 const Avatar: FC<AvatarProps> = ({ className, guest, ...props }) => {
   return (
     <div className={classnames("comp-Avatar", className, { guest })} {...props}>
-      <UserRoundCog />
+      <UserRoundCog size={16} />
     </div>
   );
 };

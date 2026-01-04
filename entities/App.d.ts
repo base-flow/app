@@ -1,4 +1,4 @@
-declare namespace Stage {
+declare namespace App {
   interface IAuthUser {
     id: string;
     username: string;
@@ -11,6 +11,7 @@ declare namespace Stage {
   interface AuthLogin {
     username: string;
     password: string;
+    redirect: string;
   }
 
   interface IResource {

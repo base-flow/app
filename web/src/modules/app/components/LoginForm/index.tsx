@@ -1,12 +1,12 @@
 import { Button, Checkbox, Form, Input } from "antd";
-import { UserLock, UserPen } from "lucide-react";
+import { KeyRound, UserRound } from "lucide-react";
 import type { FC } from "react";
 import { memo } from "react";
 import styles from "./index.module.scss";
 
 const FormItem = Form.Item;
 
-const LoginForm: FC<{ auth: Stage.IAuthUser; onSubmit: (data: Stage.AuthLogin) => void }> = ({ auth, onSubmit }) => {
+const LoginForm: FC<{ auth: App.IAuthUser; onSubmit: (data: App.AuthLogin) => void }> = ({ auth, onSubmit }) => {
   if (auth.id) {
     return null;
   }
@@ -24,10 +24,10 @@ const LoginForm: FC<{ auth: Stage.IAuthUser; onSubmit: (data: Stage.AuthLogin) =
           <div style={{ margin: "0 0 20px", color: "var(--bf-tx-summary)" }}>🌟 欢迎回来, 惊喜正在发生...</div>
           <Form className="g-form-compact" onFinish={onSubmit}>
             <FormItem name="username" rules={[{ required: true }]}>
-              <Input variant="filled" allowClear prefix={<UserPen size={14} />} autoComplete="username" placeholder="请输入用户名" />
+              <Input variant="filled" allowClear prefix={<UserRound size={14} />} autoComplete="username" placeholder="请输入用户名" />
             </FormItem>
             <FormItem name="password">
-              <Input.Password variant="filled" prefix={<UserLock size={14} />} autoComplete="current-password" placeholder="请输入密码" />
+              <Input.Password variant="filled" prefix={<KeyRound size={13} />} autoComplete="current-password" placeholder="请输入密码" />
             </FormItem>
             <FormItem>
               <div className={`${styles.LoginForm}__keep`}>

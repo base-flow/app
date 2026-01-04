@@ -1,17 +1,18 @@
-import { BuildFilled, BulbFilled, ContainerFilled, LogoutOutlined, RocketFilled, SignatureFilled, ThunderboltFilled } from "@ant-design/icons";
+import { BulbFilled, ContainerFilled, LogoutOutlined } from "@ant-design/icons";
 import { Link, useMatchRoute, useRouter } from "@tanstack/react-router";
 import { Button, Dropdown } from "antd";
+import { AlarmClockCheck, LampCeiling, LayoutGrid, Settings2, SquarePen, Workflow } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
-import { useStageStore } from "@/modules/stage/store";
+import { useAppStore } from "@/modules/app/store";
 import styles from "./index.module.scss";
 
 const Header: FC = () => {
   const router = useRouter();
-  const [auth, logout] = useStageStore(useShallow(({ auth, logout }) => [auth, logout]));
+  const [auth, logout] = useAppStore(useShallow(({ auth, logout }) => [auth, logout]));
   const matchRoute = useMatchRoute();
   const isGraph = matchRoute({ to: "/flow/$flowId" });
 
@@ -66,7 +67,7 @@ const Header: FC = () => {
               className: "on",
             }}
           >
-            <SignatureFilled />
+            <LampCeiling size={15} strokeWidth={2.5} />
             <span>工作台</span>
           </Link>
           <Link
@@ -75,7 +76,7 @@ const Header: FC = () => {
               className: "on",
             }}
           >
-            <RocketFilled />
+            <LayoutGrid size={15} strokeWidth={2.5} />
             <span>应用</span>
           </Link>
           <Link
@@ -84,7 +85,7 @@ const Header: FC = () => {
               className: "on",
             }}
           >
-            <ThunderboltFilled />
+            <Settings2 size={15} strokeWidth={2.5} />
             <span>节点</span>
           </Link>
           <Link
@@ -93,7 +94,7 @@ const Header: FC = () => {
               className: "on",
             }}
           >
-            <ThunderboltFilled />
+            <AlarmClockCheck size={15} strokeWidth={2.5} />
             <span>触发器</span>
           </Link>
           <Link
@@ -102,7 +103,7 @@ const Header: FC = () => {
               className: "on",
             }}
           >
-            <BuildFilled />
+            <Workflow size={15} strokeWidth={2.5} />
             <span>模型</span>
           </Link>
           <Link

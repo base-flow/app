@@ -1,11 +1,10 @@
-declare namespace Flow{
-
-  interface IQuery extends Core.IQuery {
+declare namespace Flow {
+  interface IQuery extends App.IQuery {
     appId?: string;
     templated?: boolean;
   }
 
-  interface IFlow extends Core.IResource {
+  interface IFlow extends App.IResource {
     version: string;
     commitId: string;
     released: boolean;
@@ -22,10 +21,9 @@ declare namespace Flow{
     collected?: boolean;
   }
 
-  type IQueryResult = Core.IQueryResult<IFlow, IQuery>;
+  type IQueryResult = App.IQueryResult<IFlow, IQuery>;
 
-  type ICreateResult = Core.ICreateResult;
+  type ICreateResult = App.ICreateResult;
 
-  type IUpdateResult = Core.IUpdateResult;
-
+  type IUpdateResult = App.IUpdateResult;
 }

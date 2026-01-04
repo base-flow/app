@@ -1,25 +1,25 @@
 import { create } from "zustand";
-import { StageAPI } from "./api";
+import { AppAPI } from "./api";
 
-export interface StageState {
-  auth: Stage.IAuthUser;
-  login: (args: Stage.AuthLogin) => Promise<void>;
+export interface AppState {
+  auth: App.IAuthUser;
+  login: (args: App.AuthLogin) => Promise<void>;
   logout: () => Promise<void>;
   authCheck: () => Promise<void>;
 }
 
-export const useStageStore = create<StageState>((set, get) => ({
+export const useAppStore = create<AppState>((set, get) => ({
   auth: { id: "", username: "" },
-  login: async (args: Stage.AuthLogin) => {
-    await StageAPI.login(args);
-    location.reload();
+  login: async (args: App.AuthLogin) => {
+    await AppAPI.login(args);
+    location.href = args.redirect;
   },
   logout: async () => {
-    await StageAPI.logout();
+    await AppAPI.logout();
     location.reload();
   },
   authCheck: async () => {
-    const curAuth = await StageAPI.getAuth();
+    const curAuth = await AppAPI.getAuth();
     const auth = get().auth;
     if (curAuth.id !== auth.id) {
       if (auth.id) {

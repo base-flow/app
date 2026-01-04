@@ -1,5 +1,3 @@
-/** biome-ignore-all lint/complexity/noBannedTypes: <> */
-
 import { BaseWidgets } from "@baseflow/react";
 import axios, { type AxiosError, type AxiosResponse } from "axios";
 import { API_PROXY } from "./const";
@@ -71,7 +69,7 @@ instance.interceptors.response.use(
 
     const requestUrl = config.url;
     const errorMessage = `${toErrorMessage(httpErrorCode)}(${data.message || requestUrl}）`;
-    if (httpErrorCode && !requestHeaders.quiet) {
+    if (httpErrorCode && !requestHeaders.Quiet) {
       BaseWidgets.message.error(errorMessage);
     }
     throw new Error(`(${httpErrorCode})${requestUrl}`);

@@ -6,6 +6,10 @@ export function getAuthToken(): string {
   return localStorage.getItem(AUTH_TOKEN_KEY) || "";
 }
 
+export function getUserRedirect(redirect?: string): string {
+  return !redirect || redirect === "/" ? "/dashboard" : redirect;
+}
+
 export function isEmptyObject(obj: any): boolean {
   return obj ? Object.keys(obj).length === 0 : true;
 }

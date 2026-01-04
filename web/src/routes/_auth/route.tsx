@@ -1,9 +1,9 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useStageStore } from "@/modules/stage/store";
+import { useAppStore } from "@/modules/app/store";
 
 export const Route = createFileRoute("/_auth")({
-  beforeLoad: ({ location }) => {
-    const curAuth = useStageStore.getState().auth;
+  beforeLoad: async ({ location }) => {
+    const curAuth = await useAppStore.getState().auth;
     if (!curAuth.id) {
       throw redirect({
         to: "/login",

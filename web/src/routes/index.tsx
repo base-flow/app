@@ -1,7 +1,18 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useAppStore } from "@/modules/app/store";
 
-export const Route = createFileRoute('/')({
-  beforeLoad: () => {
-    throw redirect({ to: '/dashboard' });
+export const Route = createFileRoute("/")({
+  beforeLoad: ({ location }) => {
+    const curAuth = useAppStore.getState().auth;
+    if (!curAuth.id) {
+      throw redirect({
+        to: "/login",
+        search: {
+          redirect: location.href,
+        },
+      });
+    } else {
+      throw redirect({ to: "/dashboard" });
+    }
   },
 });

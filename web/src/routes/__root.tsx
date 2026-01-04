@@ -9,14 +9,14 @@ import { Button, ConfigProvider, Modal, message, Segmented, Spin, Switch } from 
 // import enUS from 'antd/locale/en_US';
 // import zhCN from "antd/locale/zh_CN";
 // import 'dayjs/locale/zh-cn';
-// import Header from "~/_core/components/Header";
-import { useStageStore } from "@/modules/stage/store";
+import Header from "@/modules/app/components/Header";
+import { useAppStore } from "@/modules/app/store";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({
   beforeLoad: () => {
-    return useStageStore.getState().authCheck();
+    return useAppStore.getState().authCheck();
   },
   component: RootComponent,
 });
@@ -95,15 +95,15 @@ function RootComponent() {
       >
         <FlowConfigProvider locale={Locale} widgets={widgets} monacoEditorUrl="/monaco/index.html" expressionUtils={expressionUtils}>
           <header>
-            <div />
+            <Header />
           </header>
           <article>
             <Outlet />
           </article>
         </FlowConfigProvider>
       </ConfigProvider>
-      <ReactQueryDevtools buttonPosition="top-right" />
-      <TanStackRouterDevtools position="bottom-right" />
+      {/* <ReactQueryDevtools buttonPosition="top-right" />
+      <TanStackRouterDevtools position="bottom-right" /> */}
     </>
   );
 }
