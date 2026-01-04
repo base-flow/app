@@ -42,6 +42,16 @@ export default defineConfig({
     }),
     pluginExternal({ externals: cdnExternals }),
     //viteExternalsPlugin(cdnExternals),
+    {
+      name: "custom-end",
+      closeBundle() {
+        replaceInFileSync({
+          files: path.join(__dirname, "dist/index.html"),
+          from: ["react.development.js", "react-dom.development.js"],
+          to: ["react.production.min.js", "react-dom.production.min.js"],
+        });
+      },
+    },
   ],
   build: {
     rollupOptions: {

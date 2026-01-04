@@ -1,0 +1,39 @@
+:global {
+  :local(.AppList) {
+    &:global(__card) {
+      height: 100px;
+
+      &.system {
+        box-shadow: none;
+      }
+
+      .head-icon {
+        padding-left: 48px;
+      }
+
+      .g-h4 {
+        margin: 3px 8px 5px 0;
+      }
+
+      .g-small {
+        padding: 1px 2px;
+      }
+    }
+  }
+}
+
+// :global(.ant-menu-item){
+//     height: 25px;
+//     line-height: 25px;
+// }
+// :global(.ant-menu-title-content){
+//     font-weight: 500;
+// }
+// .ant-menu-title-content{
+//     background-color: red;
+// }
+// height: 100%;
+// background: var(--bg-layout-header);
+// box-shadow: 0 2px 8px var(--sd-card);
+//rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(16, 24, 40, 0.06) 0px 1px 2px 0px, rgba(16, 24, 40, 0.1) 0px 1px 3px 0px
+//border-bottom: 1px solid var(--bd-layout-split);

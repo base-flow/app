@@ -1,0 +1,48 @@
+:global {
+  :local(.AppHead) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 25px;
+    padding-bottom: 20px;
+
+    > aside {
+      position: relative;
+      padding-left: 55px;
+
+      > .icon {
+        position: absolute;
+        left: 0;
+        font-size: 15px;
+      }
+
+      > .title {
+        padding-top: 5px;
+      }
+
+      > .info {
+        display: block;
+        margin-top: 5px;
+        font-size: 11px;
+        line-height: 1.5;
+        color: var(--bf-tx-summary);
+      }
+    }
+
+    &:global(__star) {
+      margin-left: 5px;
+      font-size: 13px;
+    }
+
+    &:global(__edit) {
+      margin-left: 5px;
+      font-size: 13px;
+      color: var(--bf-bd-input);
+      cursor: pointer;
+
+      &:hover {
+        font-size: 1em;
+      }
+    }
+  }
+}
