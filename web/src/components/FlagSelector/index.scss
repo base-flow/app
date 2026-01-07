@@ -1,0 +1,54 @@
+/* stylelint-disable font-family-no-missing-generic-family-keyword */
+.comp-FlagSelector__btn {
+  cursor: pointer;
+
+  .icon {
+    font-family:
+      EmojiMart, "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI",
+      "Apple Color Emoji", "Twemoji Mozilla", "Noto Color Emoji",
+      "Android Emoji";
+    font-size: 1.5em;
+  }
+}
+
+.comp-FlagSelector__dlg {
+  /* stylelint-disable-next-line selector-type-no-unknown */
+  em-emoji-picker {
+    width: 330px;
+    box-shadow: none;
+  }
+
+  .comp-Flag {
+    font-size: 15px;
+    cursor: pointer;
+    border: 1px solid #fff;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &.on {
+      box-shadow: 0 0 5px var(--bf-primary);
+    }
+  }
+
+  > .colorful {
+    display: grid;
+    gap: 5px;
+    padding: 10px 5px;
+    margin-top: 10px;
+    border-top: 1px solid #eee;
+  }
+
+  > .ft {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+    padding: 4px 6px 10px;
+
+    > button {
+      flex: 1;
+      font-weight: 500;
+    }
+  }
+}

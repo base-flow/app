@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Button, ConfigProvider, Modal, message, Segmented, Spin, Switch } from "antd";
+import { LOCALE_KEY } from "@/const";
 // import enUS from 'antd/locale/en_US';
 // import zhCN from "antd/locale/zh_CN";
 // import 'dayjs/locale/zh-cn';
@@ -21,7 +22,7 @@ export const Route = createRootRouteWithContext<{
   component: RootComponent,
 });
 
-const Locale = localStorage.getItem("baseflow-locale") || "";
+const Locale = localStorage.getItem(LOCALE_KEY) || undefined;
 
 const widgets: Partial<IBaseWidgets> = {
   Button: Button as any,
@@ -88,8 +89,19 @@ function RootComponent() {
     <>
       <ConfigProvider
         theme={{
+          //zeroRuntime: true,
+          hashed: false,
+          cssVar: {
+            key: "ͼbaseflow",
+          },
           token: {
+            colorPrimaryBgHover: "var(--bf-bg-filled2)",
+            colorPrimaryBg: "var(--bf-bg-active)",
+            colorPrimaryBorder: "var(--bf-bg-active)",
             fontSize: 13,
+            colorTextPlaceholder: "var(--bf-tx-placeholder)",
+            colorText: "var(--bf-tx-body)",
+            colorFillTertiary: "var(--bf-bg-filled2)",
           },
         }}
       >

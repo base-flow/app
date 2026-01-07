@@ -1,7 +1,7 @@
 import { BaseWidgets } from "@baseflow/react";
 import axios, { type AxiosError, type AxiosResponse } from "axios";
-import { API_PROXY } from "./const";
-import { getAuthToken } from "./tools";
+import { API_PROXY } from "../const";
+import { getAuthToken, logouted } from "./tools";
 
 export interface IRequest<Req, Res> {
   Request: Req;
@@ -58,16 +58,15 @@ instance.interceptors.response.use(
     const response: any = error.response || {};
     const httpErrorCode = response.status || 0;
     const data: any = response.data || {};
-    // if (httpErrorCode === 401) {
-    //   clearToken();
-    //   throw new CustomError(mapHttpErrorCode(httpErrorCode), "请登录！");
-    // } else if (httpErrorCode === 402) {
-    //   // info(data.message || '检测到租户已发生变化，需要刷新数据...', () => {
-    //   //   window.location.href = SitesUrl.verse;
-    //   // });
-    // }
-
     const requestUrl = config.url;
+    if (httpErrorCode === 401 && !requestHeaders.Quiet) {
+      logouted();
+      throw new Error(`(${httpErrorCode})${requestUrl}`);
+    } else if (httpErrorCode === 402) {
+      // info(data.message || '检测到租户已发生变化，需要刷新数据...', () => {
+      //   window.location.href = SitesUrl.verse;
+      // });
+    }
     const errorMessage = `${toErrorMessage(httpErrorCode)}(${data.message || requestUrl}）`;
     if (httpErrorCode && !requestHeaders.Quiet) {
       BaseWidgets.message.error(errorMessage);

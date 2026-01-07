@@ -1,7 +1,28 @@
-// .ant-btn {
-//   gap: 5px;
-//   line-height: 16px;
+.ant-btn {
+  gap: 5px;
+}
+
+.ant-btn-color-primary,
+.ant-btn-color-default {
+  box-shadow: none !important;
+}
+
+// .ant-input-filled {
+//   .ant-input::placeholder {
+//     color: var(--bf-tx-lesser);
+//   }
 // }
+
+.ant-segmented {
+  color: var(--bf-tx-lesser);
+  background: var(--bf-bg-filled2);
+}
+
+.ant-modal-title {
+  > .anticon {
+    margin-right: 5px;
+  }
+}
 
 // .ant-btn-color-primary,
 // .ant-btn-color-default {

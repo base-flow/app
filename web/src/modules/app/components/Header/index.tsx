@@ -1,16 +1,19 @@
-import { BulbFilled, ContainerFilled, LogoutOutlined } from "@ant-design/icons";
+import { getLocale } from "@baseflow/react";
+import { StringSelect } from "@baseflow/widgets";
 import { Link, useMatchRoute, useRouter } from "@tanstack/react-router";
 import { Button, Dropdown } from "antd";
-import { AlarmClockCheck, LampCeiling, LayoutGrid, Settings2, SquarePen, Workflow } from "lucide-react";
+import { LampCeiling, LayoutGrid, ListPlus, LogOut, MousePointerClick, NotepadText, Settings2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
+import { LOCALE_KEY } from "@/const";
 import { useAppStore } from "@/modules/app/store";
 import styles from "./index.module.scss";
 
 const Header: FC = () => {
+  const locale = getLocale();
   const router = useRouter();
   const [auth, logout] = useAppStore(useShallow(({ auth, logout }) => [auth, logout]));
   const matchRoute = useMatchRoute();
@@ -34,7 +37,7 @@ const Header: FC = () => {
         {
           key: "logout",
           label: (
-            <Button block size="small" type="link" icon={<LogoutOutlined />}>
+            <Button block size="small" type="link" icon={<LogOut size={14} />}>
               退出登录
             </Button>
           ),
@@ -85,7 +88,7 @@ const Header: FC = () => {
               className: "on",
             }}
           >
-            <Settings2 size={15} strokeWidth={2.5} />
+            <Settings2 size={16} strokeWidth={2.5} />
             <span>节点</span>
           </Link>
           <Link
@@ -94,7 +97,7 @@ const Header: FC = () => {
               className: "on",
             }}
           >
-            <AlarmClockCheck size={15} strokeWidth={2.5} />
+            <MousePointerClick size={16} strokeWidth={2.5} />
             <span>触发器</span>
           </Link>
           <Link
@@ -103,8 +106,8 @@ const Header: FC = () => {
               className: "on",
             }}
           >
-            <Workflow size={15} strokeWidth={2.5} />
-            <span>模型</span>
+            <ListPlus size={16} strokeWidth={2.5} />
+            <span>数据</span>
           </Link>
           <Link
             to="/templates"
@@ -112,16 +115,29 @@ const Header: FC = () => {
               className: "on",
             }}
           >
-            <ContainerFilled />
+            <NotepadText size={15} strokeWidth={2.5} />
             <span>模版</span>
           </Link>
-          <a href="https://www.baidu.com" target="_blank" rel="noreferrer noopener">
+          {/* <a href="https://www.baidu.com" target="_blank" rel="noreferrer noopener">
             <BulbFilled />
             <span>探索</span>
-          </a>
+          </a> */}
         </nav>
       </div>
       <div className="side">
+        <StringSelect
+          variant="borderless"
+          value={locale}
+          popupMatchSelectWidth={false}
+          options={[
+            { value: "en-US", label: "English" },
+            { value: "zh-CN", label: "中文简体" },
+          ]}
+          onChange={(locale) => {
+            localStorage.setItem(LOCALE_KEY, locale!);
+            window.location.reload();
+          }}
+        />
         {auth.id ? (
           <Dropdown menu={userMenu}>
             <Avatar />

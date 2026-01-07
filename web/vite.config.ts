@@ -1,14 +1,15 @@
-import path from "node:path";
+// import path from "node:path";
 import { devtools } from "@tanstack/devtools-vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
+import chalk from "chalk";
 import { defineConfig } from "vite";
 import pluginExternal from "vite-plugin-external";
 // import { viteExternalsPlugin } from "vite-plugin-externals";
 import viteTsConfigPaths from "vite-tsconfig-paths";
 import { getLocalIP } from "./scripts/utils";
 
-console.log(getLocalIP());
+const DEV_DEFAULT_API_SERVER = `/api/=>http://${getLocalIP()}:3000/`;
 
 const cdnExternals = {
   react: "React",
@@ -28,6 +29,9 @@ export default defineConfig({
   //     "@": path.resolve(__dirname, "src"),
   //   },
   // },
+  define: {
+    __API_PROXY__: process.env.NODE_ENV !== "production" ? JSON.stringify(DEV_DEFAULT_API_SERVER) : "",
+  },
   plugins: [
     devtools(),
     viteTsConfigPaths({
@@ -43,12 +47,11 @@ export default defineConfig({
     pluginExternal({ externals: cdnExternals }),
     //viteExternalsPlugin(cdnExternals),
     {
-      name: "custom-end",
-      closeBundle() {
-        replaceInFileSync({
-          files: path.join(__dirname, "dist/index.html"),
-          from: ["react.development.js", "react-dom.development.js"],
-          to: ["react.production.min.js", "react-dom.production.min.js"],
+      name: "custom-log",
+      configureServer(server) {
+        // 确保在 server 启动后执行
+        server.httpServer?.once("listening", () => {
+          console.log(`\n${chalk.bgRedBright("Default API Server")} ${chalk.green.underline(DEV_DEFAULT_API_SERVER)}`);
         });
       },
     },

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-// import AppList from "~/apps/components/AppList";
+import AppList from "@/modules/flowApp/components/AppList";
 
 export const Route = createFileRoute("/_auth/apps/")({
   validateSearch: z.object({
@@ -13,5 +13,5 @@ export const Route = createFileRoute("/_auth/apps/")({
 
 function RouteComponent() {
   const search = Route.useSearch();
-  return <div>applist</div>;
+  return <AppList query={search} />;
 }

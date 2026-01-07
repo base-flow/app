@@ -1,4 +1,5 @@
-import { AUTH_TOKEN_KEY } from "./const";
+import { AUTH_TOKEN_KEY, LoginPage } from "../const";
+import { router } from "../router";
 
 export const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
@@ -24,6 +25,16 @@ export function debounce<T extends (...rest: any[]) => any>(callbak: T, delay = 
       timer = null;
     }, delay);
   }) as any;
+}
+
+export function logined(token: string, redirect: string): void {
+  localStorage.setItem(AUTH_TOKEN_KEY, token);
+  location.href = redirect;
+}
+
+export function logouted(): void {
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  location.href = `${LoginPage}?redirect=${encodeURIComponent(router.state.location.href)}`;
 }
 
 export function filterQuery(query: { [key: string]: any }): { [key: string]: any } {

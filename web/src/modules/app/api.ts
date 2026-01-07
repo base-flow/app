@@ -1,16 +1,12 @@
-import { AUTH_TOKEN_KEY } from "@/utils/const";
 import request from "@/utils/request";
 
 const GuestUser: App.IAuthUser = { id: "", username: "" };
 
 export const AppAPI = {
-  login(args: App.AuthLogin): Promise<void> {
-    return request.put<{ token: string }>("/api/auth", args).then((res) => {
-      localStorage.setItem(AUTH_TOKEN_KEY, res.data.token);
-    });
+  login(args: App.AuthLogin): Promise<{ token: string }> {
+    return request.put<{ token: string }>("/api/auth", args).then((res) => res.data);
   },
   logout(): Promise<void> {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
     return Promise.resolve();
   },
   getAuth(): Promise<App.IAuthUser> {

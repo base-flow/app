@@ -1,0 +1,14 @@
+.comp-Flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3em;
+  height: 3em;
+  overflow: hidden;
+  border-radius: var(--bf-rd-btn);
+
+  .emoji-mart-emoji {
+    display: block;
+    line-height: 1;
+  }
+}

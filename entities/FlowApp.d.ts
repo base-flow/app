@@ -5,7 +5,6 @@ declare namespace FlowApp {
     name: string;
     desc: string;
     logo: string;
-    type?: "system";
     updateDate: string;
     collected?: boolean;
   }

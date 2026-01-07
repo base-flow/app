@@ -17,8 +17,6 @@ const list: FlowApp.IApp[] = mockjs
   })
   .list.map((item: any) => ({ ...item, id: `${item.id}`, logo: FlagSrc.create() }));
 
-list[0].type = "system";
-
 @Injectable()
 export class FlowAppService {
   async findAll(query: FlowApp.IQuery): Promise<FlowApp.IQueryResult> {

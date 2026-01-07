@@ -5,8 +5,11 @@ declare module "*.svg";
 interface Window {
   API_PROXY?: string;
 }
-namespace JSX {
-  interface IntrinsicElements {
-    "em-emoji": any;
+
+declare namespace React {
+  namespace JSX {
+    interface IntrinsicElements {
+      "em-emoji": any;
+    }
   }
 }

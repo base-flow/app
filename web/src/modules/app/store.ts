@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { logined, logouted } from "@/utils/tools";
 import { AppAPI } from "./api";
 
 export interface AppState {
@@ -11,12 +12,12 @@ export interface AppState {
 export const useAppStore = create<AppState>((set, get) => ({
   auth: { id: "", username: "" },
   login: async (args: App.AuthLogin) => {
-    await AppAPI.login(args);
-    location.href = args.redirect;
+    const { token } = await AppAPI.login(args);
+    logined(token, args.redirect);
   },
   logout: async () => {
     await AppAPI.logout();
-    location.reload();
+    logouted();
   },
   authCheck: async () => {
     const curAuth = await AppAPI.getAuth();

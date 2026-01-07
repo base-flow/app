@@ -9,7 +9,7 @@ interface Props {
 
 const Component: FC<Props> = ({ show }) => {
   return show ? (
-    <div className="widget-LoadingMask">
+    <div className="comp-LoadingMask">
       <Spin />
     </div>
   ) : null;
