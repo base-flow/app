@@ -1,0 +1,1 @@
+!function(e,n){"object"==typeof exports&&"undefined"!=typeof module?n(exports):"function"==typeof define&&define.amd?define(["exports"],n):n((e="undefined"!=typeof globalThis?globalThis:e||self).Locale={})}(this,function(e){"use strict";dayjs.locale("en");e.antd=undefined,e.baseflow=undefined,e.name="en-US"});

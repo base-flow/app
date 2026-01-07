@@ -68,20 +68,20 @@ await copyNpm({ name: "@baseflow/widgets", files: ["dist/umd/index.js"] });
 await replaceInFile({
   files: HTML_PAGE,
   from: [
-    /src=".\/cdn\/axios@[^"]+?.js"/,
-    /src=".\/cdn\/dayjs@[^"]+?.js"/,
-    /src=".\/cdn\/antd@[^"]+?.js"/,
-    /src=".\/cdn\/@baseflow@react@[^"]+?.js"/,
-    /src=".\/cdn\/@baseflow@widgets@[^"]+?.js"/,
-    /href=".\/cdn\/@baseflow@react@[^"]+?.css"/,
+    /src="\/cdn\/axios@[^"]+?.js"/,
+    /src="\/cdn\/dayjs@[^"]+?.js"/,
+    /src="\/cdn\/antd@[^"]+?.js"/,
+    /src="\/cdn\/@baseflow@react@[^"]+?.js"/,
+    /src="\/cdn\/@baseflow@widgets@[^"]+?.js"/,
+    /href="\/cdn\/@baseflow@react@[^"]+?.css"/,
   ],
   to: [
-    `src="./cdn/${CDNS["axios.js"]}"`,
-    `src="./cdn/${CDNS["dayjs.js"]}"`,
-    `src="./cdn/${CDNS["antd.js"]}"`,
-    `src="./cdn/${CDNS["@baseflow@react.js"]}"`,
-    `src="./cdn/${CDNS["@baseflow@widgets.js"]}"`,
-    `href="./cdn/${CDNS["@baseflow@react.css"]}"`,
+    `src="/cdn/${CDNS["axios.js"]}"`,
+    `src="/cdn/${CDNS["dayjs.js"]}"`,
+    `src="/cdn/${CDNS["antd.js"]}"`,
+    `src="/cdn/${CDNS["@baseflow@react.js"]}"`,
+    `src="/cdn/${CDNS["@baseflow@widgets.js"]}"`,
+    `href="/cdn/${CDNS["@baseflow@react.css"]}"`,
   ],
 });
 

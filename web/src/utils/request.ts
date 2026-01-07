@@ -1,15 +1,10 @@
 import { BaseWidgets } from "@baseflow/react";
 import axios, { type AxiosError, type AxiosResponse } from "axios";
-import { API_PROXY } from "../const";
-import { getAuthToken, logouted } from "./tools";
+import { getAuthToken, logouted, replaceApiBase } from "./tools";
 
 export interface IRequest<Req, Res> {
   Request: Req;
   Response: Res;
-}
-
-export function replaceBaseUrl(url: string): string {
-  return url.replace(/^\/(api)\//, (pre) => API_PROXY[pre]);
 }
 
 function toErrorMessage(status: number) {
@@ -37,7 +32,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use((req) => {
   req.headers.Authorization = `Bearer ${getAuthToken()}`;
-  req.url = replaceBaseUrl(req.url!);
+  req.url = replaceApiBase(req.url!);
   // if (req.method === "post") {
   //   if (!req.data) {
   //     req.data = {};

@@ -1,1 +1,4 @@
-// window.API_PROXY = "/api/=>http://192.168.1.9:3000/";
+// window.API_PROXY = `
+// /api/ => http://${getLocalIP()}:3000/,
+// /i18n/ => /i18n/,
+// `;

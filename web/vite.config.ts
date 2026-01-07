@@ -9,7 +9,10 @@ import pluginExternal from "vite-plugin-external";
 import viteTsConfigPaths from "vite-tsconfig-paths";
 import { getLocalIP } from "./scripts/utils";
 
-const DEV_DEFAULT_API_SERVER = `/api/=>http://${getLocalIP()}:3000/`;
+const DEV_DEFAULT_API_SERVER = `
+/api/ => http://${getLocalIP()}:3000/,
+/i18n/ => /i18n/,
+`;
 
 const cdnExternals = {
   react: "React",
@@ -51,7 +54,7 @@ export default defineConfig({
       configureServer(server) {
         // 确保在 server 启动后执行
         server.httpServer?.once("listening", () => {
-          console.log(`\n${chalk.bgRedBright("Default API Server")} ${chalk.green.underline(DEV_DEFAULT_API_SERVER)}`);
+          console.log(`\n${chalk.bgRedBright("Default API Server: ")} ${chalk.green.underline(DEV_DEFAULT_API_SERVER)}`);
         });
       },
     },

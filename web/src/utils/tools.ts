@@ -1,4 +1,4 @@
-import { AUTH_TOKEN_KEY, LoginPage } from "../const";
+import { API_PROXY, AUTH_TOKEN_KEY, LoginPage } from "../const";
 import { router } from "../router";
 
 export const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
@@ -13,6 +13,10 @@ export function getUserRedirect(redirect?: string): string {
 
 export function isEmptyObject(obj: any): boolean {
   return obj ? Object.keys(obj).length === 0 : true;
+}
+
+export function replaceApiBase(url: string): string {
+  return url.replace(/^\/(api)\//, (pre) => (API_PROXY as any)[pre]);
 }
 
 export function debounce<T extends (...rest: any[]) => any>(callbak: T, delay = 0, every?: T): T {

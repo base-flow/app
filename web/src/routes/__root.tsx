@@ -6,10 +6,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Button, ConfigProvider, Modal, message, Segmented, Spin, Switch } from "antd";
-import { LOCALE_KEY } from "@/const";
-// import enUS from 'antd/locale/en_US';
-// import zhCN from "antd/locale/zh_CN";
-// import 'dayjs/locale/zh-cn';
 import Header from "@/modules/app/components/Header";
 import { useAppStore } from "@/modules/app/store";
 
@@ -21,8 +17,6 @@ export const Route = createRootRouteWithContext<{
   },
   component: RootComponent,
 });
-
-const Locale = localStorage.getItem(LOCALE_KEY) || undefined;
 
 const widgets: Partial<IBaseWidgets> = {
   Button: Button as any,
@@ -88,6 +82,7 @@ function RootComponent() {
   return (
     <>
       <ConfigProvider
+        locale={window.Locale.antd}
         theme={{
           //zeroRuntime: true,
           hashed: false,
@@ -105,7 +100,13 @@ function RootComponent() {
           },
         }}
       >
-        <FlowConfigProvider locale={Locale} widgets={widgets} monacoEditorUrl="/monaco/index.html" expressionUtils={expressionUtils}>
+        <FlowConfigProvider
+          locale={window.Locale.name}
+          lang={window.Locale.baseflow}
+          widgets={widgets}
+          monacoEditorUrl="/monaco/index.html"
+          expressionUtils={expressionUtils}
+        >
           <header>
             <Header />
           </header>

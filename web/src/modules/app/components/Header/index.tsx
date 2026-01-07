@@ -1,4 +1,4 @@
-import { getLocale } from "@baseflow/react";
+import { BaseLang, getLocale } from "@baseflow/react";
 import { StringSelect } from "@baseflow/widgets";
 import { Link, useMatchRoute, useRouter } from "@tanstack/react-router";
 import { Button, Dropdown } from "antd";
@@ -13,6 +13,8 @@ import { useAppStore } from "@/modules/app/store";
 import styles from "./index.module.scss";
 
 const Header: FC = () => {
+  console.log("---");
+  console.log(BaseLang);
   const locale = getLocale();
   const router = useRouter();
   const [auth, logout] = useAppStore(useShallow(({ auth, logout }) => [auth, logout]));
