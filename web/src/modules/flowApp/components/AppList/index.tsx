@@ -121,16 +121,7 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
                   {item.desc}
                 </div>
                 <div className="tools">
-                  <Button
-                    type="text"
-                    size="small"
-                    title="编辑"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setCurEdit(item);
-                    }}
-                  >
+                  <Button type="text" size="small" title="编辑">
                     <SquarePen size={13} />
                   </Button>
                   <Button

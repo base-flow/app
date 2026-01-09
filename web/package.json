@@ -21,7 +21,7 @@
   "dependencies": {
     "react": "19.2.1",
     "react-dom": "19.2.1",
-    "antd": "6.1.0",
+    "antd": "6.1.4",
     "@baseflow/react": "0.0.33",
     "@baseflow/widgets": "0.0.14",
     "lucide-react": "^0.562.0",

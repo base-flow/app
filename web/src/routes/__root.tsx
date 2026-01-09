@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Button, ConfigProvider, Modal, message, Segmented, Spin, Switch } from "antd";
+import { useState } from "react";
 import Header from "@/modules/app/components/Header";
 import { useAppStore } from "@/modules/app/store";
 
@@ -17,33 +18,6 @@ export const Route = createRootRouteWithContext<{
   },
   component: RootComponent,
 });
-
-const widgets: Partial<IBaseWidgets> = {
-  Button: Button as any,
-  Spin: Spin as any,
-  Segmented,
-  Input: StringInput,
-  Select: StringSelect,
-  Switch: Switch as any,
-  TextArea: StringInput as any,
-  DatePicker,
-  TimePicker,
-  DescMD,
-  message,
-  confirm: (message: string, callback: (ok: boolean) => void, props?: { title?: string; okText?: string; cancelText?: string }) => {
-    Modal.confirm({
-      title: "提示",
-      content: message,
-      ...props,
-      onOk() {
-        callback(true);
-      },
-      onCancel() {
-        callback(false);
-      },
-    });
-  },
-};
 
 const expressionUtils: SchemaModel = {
   name: "utils",
@@ -79,6 +53,35 @@ const expressionUtils: SchemaModel = {
 };
 
 function RootComponent() {
+  const [modal, contextHolder] = Modal.useModal();
+
+  const [widgets] = useState<Partial<IBaseWidgets>>(() => ({
+    Button: Button as any,
+    Spin: Spin as any,
+    Segmented,
+    Input: StringInput,
+    Select: StringSelect,
+    Switch: Switch as any,
+    TextArea: StringInput as any,
+    DatePicker,
+    TimePicker,
+    DescMD,
+    message,
+    confirm: (message: string, callback: (ok: boolean) => void, props?: { title?: string; okText?: string; cancelText?: string }) => {
+      modal.confirm({
+        title: "提示",
+        content: message,
+        ...props,
+        onOk() {
+          callback(true);
+        },
+        onCancel() {
+          callback(false);
+        },
+      });
+    },
+  }));
+
   return (
     <>
       <ConfigProvider
@@ -114,6 +117,7 @@ function RootComponent() {
             <Outlet />
           </article>
         </FlowConfigProvider>
+        {contextHolder}
       </ConfigProvider>
       {/* <ReactQueryDevtools buttonPosition="top-right" />
       <TanStackRouterDevtools position="bottom-right" /> */}
