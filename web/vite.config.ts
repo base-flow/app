@@ -54,7 +54,7 @@ export default defineConfig({
       configureServer(server) {
         // 确保在 server 启动后执行
         server.httpServer?.once("listening", () => {
-          console.log(`\n${chalk.bgRedBright("Default API Server: ")} ${chalk.green.underline(DEV_DEFAULT_API_SERVER)}`);
+          console.log(`\n${chalk.magenta("Default API Server: ")} ${chalk.green.underline(DEV_DEFAULT_API_SERVER)}`);
         });
       },
     },

@@ -25,18 +25,11 @@
     "rules": {
       "recommended": true,
       "style": {
-        "noNestedTernary": "warn",
         "noNonNullAssertion": "off"
       },
       "suspicious": {
         "noPrototypeBuiltins": "off",
         "noExplicitAny": "off"
-      },
-      "correctness": {
-        "useExhaustiveDependencies": "error"
-      },
-      "complexity": {
-        "noExcessiveCognitiveComplexity": "warn"
       },
       "a11y": {
         "useValidAnchor": "off",

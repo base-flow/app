@@ -1,3 +1,5 @@
+import { type RefObject, useEffect, useRef } from "react";
+import { useInView, useOnInView } from "react-intersection-observer";
 import { API_PROXY, AUTH_TOKEN_KEY, LoginPage } from "../const";
 import { router } from "../router";
 
@@ -17,6 +19,35 @@ export function isEmptyObject(obj: any): boolean {
 
 export function replaceApiBase(url: string): string {
   return url.replace(/^\/(api)\//, (pre) => (API_PROXY as any)[pre]);
+}
+
+export function useInfiniteList(fetchNextPage: () => void): [RefObject<HTMLDivElement | null>, (node?: Element | null | undefined) => void] {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const options = { root: scrollerRef.current, threshold: 0.5 };
+  // const ref = useOnInView(
+  //   (inView) => {
+  //     if (inView) {
+  //       console.log("on inView");
+  //       source.fetchNextPage();
+  //     }
+  //   },
+  //   options,
+  // );
+
+  // useEffect(() => {
+  //   setInViewRef(loaderRef.current);
+  // }, [loaderRef.current]);
+
+  const [loaderRef, inView] = useInView(options);
+
+  useEffect(() => {
+    if (inView) {
+      console.log("on inView");
+      fetchNextPage();
+    }
+  }, [fetchNextPage, inView]);
+
+  return [scrollerRef, loaderRef];
 }
 
 export function debounce<T extends (...rest: any[]) => any>(callbak: T, delay = 0, every?: T): T {

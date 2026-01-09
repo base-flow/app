@@ -1,4 +1,5 @@
 import { Controller, Delete, Get, Param, Post, Put, Query, Request } from "@nestjs/common";
+import { BaseQueryDto } from "@/dto";
 import { sleep } from "@/utils";
 import { FlowAppService } from "./flowApp.service";
 
@@ -7,7 +8,7 @@ export class FlowAppController {
   constructor(private readonly flowAppService: FlowAppService) {}
 
   @Get()
-  async getList(@Query() query: FlowApp.IQuery): Promise<FlowApp.IQueryResult> {
+  async getList(@Query() query: BaseQueryDto): Promise<FlowApp.IQueryResult> {
     return this.flowAppService.findAll(query);
   }
 

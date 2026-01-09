@@ -11,11 +11,6 @@
       top: 15px;
       left: 16px;
 
-      &.shadown {
-        stroke: #fff;
-        stroke-width: 4;
-      }
-
       // > .icon {
       //   padding: 3px;
       //   margin-right: 4px;
@@ -50,12 +45,8 @@
       display: flex;
       align-items: center;
 
-      > label {
-        line-height: 0;
-      }
-
-      .ant-select-selection-item {
-        font-weight: bold;
+      > .locale {
+        z-index: 1;
       }
 
       > .comp-Avatar {

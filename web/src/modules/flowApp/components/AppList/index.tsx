@@ -1,37 +1,57 @@
 import { BaseWidgets, useEvent } from "@baseflow/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
 import { Button, Result } from "antd";
 import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
 import type { FC } from "react";
-import { memo, useCallback, useState } from "react";
+import { type MouseEvent, memo, useEffect, useMemo, useRef, useState } from "react";
 import FieldSorter from "@/components/FieldSorter";
 import Flag from "@/components/Flag";
 import LoadingMask from "@/components/LoadingMask";
+import LoadMore from "@/components/LoadMore";
 import SearchInput from "@/components/SearchInput";
 import Star from "@/components/Star";
 import { FlagSrc } from "@/components/utils";
+import { useInfiniteList } from "@/utils/tools";
 import { FlowAppAPI } from "../../api";
 import AppEdit from "../AppEdit";
 import styles from "./index.module.scss";
 
-const AppList: FC<{ query: FlowApp.IQuery }> = ({ query }) => {
+const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
   const router = useRouter();
+  const [query, setQuery] = useState(props.query);
+  const apps = useInfiniteQuery<FlowApp.IQueryResult>(FlowAppAPI.queryInfiniteList(query));
+  const appPages = apps.data?.pages;
+  const [scrollerRef, loaderRef] = useInfiniteList(apps.fetchNextPage);
   const queryClient = useQueryClient();
   const [curEdit, setCurEdit] = useState<FlowApp.IApp>();
-  const apps = useQuery(FlowAppAPI.queryList(query));
-  const appList = apps.data?.list || [];
 
-  const onCreate = useCallback(() => {
-    setCurEdit({ logo: FlagSrc.create() } as FlowApp.IApp);
-  }, []);
+  const { appList } = useMemo(() => {
+    const list: FlowApp.IApp[] = [];
+    let summary: App.ISummary | undefined;
+    appPages?.forEach((page) => {
+      page.list.forEach((node) => {
+        list.push(node);
+      });
+      if (!summary) {
+        summary = page.summary;
+      }
+    });
+    return { appList: list, appListSummary: summary };
+  }, [appPages]);
 
   const onSearch = useEvent((keyword?: string) => {
-    router.navigate({ to: "/", search: { ...query, keyword } });
+    scrollerRef.current!.scrollTop = 0;
+    setQuery({ ...query, keyword });
   });
 
   const onSort = useEvent((sorter: { sorterField?: string; sorterOrder?: "ascend" | "descend" }) => {
-    router.navigate({ to: "/apps", search: { ...query, ...sorter } });
+    scrollerRef.current!.scrollTop = 0;
+    setQuery({ ...query, ...sorter });
+  });
+
+  const onCreate = useEvent(() => {
+    setCurEdit({ logo: FlagSrc.create() } as FlowApp.IApp);
   });
 
   const appDeleter = useMutation({
@@ -49,23 +69,21 @@ const AppList: FC<{ query: FlowApp.IQuery }> = ({ query }) => {
     },
   });
 
-  const onCollect = useCallback(
-    (collected: boolean, id: string) => {
-      appAlter.mutate({ id, collected });
-    },
-    [appAlter],
-  );
+  const onCollect = useEvent((collected: boolean, id: string) => {
+    appAlter.mutate({ id, collected });
+  });
 
-  const onDelete = useCallback(
-    (id: string, name: string) => {
-      BaseWidgets.confirm(`确定要删除“${name}”吗？`, (ok) => {
-        if (ok) {
-          appDeleter.mutate(id);
-        }
-      });
-    },
-    [appDeleter],
-  );
+  const onDelete = useEvent((id: string, name: string) => {
+    BaseWidgets.confirm(`确定要删除“${name}”吗？`, (ok) => {
+      if (ok) {
+        appDeleter.mutate(id);
+      }
+    });
+  });
+
+  const itemHandler = useEvent((e: MouseEvent) => {
+    console.log(e.target);
+  });
 
   if (apps.isError) {
     return <Result status="warning" title={apps.error.message || "错误"} />;
@@ -88,11 +106,11 @@ const AppList: FC<{ query: FlowApp.IQuery }> = ({ query }) => {
           </div>
         </div>
       </div>
-      <div className="bd">
-        <div className="g-grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
+      <div className="bd" ref={scrollerRef}>
+        <div className="g-grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6" onClick={itemHandler}>
           {appList.map((item) => {
             return (
-              <Link className={`${styles.AppList}__card g-card`} key={item.id} to="/apps/$appId/flows" params={{ appId: item.id }}>
+              <div className={`${styles.AppList}__card g-card`} key={item.id}>
                 <Star absolute id={item.id} value={item.collected} onChange={onCollect} />
                 <div className="head-icon">
                   <Flag className="icon" src={item.logo} />
@@ -128,9 +146,12 @@ const AppList: FC<{ query: FlowApp.IQuery }> = ({ query }) => {
                     <Trash2 size={13} />
                   </Button>
                 </div>
-              </Link>
+              </div>
             );
           })}
+        </div>
+        <div ref={loaderRef} className="g-loadMore">
+          <LoadMore isFetching={apps.isFetching} hasNextPage={apps.hasNextPage} fetchNextPage={apps.fetchNextPage} />
         </div>
       </div>
       <AppEdit item={curEdit} setItem={setCurEdit} />

@@ -20,12 +20,11 @@ const list: FlowApp.IApp[] = mockjs
 @Injectable()
 export class FlowAppService {
   async findAll(query: FlowApp.IQuery): Promise<FlowApp.IQueryResult> {
-    let result = list;
-    if (query.keyword) {
-      result = result.filter((item) => item.name.includes(query.keyword!));
-    }
-    const { page = 1 } = query;
-    const pageSize = 1000;
+    const result = list;
+    // if (query.keyword) {
+    //   result = result.filter((item) => item.name.includes(query.keyword!));
+    // }
+    const { page = 1, pageSize = 10 } = query;
     return { query, list: result.slice((page - 1) * pageSize, page * pageSize), summary: { total: result.length, page, pageSize } };
   }
 
