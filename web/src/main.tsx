@@ -8,7 +8,7 @@ import "./assets/css/global.scss";
 import "./assets/css/node.scss";
 import "./assets/css/antd.scss";
 
-const Locale = localStorage.getItem(LOCALE_KEY) || "en_US";
+const Locale = localStorage.getItem(LOCALE_KEY) || "en-US";
 
 const LocaleScript = document.createElement("script");
 LocaleScript.src = `${API_PROXY["/i18n/"]}${Locale}.js?_=${Date.now()}`;

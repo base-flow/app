@@ -9,6 +9,7 @@ export class FlowAppController {
 
   @Get()
   async getList(@Query() query: BaseQueryDto): Promise<FlowApp.IQueryResult> {
+    await sleep(1000);
     return this.flowAppService.findAll(query);
   }
 

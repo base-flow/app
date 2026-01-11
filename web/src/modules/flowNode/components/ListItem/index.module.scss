@@ -1,0 +1,32 @@
+:global {
+  :local(.NodeListItem) {
+    height: 140px;
+
+    > .footer {
+      > .version {
+        font-size: 11px;
+        line-height: 11px;
+      }
+    }
+
+    &:global(__package) {
+      padding-left: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      > .icon {
+        position: absolute;
+        margin-left: -12px;
+      }
+
+      > .link {
+        cursor: pointer;
+
+        &:hover {
+          color: var(--bf-primary);
+        }
+      }
+    }
+  }
+}

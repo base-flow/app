@@ -1,0 +1,19 @@
+:global {
+  :local(.AppListItem) {
+    height: 120px;
+
+    .head-icon {
+      padding-bottom: 10px;
+      padding-left: 45px;
+
+      > .title {
+        margin-bottom: 7px;
+      }
+
+      > .icon {
+        width: 34px;
+        height: 34px;
+      }
+    }
+  }
+}

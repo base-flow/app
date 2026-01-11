@@ -5,7 +5,7 @@ const mockjs = require("mockjs");
 
 const list: FlowApp.IApp[] = mockjs
   .mock({
-    "list|50": [
+    "list|95": [
       {
         "id|+1": 1,
         name: "@ctitle(10, 20)",
@@ -24,7 +24,7 @@ export class FlowAppService {
     // if (query.keyword) {
     //   result = result.filter((item) => item.name.includes(query.keyword!));
     // }
-    const { page = 1, pageSize = 10 } = query;
+    const { page = 1, pageSize = 20 } = query;
     return { query, list: result.slice((page - 1) * pageSize, page * pageSize), summary: { total: result.length, page, pageSize } };
   }
 

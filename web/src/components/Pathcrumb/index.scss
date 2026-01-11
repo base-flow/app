@@ -1,0 +1,20 @@
+.widget-Pathcrumb {
+  display: flex;
+  align-items: center;
+
+  > .backward {
+    margin-right: 8px;
+    font-size: 16px;
+    color: var(--bf-tx-lesser);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--bf-bg-filled2);
+    }
+  }
+
+  > .separator {
+    margin-left: 8px;
+    color: var(--bf-tx-placeholder);
+  }
+}

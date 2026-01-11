@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { Button, Form, Input, Modal } from "antd";
-import { PencilLine, Plus, SquarePlus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useCallback } from "react";
 import FlagSelector from "@/components/FlagSelector";
@@ -20,7 +20,7 @@ const createrTitle = (
 
 const modifyTitle = (
   <>
-    <PencilLine />
+    <Pencil className="anticon" size={13} strokeWidth={3} />
     <span>修改应用信息</span>
   </>
 );

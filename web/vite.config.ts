@@ -1,8 +1,10 @@
-// import path from "node:path";
+import path from "node:path";
 import { devtools } from "@tanstack/devtools-vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import chalk from "chalk";
+import { replaceInFileSync } from "replace-in-file";
+import externalGlobals from "rollup-plugin-external-globals";
 import { defineConfig } from "vite";
 import pluginExternal from "vite-plugin-external";
 // import { viteExternalsPlugin } from "vite-plugin-externals";
@@ -33,7 +35,7 @@ export default defineConfig({
   //   },
   // },
   define: {
-    __API_PROXY__: process.env.NODE_ENV !== "production" ? JSON.stringify(DEV_DEFAULT_API_SERVER) : "",
+    __API_PROXY__: JSON.stringify(process.env.NODE_ENV === "production" ? "" : DEV_DEFAULT_API_SERVER),
   },
   plugins: [
     devtools(),
@@ -54,14 +56,28 @@ export default defineConfig({
       configureServer(server) {
         // 确保在 server 启动后执行
         server.httpServer?.once("listening", () => {
-          console.log(`\n${chalk.magenta("Default API Server: ")} ${chalk.green.underline(DEV_DEFAULT_API_SERVER)}`);
+          console.log(`\n${chalk.bgGreen("Default API Server: ")} ${chalk.green.underline(DEV_DEFAULT_API_SERVER)}`);
         });
       },
     },
   ],
   build: {
+    minify: false,
+    cssMinify: false,
     rollupOptions: {
-      external: Object.keys(cdnExternals),
+      plugins: [
+        externalGlobals(cdnExternals),
+        {
+          name: "custom-end",
+          closeBundle() {
+            replaceInFileSync({
+              files: "./dist/index.html",
+              from: ["react.development.js", "react-dom.development.js"],
+              to: ["react.production.min.js", "react-dom.production.min.js"],
+            });
+          },
+        },
+      ],
     },
   },
 });

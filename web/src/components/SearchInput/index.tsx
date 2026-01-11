@@ -1,9 +1,9 @@
-import { useEvent } from "@baseflow/react";
 import { Input } from "antd";
 import classnames from "classnames";
 import { Search } from "lucide-react";
 import type { CSSProperties, FC } from "react";
 import { useCallback, useMemo, useState } from "react";
+import { useEvent } from "@/utils/tools";
 import "./index.scss";
 
 const SearchIcon = <Search size={14} />;

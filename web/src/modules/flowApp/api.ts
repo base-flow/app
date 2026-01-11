@@ -3,8 +3,8 @@ import request from "@/utils/request";
 import { filterQuery } from "@/utils/tools";
 
 export const FlowAppAPI = {
-  listQueryKey: "flowAppList",
-  itemQueryKey: "flowAppItem",
+  listQueryKey: "FlowAppList",
+  itemQueryKey: "FlowAppItem",
   getList(query: FlowApp.IQuery): Promise<FlowApp.IQueryResult> {
     return request.get<FlowApp.IQueryResult>("/api/apps", { params: query }).then((res) => res.data);
   },
@@ -21,7 +21,6 @@ export const FlowAppAPI = {
   deleteItem(id: string): Promise<void> {
     return request.delete("/api/apps", { params: { id } });
   },
-  // eslint-disable-next-line ts/explicit-module-boundary-types
   queryItem(id: string) {
     return queryOptions({
       queryKey: [FlowAppAPI.itemQueryKey, id],
@@ -34,7 +33,7 @@ export const FlowAppAPI = {
   queryList(query: FlowApp.IQuery = {}, guest?: boolean) {
     query = filterQuery(query);
     return queryOptions({
-      queryKey: [FlowAppAPI.listQueryKey, query],
+      queryKey: [FlowAppAPI.listQueryKey, query] as any[],
       queryFn: () => FlowAppAPI.getList(query),
       enabled: !guest,
       staleTime: Infinity,

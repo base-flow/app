@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthNodesRouteRouteImport } from './routes/_auth/nodes/route'
 import { Route as AuthDashboardRouteRouteImport } from './routes/_auth/dashboard/route'
+import { Route as AuthNodesIndexRouteImport } from './routes/_auth/nodes/index'
 import { Route as AuthDashboardIndexRouteImport } from './routes/_auth/dashboard/index'
 import { Route as AuthAppsIndexRouteImport } from './routes/_auth/apps/index'
 
@@ -30,10 +32,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthNodesRouteRoute = AuthNodesRouteRouteImport.update({
+  id: '/nodes',
+  path: '/nodes',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthDashboardRouteRoute = AuthDashboardRouteRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthNodesIndexRoute = AuthNodesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthNodesRouteRoute,
 } as any)
 const AuthDashboardIndexRoute = AuthDashboardIndexRouteImport.update({
   id: '/',
@@ -50,14 +62,17 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/dashboard': typeof AuthDashboardRouteRouteWithChildren
+  '/nodes': typeof AuthNodesRouteRouteWithChildren
   '/apps': typeof AuthAppsIndexRoute
   '/dashboard/': typeof AuthDashboardIndexRoute
+  '/nodes/': typeof AuthNodesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/apps': typeof AuthAppsIndexRoute
   '/dashboard': typeof AuthDashboardIndexRoute
+  '/nodes': typeof AuthNodesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -65,22 +80,33 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/_auth/dashboard': typeof AuthDashboardRouteRouteWithChildren
+  '/_auth/nodes': typeof AuthNodesRouteRouteWithChildren
   '/_auth/apps/': typeof AuthAppsIndexRoute
   '/_auth/dashboard/': typeof AuthDashboardIndexRoute
+  '/_auth/nodes/': typeof AuthNodesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/dashboard' | '/apps' | '/dashboard/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/dashboard'
+    | '/nodes'
+    | '/apps'
+    | '/dashboard/'
+    | '/nodes/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/apps' | '/dashboard'
+  to: '/' | '/login' | '/apps' | '/dashboard' | '/nodes'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/login'
     | '/_auth/dashboard'
+    | '/_auth/nodes'
     | '/_auth/apps/'
     | '/_auth/dashboard/'
+    | '/_auth/nodes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -112,12 +138,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/nodes': {
+      id: '/_auth/nodes'
+      path: '/nodes'
+      fullPath: '/nodes'
+      preLoaderRoute: typeof AuthNodesRouteRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/dashboard': {
       id: '/_auth/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthDashboardRouteRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/nodes/': {
+      id: '/_auth/nodes/'
+      path: '/'
+      fullPath: '/nodes/'
+      preLoaderRoute: typeof AuthNodesIndexRouteImport
+      parentRoute: typeof AuthNodesRouteRoute
     }
     '/_auth/dashboard/': {
       id: '/_auth/dashboard/'
@@ -147,13 +187,27 @@ const AuthDashboardRouteRouteChildren: AuthDashboardRouteRouteChildren = {
 const AuthDashboardRouteRouteWithChildren =
   AuthDashboardRouteRoute._addFileChildren(AuthDashboardRouteRouteChildren)
 
+interface AuthNodesRouteRouteChildren {
+  AuthNodesIndexRoute: typeof AuthNodesIndexRoute
+}
+
+const AuthNodesRouteRouteChildren: AuthNodesRouteRouteChildren = {
+  AuthNodesIndexRoute: AuthNodesIndexRoute,
+}
+
+const AuthNodesRouteRouteWithChildren = AuthNodesRouteRoute._addFileChildren(
+  AuthNodesRouteRouteChildren,
+)
+
 interface AuthRouteRouteChildren {
   AuthDashboardRouteRoute: typeof AuthDashboardRouteRouteWithChildren
+  AuthNodesRouteRoute: typeof AuthNodesRouteRouteWithChildren
   AuthAppsIndexRoute: typeof AuthAppsIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthDashboardRouteRoute: AuthDashboardRouteRouteWithChildren,
+  AuthNodesRouteRoute: AuthNodesRouteRouteWithChildren,
   AuthAppsIndexRoute: AuthAppsIndexRoute,
 }
 

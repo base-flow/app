@@ -1,39 +1,52 @@
 import { BaseWidgets } from "@baseflow/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
-import { Button, Pagination, Result } from "antd";
+import { Button, Result } from "antd";
 import { SquarePlus } from "lucide-react";
 import type { FC } from "react";
-import { memo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import FieldSorter from "@/components/FieldSorter";
 import LoadingMask from "@/components/LoadingMask";
+import LoadMore from "@/components/LoadMore";
 import SearchInput from "@/components/SearchInput";
 import { FlagSrc } from "@/components/utils";
-import { useEvent } from "@/utils/tools";
+import { useEvent, useInfiniteList } from "@/utils/tools";
 import { FlowAppAPI } from "../../api";
 import AppEdit from "../AppEdit";
-import ListItem from "../ListItem";
+import Item from "./Item";
+import styles from "./index.module.scss";
 
 const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
   const router = useRouter();
-  const scrollerRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState(props.query);
-  const apps = useQuery(FlowAppAPI.queryList(query));
+  const apps = useInfiniteQuery<FlowApp.IQueryResult>(FlowAppAPI.queryInfiniteList(query));
+  const appsPages = apps.data?.pages;
+  const [scrollerRef, loaderRef] = useInfiniteList(apps.fetchNextPage);
   const queryClient = useQueryClient();
   const [curEdit, setCurEdit] = useState<FlowApp.IApp>();
-  const appList = apps.data?.list;
-  const appListSummary = apps.data?.summary;
+
+  const [appList] = useMemo(() => {
+    const list: FlowApp.IApp[] = [];
+    let summary: App.ISummary | undefined;
+    appsPages?.forEach((page) => {
+      page.list.forEach((node) => {
+        list.push(node);
+      });
+      if (!summary) {
+        summary = page.summary;
+      }
+    });
+    return [list, summary];
+  }, [appsPages]);
 
   const onSearch = useEvent((keyword?: string) => {
-    setQuery({ ...query, page: undefined, keyword });
+    scrollerRef.current!.scrollTop = 0;
+    setQuery({ ...query, keyword });
   });
 
   const onSort = useEvent((sorter: { sorterField?: string; sorterOrder?: "ascend" | "descend" }) => {
-    setQuery({ ...query, page: undefined, ...sorter });
-  });
-
-  const onPageChange = useEvent((page: number) => {
-    setQuery({ ...query, page });
+    scrollerRef.current!.scrollTop = 0;
+    setQuery({ ...query, ...sorter });
   });
 
   const onCreate = useEvent(() => {
@@ -67,29 +80,13 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
     });
   });
 
-  // // biome-ignore lint/correctness/useExhaustiveDependencies: <>
-  // useEffect(() => {
-  //   console.log("set top 0");
-  //   if (scrollerRef.current) {
-  //     scrollerRef.current!.scrollTop = 0;
-  //   }
-  // }, [query]);
-
   if (apps.isError) {
     return <Result status="warning" title={apps.error.message || "错误"} />;
   }
 
-  if (!appList || !appListSummary) {
-    return (
-      <section className="g-page">
-        <LoadingMask show />
-      </section>
-    );
-  }
-
   return (
-    <section className="g-page">
-      <LoadingMask show={apps!.isFetching} />
+    <section className={`${styles.AppList} g-page`}>
+      <LoadingMask show={apps.isFetching} />
       <div className="hd">
         <div>
           <Button color="primary" variant="text" icon={<SquarePlus size={14} />} onClick={onCreate}>
@@ -107,19 +104,12 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
       <div className="bd" ref={scrollerRef}>
         <div className="g-grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
           {appList.map((item) => {
-            return <ListItem key={item.id} data={item} onDelete={onDelete} setCurEdit={setCurEdit} onCollect={onCollect} />;
+            return <Item key={item.id} data={item} onDelete={onDelete} setCurEdit={setCurEdit} onCollect={onCollect} />;
           })}
         </div>
-        <Pagination
-          className="g-pagination"
-          align="center"
-          hideOnSinglePage
-          showSizeChanger={false}
-          current={appListSummary.page}
-          pageSize={appListSummary.pageSize}
-          total={appListSummary.total}
-          onChange={onPageChange}
-        />
+        <div ref={loaderRef} className="g-loadMore">
+          <LoadMore isFetching={apps.isFetching} hasNextPage={apps.hasNextPage} fetchNextPage={apps.fetchNextPage} />
+        </div>
       </div>
       <AppEdit item={curEdit} setItem={setCurEdit} />
     </section>

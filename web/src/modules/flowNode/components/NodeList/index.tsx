@@ -1,7 +1,7 @@
 import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
-import { Button, Pagination, Result } from "antd";
+import { Pagination, Result, Segmented } from "antd";
 import { SquarePlus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useRef, useState } from "react";
@@ -10,19 +10,22 @@ import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import { FlagSrc } from "@/components/utils";
 import { useEvent } from "@/utils/tools";
-import { FlowAppAPI } from "../../api";
-import AppEdit from "../AppEdit";
+import { FlowNodeAPI } from "../../api";
 import ListItem from "../ListItem";
 
-const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
-  const router = useRouter();
+const StoreOptions: { label: string; value: string }[] = [
+  { label: "开放平台", value: "开放平台" },
+  { label: "本地仓库", value: "本地仓库" },
+];
+
+const NodeList: FC<{ query: FlowNode.IQuery }> = (props) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState(props.query);
-  const apps = useQuery(FlowAppAPI.queryList(query));
+  const nodes = useQuery(FlowNodeAPI.queryList(query));
   const queryClient = useQueryClient();
-  const [curEdit, setCurEdit] = useState<FlowApp.IApp>();
-  const appList = apps.data?.list;
-  const appListSummary = apps.data?.summary;
+  const [curEdit, setCurEdit] = useState<FlowNode.INode>();
+  const nodeList = nodes.data?.list;
+  const nodeListSummary = nodes.data?.summary;
 
   const onSearch = useEvent((keyword?: string) => {
     setQuery({ ...query, page: undefined, keyword });
@@ -37,32 +40,32 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
   });
 
   const onCreate = useEvent(() => {
-    setCurEdit({ logo: FlagSrc.create() } as FlowApp.IApp);
+    setCurEdit({} as FlowNode.INode);
   });
 
-  const appDeleter = useMutation({
-    mutationFn: FlowAppAPI.deleteItem,
+  const nodeDeleter = useMutation({
+    mutationFn: FlowNodeAPI.deleteItem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [FlowAppAPI.listQueryKey] });
+      queryClient.invalidateQueries({ queryKey: [FlowNodeAPI.listQueryKey] });
     },
   });
 
-  const appAlter = useMutation({
-    mutationFn: FlowAppAPI.editItem,
+  const nodeAlter = useMutation({
+    mutationFn: FlowNodeAPI.editItem,
     onSuccess: (result, args) => {
-      queryClient.invalidateQueries({ queryKey: [FlowAppAPI.listQueryKey] });
-      queryClient.invalidateQueries({ queryKey: [FlowAppAPI.itemQueryKey, args.id] });
+      queryClient.invalidateQueries({ queryKey: [FlowNodeAPI.listQueryKey] });
+      queryClient.invalidateQueries({ queryKey: [FlowNodeAPI.itemQueryKey, args.id] });
     },
   });
 
   const onCollect = useEvent((id: string, collected: boolean) => {
-    appAlter.mutate({ id, collected });
+    nodeAlter.mutate({ id, collected });
   });
 
   const onDelete = useEvent((id: string, name: string) => {
     BaseWidgets.confirm(`确定要删除“${name}”吗？`, (ok) => {
       if (ok) {
-        appDeleter.mutate(id);
+        nodeDeleter.mutate(id);
       }
     });
   });
@@ -75,11 +78,11 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
   //   }
   // }, [query]);
 
-  if (apps.isError) {
-    return <Result status="warning" title={apps.error.message || "错误"} />;
+  if (nodes.isError) {
+    return <Result status="warning" title={nodes.error.message || "错误"} />;
   }
 
-  if (!appList || !appListSummary) {
+  if (!nodeList || !nodeListSummary) {
     return (
       <section className="g-page">
         <LoadingMask show />
@@ -89,12 +92,10 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
 
   return (
     <section className="g-page">
-      <LoadingMask show={apps!.isFetching} />
+      <LoadingMask show={nodes!.isFetching} />
       <div className="hd">
         <div>
-          <Button color="primary" variant="text" icon={<SquarePlus size={14} />} onClick={onCreate}>
-            创建应用
-          </Button>
+          <Segmented options={StoreOptions} />
         </div>
         <div className="space">
           <SearchInput variant="filled" onChange={onSearch} value={query.keyword} />
@@ -106,7 +107,7 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
       </div>
       <div className="bd" ref={scrollerRef}>
         <div className="g-grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
-          {appList.map((item) => {
+          {nodeList.map((item) => {
             return <ListItem key={item.id} data={item} onDelete={onDelete} setCurEdit={setCurEdit} onCollect={onCollect} />;
           })}
         </div>
@@ -115,15 +116,14 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
           align="center"
           hideOnSinglePage
           showSizeChanger={false}
-          current={appListSummary.page}
-          pageSize={appListSummary.pageSize}
-          total={appListSummary.total}
+          current={nodeListSummary.page}
+          pageSize={nodeListSummary.pageSize}
+          total={nodeListSummary.total}
           onChange={onPageChange}
         />
       </div>
-      <AppEdit item={curEdit} setItem={setCurEdit} />
     </section>
   );
 };
 
-export default memo(AppList);
+export default memo(NodeList);

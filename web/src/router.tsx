@@ -10,7 +10,7 @@ export const queryClient = new QueryClient();
 export const router = createRouter({
   routeTree,
   defaultPendingComponent: () => (
-    <div className="g-route-loading">
+    <div style={{ padding: "20px" }}>
       <Spin />
     </div>
   ),

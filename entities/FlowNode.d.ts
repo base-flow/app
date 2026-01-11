@@ -11,8 +11,9 @@ declare namespace FlowNode {
     name: string;
     icon: string;
     desc: string;
-    vers: string[];
     content: string;
+    package?: string;
+    version?: string;
     keywords?: string;
     likes?: number;
     collected?: boolean;

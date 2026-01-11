@@ -1,8 +1,8 @@
-import { useEvent } from "@baseflow/react";
 import data from "@emoji-mart/data";
 import { init } from "emoji-mart";
 import type { FC } from "react";
 import { memo, useMemo } from "react";
+import { useEvent } from "@/utils/tools";
 import { FlagSrc } from "../utils";
 import "./index.scss";
 
