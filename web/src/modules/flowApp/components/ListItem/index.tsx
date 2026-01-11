@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import classnames from "classnames";
-import { SquarePen, Trash2 } from "lucide-react";
+import { SquarePen, TextAlignJustify, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo } from "react";
 import Flag from "@/components/Flag";
@@ -35,31 +35,35 @@ const Component: FC<Props> = ({ data, setCurEdit, onDelete, onCollect }) => {
       <div className="summary" title={data.desc}>
         {data.desc}
       </div>
+      <div className="footer">
+        <div className="flows">
+          <TextAlignJustify size={11} strokeWidth={3} />
+          <span>45</span>
+        </div>
+      </div>
       <div className="tools">
-        <Button
-          type="text"
-          size="small"
+        <div
           title="编辑"
+          className="btn"
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
             setCurEdit(data);
           }}
         >
-          <SquarePen size={14} />
-        </Button>
-        <Button
-          type="text"
-          size="small"
+          <SquarePen size={13} />
+        </div>
+        <div
           title="删除"
+          className="btn"
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
             onDelete(data.id, data.name);
           }}
         >
-          <Trash2 size={14} />
-        </Button>
+          <Trash2 size={13} />
+        </div>
       </div>
     </div>
   );

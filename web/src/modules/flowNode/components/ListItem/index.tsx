@@ -1,5 +1,6 @@
+import { Button } from "antd";
 import classnames from "classnames";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, SquarePen, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo } from "react";
 import Likes from "@/components/Likes";
@@ -12,7 +13,7 @@ const MoreIcon =
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjY0IDY0IDg5NiA4OTYiIHdpZHRoPSI4OTZweCIgaGVpZ2h0PSI4OTZweCIgc3R5bGU9ImZpbGw6IzJiN2JlYSI+PHBhdGggZD0iTTE3NiA1MTFhNTYgNTYgMCAxMDExMiAwIDU2IDU2IDAgMTAtMTEyIDB6bTI4MCAwYTU2IDU2IDAgMTAxMTIgMCA1NiA1NiAwIDEwLTExMiAwem0yODAgMGE1NiA1NiAwIDEwMTEyIDAgNTYgNTYgMCAxMC0xMTIgMHoiPjwvcGF0aD48L3N2Zz4=";
 // const FolderIcon =
 //   "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZpZXdCb3g9IjAgMCAxNzUuNDMgMTc1LjQzIiB3aWR0aD0iMTc1LjQzcHgiIGhlaWdodD0iMTc1LjQzcHgiIGZpbGw9IiMyYjdiZWEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTSAzLjY2NSA2Ljg3NyBMIDczLjI4NSA2Ljg3NyBDIDc1LjMwOSA2Ljg3NyA3Ni45NSA4LjUxNiA3Ni45NSAxMC41MzggTCA3Ni45NSA4MC4xNjIgQyA3Ni45NSA4Mi4xODMgNzUuMzA5IDgzLjgyNiA3My4yODUgODMuODI2IEwgMy42NjUgODMuODI2IEMgMS42MzkgODMuODI2IDAgODIuMTgzIDAgODAuMTYyIEwgMCAxMC41MzggQyAwIDguNTE2IDEuNjM5IDYuODc3IDMuNjY1IDYuODc3IE0gMTMyLjkwMiAxLjA3MyBMIDE3NC4zNTkgNDIuNTMgQyAxNzUuNzg4IDQzLjk2MSAxNzUuNzg4IDQ2LjI3OCAxNzQuMzU5IDQ3LjcxMiBMIDEzMi45MDIgODkuMTY4IEMgMTMxLjQ3MSA5MC41OTcgMTI5LjE1MiA5MC41OTcgMTI3LjcyMSA4OS4xNjggTCA4Ni4yNjQgNDcuNzEyIEMgODQuODM0IDQ2LjI3OCA4NC44MzQgNDMuOTYxIDg2LjI2NCA0Mi41MyBMIDEyNy43MjEgMS4wNzMgQyAxMjkuMTUyIC0wLjM1NyAxMzEuNDcxIC0wLjM1NyAxMzIuOTAyIDEuMDczIE0gMy42NjUgOTguNDgyIEwgNzMuMjg1IDk4LjQ4MiBDIDc1LjMwOSA5OC40ODIgNzYuOTUgMTAwLjEyMiA3Ni45NSAxMDIuMTQ2IEwgNzYuOTUgMTcxLjc2OCBDIDc2Ljk1IDE3My43OTEgNzUuMzA5IDE3NS40MzIgNzMuMjg1IDE3NS40MzIgTCAzLjY2NSAxNzUuNDMyIEMgMS42MzkgMTc1LjQzMiAwIDE3My43OTEgMCAxNzEuNzY4IEwgMCAxMDIuMTQ2IEMgMCAxMDAuMTIyIDEuNjM5IDk4LjQ4MiAzLjY2NSA5OC40ODIgTSA5NS4yNzEgOTguNDgyIEwgMTY0Ljg5MyA5OC40ODIgQyAxNjYuOTE3IDk4LjQ4MiAxNjguNTU4IDEwMC4xMjIgMTY4LjU1OCAxMDIuMTQ2IEwgMTY4LjU1OCAxNzEuNzY4IEMgMTY4LjU1OCAxNzMuNzkxIDE2Ni45MTcgMTc1LjQzMiAxNjQuODkzIDE3NS40MzIgTCA5NS4yNzEgMTc1LjQzMiBDIDkzLjI0OCAxNzUuNDMyIDkxLjYwNyAxNzMuNzkxIDkxLjYwNyAxNzEuNzY4IEwgOTEuNjA3IDEwMi4xNDYgQyA5MS42MDcgMTAwLjEyMiA5My4yNDggOTguNDgyIDk1LjI3MSA5OC40ODIiIC8+PC9zdmc+";
-const FolderIcon =
+const DefaultFolderIcon =
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjY0IDY0IDg5NiA4OTYiIHdpZHRoPSI4OTZweCIgaGVpZ2h0PSI4OTZweCIgc3R5bGU9ImZpbGw6IzJiN2JlYSI+PHBhdGggZD0iTTE2MCAxNDRoMzA0YTE2IDE2IDAgMDExNiAxNnYzMDRhMTYgMTYgMCAwMS0xNiAxNkgxNjBhMTYgMTYgMCAwMS0xNi0xNlYxNjBhMTYgMTYgMCAwMTE2LTE2bTU2NC4zMS0yNS4zM2wxODEuMDIgMTgxLjAyYTE2IDE2IDAgMDEwIDIyLjYyTDcyNC4zMSA1MDMuMzNhMTYgMTYgMCAwMS0yMi42MiAwTDUyMC42NyAzMjIuMzFhMTYgMTYgMCAwMTAtMjIuNjJsMTgxLjAyLTE4MS4wMmExNiAxNiAwIDAxMjIuNjIgME0xNjAgNTQ0aDMwNGExNiAxNiAwIDAxMTYgMTZ2MzA0YTE2IDE2IDAgMDEtMTYgMTZIMTYwYTE2IDE2IDAgMDEtMTYtMTZWNTYwYTE2IDE2IDAgMDExNi0xNm00MDAgMGgzMDRhMTYgMTYgMCAwMTE2IDE2djMwNGExNiAxNiAwIDAxLTE2IDE2SDU2MGExNiAxNiAwIDAxLTE2LTE2VjU2MGExNiAxNiAwIDAxMTYtMTYiPjwvcGF0aD48L3N2Zz4=";
 
 interface Props {
@@ -20,38 +21,14 @@ interface Props {
   setCurEdit: (data: FlowNode.INode) => void;
   onDelete: (id: string, name: string) => void;
   onCollect: (id: string, collected: boolean) => void;
+  onItemClick: (data: FlowNode.INode) => void;
 }
 
-const Component: FC<Props> = ({ data, setCurEdit, onDelete, onCollect }) => {
-  if (data.isFolder) {
-    return (
-      <div className={`${styles.NodeListItem} g-card folder`}>
-        <span
-          className={classnames("g-star absolute", { on: data.collected })}
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            onCollect(data.id, !data.collected);
-          }}
-        >
-          <Star />
-        </span>
-        <div className="head-icon">
-          <img className="icon" alt="node" src={data.icon || FolderIcon} />
-          <h4 className="title">{data.name}</h4>
-          <div className="info g-dot">{data.package}</div>
-        </div>
-        <div className="summary" title={data.desc}>
-          {data.desc}
-        </div>
-      </div>
-    );
-  }
+const Component: FC<Props> = ({ data, setCurEdit, onDelete, onCollect, onItemClick }) => {
   return (
-    <div className={`${styles.NodeListItem} g-card`}>
+    <div className={classnames(styles.NodeListItem, "g-card", { folder: data.isFolder })} onClick={() => onItemClick(data)}>
       <span
         className={classnames("g-star absolute", { on: data.collected })}
-        data-action="item-collect"
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
@@ -61,19 +38,51 @@ const Component: FC<Props> = ({ data, setCurEdit, onDelete, onCollect }) => {
         <Star />
       </span>
       <div className="head-icon">
-        <img className="icon" alt="node" src={data.icon || DefaultIcon} />
+        <img className="icon" alt="node" src={data.icon || (data.isFolder ? DefaultFolderIcon : DefaultIcon)} />
         <h4 className="title">{data.name}</h4>
-        <div className={classnames("info", `${styles.NodeListItem}__package`)}>
-          <ExternalLink className="icon" size={10} />
-          <a className="link">{data.package}</a>
+        <div className={classnames("info", data.isFolder ? "g-dot" : `${styles.NodeListItem}__package`)}>
+          {data.isFolder ? (
+            <span>{data.package}</span>
+          ) : (
+            <>
+              <ExternalLink className="icon" size={10} />
+              <a className="link">{data.package}</a>
+            </>
+          )}
         </div>
       </div>
       <div className="summary" title={data.desc}>
         {data.desc}
       </div>
-      <div className="footer">
-        <Likes likesNum={data.likes} />
-        <div className="version">v1.0.0</div>
+      {!data.isFolder && (
+        <div className="footer">
+          <Likes likesNum={data.likes} />
+          <div>v1.0.0</div>
+        </div>
+      )}
+      <div className="tools">
+        <div
+          title="编辑"
+          className="btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            setCurEdit(data);
+          }}
+        >
+          <SquarePen size={13} />
+        </div>
+        <div
+          title="删除"
+          className="btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            onDelete(data.id, data.name);
+          }}
+        >
+          <Trash2 size={13} />
+        </div>
       </div>
     </div>
   );

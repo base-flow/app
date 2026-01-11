@@ -5,7 +5,7 @@ import NodeList from "@/modules/flowNode/components/NodeList";
 export const Route = createFileRoute("/_auth/nodes/")({
   validateSearch: z.object({
     runtime: z.enum(["server", "browser"]).default("server"),
-    store: z.enum(["remote", "local", "favs"]).default("remote"),
+    store: z.enum(["remote", "local"]).default("remote"),
     page: z.number().optional(),
     keyword: z.string().optional(),
     collected: z.boolean().optional(),

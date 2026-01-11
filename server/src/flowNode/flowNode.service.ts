@@ -21,6 +21,21 @@ const actuatorList2: FlowNode.INode[] = mockjs
 
 actuatorList2.unshift(
   {
+    id: `FolderTest`,
+    type: "actuator",
+    name: "数据库操作",
+    desc: "包含数据库的增删改查等常用节点",
+    package: "11 Nodes",
+    content: "",
+    icon: "",
+    updateDate: "",
+    createDate: "",
+    createBy: "",
+    updateBy: "",
+    isSystem: true,
+    isFolder: true,
+  },
+  {
     id: `${UID++}`,
     type: "actuator",
     name: "条件选择",
@@ -383,6 +398,12 @@ export class FlowNodeService {
       } else if (query.parent === "Base") {
         result = actuatorList2;
         path = [["Base", "基础逻辑节点"]];
+      } else if (query.parent === "FolderTest") {
+        result = actuatorList2;
+        path = [
+          ["Base", "基础逻辑节点"],
+          ["FolderTest", "数据库操作"],
+        ];
       } else {
         result = actuatorList1;
       }

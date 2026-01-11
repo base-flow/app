@@ -2,13 +2,6 @@
   :local(.NodeListItem) {
     height: 140px;
 
-    > .footer {
-      > .version {
-        font-size: 11px;
-        line-height: 11px;
-      }
-    }
-
     &:global(__package) {
       padding-left: 12px;
       overflow: hidden;
