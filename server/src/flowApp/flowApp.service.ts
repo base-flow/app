@@ -12,10 +12,27 @@ const list: FlowApp.IApp[] = mockjs
         logo: "emoji://#fef7c3@:smile:@😀",
         desc: "@csentence(20, 60)",
         updateDate: "@datetime",
+        totalFlows: 34,
+        flowsNumber: {
+          server: 12,
+          browser: 3,
+        },
       },
     ],
   })
   .list.map((item: any) => ({ ...item, id: `${item.id}`, logo: FlagSrc.create() }));
+
+const memberList: User.IUser[] = mockjs
+  .mock({
+    "list|15": [
+      {
+        "id|+1": 1,
+        username: "@ctitle(5, 10)",
+        specialRole: "developer",
+      },
+    ],
+  })
+  .list.map((item: any) => ({ ...item, id: `${item.id}` }));
 
 @Injectable()
 export class FlowAppService {
@@ -56,5 +73,9 @@ export class FlowAppService {
       throw new NotFoundException(`App[${id}]不存在`);
     }
     return item;
+  }
+
+  async findAllMembers(id: string): Promise<User.IQueryResult> {
+    return { query: {}, list: memberList, summary: { total: memberList.length, page: 1, pageSize: memberList.length } };
   }
 }

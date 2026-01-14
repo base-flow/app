@@ -2,7 +2,7 @@ import data from "@emoji-mart/data";
 import { init } from "emoji-mart";
 import type { FC } from "react";
 import { memo, useMemo } from "react";
-import { useEvent } from "@/utils/tools";
+import { useEvent } from "@/utils/hooks";
 import { FlagSrc } from "../utils";
 import "./index.scss";
 

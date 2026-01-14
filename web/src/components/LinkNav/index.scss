@@ -3,7 +3,7 @@
     display: flex;
     gap: 10px;
     padding: 12px 15px 12px 20px;
-    margin-bottom: 8px;
+    margin-bottom: 2px;
     border-radius: var(--bf-rd-btn);
 
     &:hover {
@@ -21,8 +21,7 @@
 
     > a {
       gap: 5px;
-      padding: 8px 10px 8px 15px;
-      margin-bottom: 5px;
+      padding: 8px 10px 8px 12px;
     }
   }
 }

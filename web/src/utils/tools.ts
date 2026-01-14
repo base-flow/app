@@ -1,5 +1,3 @@
-import { type RefObject, useEffect, useMemo, useRef } from "react";
-import { useInView } from "react-intersection-observer";
 import { API_PROXY, AUTH_TOKEN_KEY, LoginPage } from "../const";
 import { router } from "../router";
 
@@ -19,52 +17,6 @@ export function isEmptyObject(obj: any): boolean {
 
 export function replaceApiBase(url: string): string {
   return url.replace(/^\/(api)\//, (pre) => (API_PROXY as any)[pre]);
-}
-
-// biome-ignore lint/complexity/noBannedTypes: <>
-export function useEvent<F extends Function>(fn: F): F {
-  const fnRef = useRef<F>(fn);
-  // why not write `fnRef.current = fn`?
-  // https://github.com/alibaba/hooks/issues/728
-  fnRef.current = useMemo<F>(() => fn, [fn]);
-
-  const memoizedFn = useRef<F>(undefined);
-  if (!memoizedFn.current) {
-    memoizedFn.current = function (this: any, ...args: any) {
-      return fnRef.current.apply(this, args);
-    } as any;
-  }
-
-  return memoizedFn.current!;
-}
-
-export function useInfiniteList(fetchNextPage: () => void): [RefObject<HTMLDivElement | null>, (node?: Element | null | undefined) => void] {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const options = { root: scrollerRef.current, threshold: 0.5 };
-  // const ref = useOnInView(
-  //   (inView) => {
-  //     if (inView) {
-  //       console.log("on inView");
-  //       source.fetchNextPage();
-  //     }
-  //   },
-  //   options,
-  // );
-
-  // useEffect(() => {
-  //   setInViewRef(loaderRef.current);
-  // }, [loaderRef.current]);
-
-  const [loaderRef, inView] = useInView(options);
-
-  useEffect(() => {
-    if (inView) {
-      console.log("on inView");
-      fetchNextPage();
-    }
-  }, [fetchNextPage, inView]);
-
-  return [scrollerRef, loaderRef];
 }
 
 export function debounce<T extends (...rest: any[]) => any>(callbak: T, delay = 0, every?: T): T {

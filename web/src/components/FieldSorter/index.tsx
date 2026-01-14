@@ -3,7 +3,7 @@ import { ArrowDownWideNarrow, ArrowUpNarrowWide, FilePen, FilePlusCorner, Thumbs
 import type { FC, ReactNode } from "react";
 import { memo, useMemo } from "react";
 import "./index.scss";
-import { useEvent } from "@/utils/tools";
+import { useEvent } from "@/utils/hooks";
 
 export type SortField = "createDate" | "updateDate" | "likes";
 

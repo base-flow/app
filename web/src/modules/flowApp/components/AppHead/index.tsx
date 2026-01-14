@@ -2,11 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Result } from "antd";
 import type { FC } from "react";
 import { memo, useCallback, useState } from "react";
+import Collect from "@/components/Collect";
+import Edit from "@/components/Edit";
+import ErrorPanel from "@/components/ErrorPanel";
 import Flag from "@/components/Flag";
-import { EditFilled } from "@/components/Icons";
 import LoadingMask from "@/components/LoadingMask";
-import Star from "@/components/Star";
-import { AppsAPI } from "../../api";
+import { useEvent } from "@/utils/hooks";
+import { FlowAppAPI } from "../../api";
 import AppEdit from "../AppEdit";
 import styles from "./index.module.scss";
 
@@ -16,52 +18,50 @@ export interface Props {
 
 const AppHead: FC<Props> = ({ appId }) => {
   const queryClient = useQueryClient();
-  const app = useQuery(AppsAPI.queryItem(appId));
+  const app = useQuery(FlowAppAPI.queryItem(appId));
   const appData = app.data;
-  const [appEditor, setAppEditor] = useState<Apps.IApp>();
+  const [appEditor, setAppEditor] = useState<FlowApp.IApp>();
 
-  const onEditApp = useCallback(() => {
-    const app = appData;
-    if (app) {
-      setAppEditor(app);
-    }
-  }, [appData]);
+  const onEditApp = useEvent(() => {
+    setAppEditor(appData);
+  });
 
   const appAlter = useMutation({
-    mutationFn: AppsAPI.editItem,
+    mutationFn: FlowAppAPI.editItem,
     onSuccess: (result, args) => {
-      queryClient.invalidateQueries({ queryKey: [AppsAPI.listQueryKey] });
-      queryClient.invalidateQueries({ queryKey: [AppsAPI.itemQueryKey, args.id] });
+      queryClient.invalidateQueries({ queryKey: [FlowAppAPI.listQueryKey] });
+      queryClient.invalidateQueries({ queryKey: [FlowAppAPI.itemQueryKey, args.id] });
     },
   });
 
-  const onCollect = useCallback(
-    (collected: boolean, id: string) => {
-      appAlter.mutate({ id, collected });
-    },
-    [appAlter],
-  );
+  const onCollect = useEvent(() => {
+    appAlter.mutate({ id: appData!.id, collected: !appData!.collected });
+  });
 
   if (app.isError) {
-    return <Result status="warning" title={app.error?.message || "错误"} />;
+    return (
+      <div className={styles.AppHead}>
+        <ErrorPanel message={app.error?.message || "错误"} />
+      </div>
+    );
   }
 
   if (!appData) {
-    return <LoadingMask show={true} />;
+    return (
+      <div className={styles.AppHead}>
+        <LoadingMask show />
+      </div>
+    );
   }
 
   return (
     <div className={styles.AppHead}>
       <LoadingMask show={app.isFetching} />
-      <aside>
-        <Flag className="icon" src={appData.logo} />
-        <h2 className="title g-h3">
-          <span>{appData.name}</span>
-          <Star className={`${styles.AppHead}__star`} id={appData.id} value={appData.collected} onChange={onCollect} />
-          <EditFilled className={`${styles.AppHead}__edit`} onClick={onEditApp} />
-        </h2>
-        <span className="info">{appData.updateDate}</span>
-      </aside>
+      <Flag className="icon" src={appData.logo} />
+      <span className="title">{appData.name}</span>
+      <Collect className={`${styles.AppHead}__star`} id={appData.id} value={appData.collected} onChange={onCollect} />
+      <Edit className={`${styles.AppHead}__edit`} onClick={onEditApp} />
+      <div className="info">{appData.desc}</div>
       <AppEdit item={appEditor} setItem={setAppEditor} />
     </div>
   );

@@ -3,7 +3,7 @@ import { BaseQueryDto } from "@/dto";
 import { sleep } from "@/utils";
 import { FlowAppService } from "./flowApp.service";
 
-@Controller("apps")
+@Controller("app")
 export class FlowAppController {
   constructor(private readonly flowAppService: FlowAppService) {}
 
@@ -15,6 +15,7 @@ export class FlowAppController {
 
   @Get(":id")
   async getItem(@Param() param: { id: string }): Promise<FlowApp.IApp> {
+    await sleep(1000);
     return this.flowAppService.findOne(param.id);
   }
 
@@ -33,5 +34,11 @@ export class FlowAppController {
   @Delete()
   async deleteItem(@Query() { id }: { id: string }): Promise<void> {
     return this.flowAppService.deleteItem(id);
+  }
+
+  @Get(":id/member")
+  async getMemberList(@Param() param: { id: string }): Promise<User.IQueryResult> {
+    await sleep(1000);
+    return this.flowAppService.findAllMembers(param.id);
   }
 }

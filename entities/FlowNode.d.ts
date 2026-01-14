@@ -1,8 +1,8 @@
 declare namespace FlowNode {
   interface IQuery extends App.IQuery {
     type?: "actuator" | "trigger";
-    runtime?: "server" | "browser";
-    store?: "remote" | "local" | "favs";
+    runtime?: App.Runtime;
+    store?: "remote" | "local";
     parent?: string;
   }
 

@@ -6,20 +6,20 @@ export const FlowNodeAPI = {
   listQueryKey: "FlowNodeList",
   itemQueryKey: "FlowNodeItem",
   getList(query: FlowNode.IQuery): Promise<FlowNode.IQueryResult> {
-    return request.get<FlowNode.IQueryResult>("/api/nodes", { params: query }).then((res) => res.data);
+    return request.get<FlowNode.IQueryResult>("/api/node", { params: query }).then((res) => res.data);
   },
   getItem(id: string): Promise<FlowNode.INode> {
-    return request.get<FlowNode.INode>(`/api/nodes/${id}`).then((res) => res.data);
+    return request.get<FlowNode.INode>(`/api/node/${id}`).then((res) => res.data);
   },
   editItem(item: Partial<FlowNode.INode>): Promise<FlowNode.ICreateResult | FlowNode.IUpdateResult> {
     if (item.id) {
-      return request.put<FlowNode.IUpdateResult>(`/api/nodes/${item.id}`, item).then((res) => res.data);
+      return request.put<FlowNode.IUpdateResult>(`/api/node/${item.id}`, item).then((res) => res.data);
     } else {
-      return request.post<FlowNode.ICreateResult>("/api/nodes", item).then((res) => res.data);
+      return request.post<FlowNode.ICreateResult>("/api/node", item).then((res) => res.data);
     }
   },
   deleteItem(id: string): Promise<void> {
-    return request.delete("/api/nodes", { params: { id } });
+    return request.delete("/api/node", { params: { id } });
   },
   queryItem(id: string) {
     return queryOptions({
@@ -30,19 +30,18 @@ export const FlowNodeAPI = {
       refetchOnWindowFocus: false,
     });
   },
-  queryList(query: FlowNode.IQuery = {}, guest?: boolean) {
+  queryList(query: FlowNode.IQuery = {}) {
     query = filterQuery(query);
     return queryOptions({
       queryKey: [FlowNodeAPI.listQueryKey, query],
       queryFn: () => FlowNodeAPI.getList(query),
-      enabled: !guest,
       staleTime: Infinity,
       retry: 0,
       refetchOnWindowFocus: false,
       placeholderData: keepPreviousData,
     });
   },
-  queryInfiniteList(query: FlowNode.IQuery = {}, guest?: boolean) {
+  queryInfiniteList(query: FlowNode.IQuery = {}) {
     query = filterQuery(query);
     return {
       queryKey: [FlowNodeAPI.listQueryKey, query] as any[],
@@ -52,7 +51,6 @@ export const FlowNodeAPI = {
         return page * pageSize < total ? page + 1 : undefined;
       },
       initialPageParam: 1,
-      enabled: !guest,
       staleTime: Infinity,
       retry: 0,
       refetchOnWindowFocus: false,

@@ -83,7 +83,7 @@ const Header: FC = () => {
             <span>应用</span>
           </Link>
           <Link
-            to="/nodes"
+            to="/actuators"
             activeProps={{
               className: "on",
             }}
@@ -92,7 +92,7 @@ const Header: FC = () => {
             <span>节点</span>
           </Link>
           <Link
-            to="/trigger"
+            to="/triggers"
             activeProps={{
               className: "on",
             }}

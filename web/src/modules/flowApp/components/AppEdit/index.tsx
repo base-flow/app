@@ -60,8 +60,8 @@ const AppEdit: FC<Props> = ({ item, setItem }) => {
       maskClosable={false}
       footer={null}
     >
-      <LoadingMask show={appEdit.isPending} />
       <div className={styles.AppEdit}>
+        <LoadingMask show={appEdit.isPending} />
         <Form layout="vertical" initialValues={item} onFinish={appEdit.mutate}>
           <FormItem hidden name="id">
             <Input />

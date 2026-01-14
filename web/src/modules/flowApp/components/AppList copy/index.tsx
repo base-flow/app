@@ -10,7 +10,7 @@ import LoadingMask from "@/components/LoadingMask";
 import LoadMore from "@/components/LoadMore";
 import SearchInput from "@/components/SearchInput";
 import { FlagSrc } from "@/components/utils";
-import { useEvent, useInfiniteList } from "@/utils/tools";
+import { useEvent, useInfiniteList } from "@/utils/hooks";
 import { FlowAppAPI } from "../../api";
 import AppEdit from "../AppEdit";
 import Item from "./Item";

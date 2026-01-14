@@ -3,7 +3,8 @@ import { z } from "zod";
 import { useShallow } from "zustand/react/shallow";
 import LoginForm from "@/modules/app/components/LoginForm";
 import { useAppStore } from "@/modules/app/store";
-import { getUserRedirect, useEvent } from "@/utils/tools";
+import { useEvent } from "@/utils/hooks";
+import { getUserRedirect } from "@/utils/tools";
 
 export const Route = createFileRoute("/login")({
   validateSearch: z.object({

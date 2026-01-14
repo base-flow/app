@@ -1,6 +1,7 @@
 import classnames from "classnames";
 import { UserRoundCog } from "lucide-react";
 import type { FC, MouseEvent } from "react";
+import { memo } from "react";
 import "./index.scss";
 
 export interface AvatarProps {
@@ -10,7 +11,7 @@ export interface AvatarProps {
   guest?: boolean;
 }
 
-const Avatar: FC<AvatarProps> = ({ className, guest, ...props }) => {
+const Component: FC<AvatarProps> = ({ className, guest, ...props }) => {
   return (
     <div className={classnames("comp-Avatar", className, { guest })} {...props}>
       <UserRoundCog size={16} />
@@ -18,4 +19,4 @@ const Avatar: FC<AvatarProps> = ({ className, guest, ...props }) => {
   );
 };
 
-export default Avatar;
+export default memo(Component);

@@ -4,32 +4,60 @@ import type { FC } from "react";
 import { memo, useMemo } from "react";
 import LinkNav from "@/components/LinkNav";
 
-const NodeMenu: FC = () => {
+interface SideMenuProps {
+  type: "actuator" | "trigger";
+}
+
+const SideMenu: FC<SideMenuProps> = ({ type }) => {
   const nodeItems = useMemo(() => {
-    const list: LinkProps[] = [
-      {
-        to: "/nodes",
-        search: { runtime: "server" },
-        children: (
-          <>
-            <Server size={13} style={{ marginTop: 1 }} />
-            <span>服务器运行</span>
-          </>
-        ),
-      },
-      {
-        to: "/nodes",
-        search: { runtime: "browser" },
-        children: (
-          <>
-            <Chromium size={14} />
-            <span>浏览器运行</span>
-          </>
-        ),
-      },
-    ];
+    const list: LinkProps[] =
+      type === "actuator"
+        ? [
+            {
+              to: "/actuators",
+              search: { runtime: "server" },
+              children: (
+                <>
+                  <Server size={13} style={{ marginTop: 1 }} />
+                  <span>服务器运行</span>
+                </>
+              ),
+            },
+            {
+              to: "/actuators",
+              search: { runtime: "browser" },
+              children: (
+                <>
+                  <Chromium size={14} />
+                  <span>浏览器运行</span>
+                </>
+              ),
+            },
+          ]
+        : [
+            {
+              to: "/triggers",
+              search: { runtime: "server" },
+              children: (
+                <>
+                  <Server size={13} style={{ marginTop: 1 }} />
+                  <span>服务器运行</span>
+                </>
+              ),
+            },
+            {
+              to: "/triggers",
+              search: { runtime: "browser" },
+              children: (
+                <>
+                  <Chromium size={14} />
+                  <span>浏览器运行</span>
+                </>
+              ),
+            },
+          ];
     return list;
-  }, []);
+  }, [type]);
 
   const configItems = useMemo(() => {
     const list: LinkProps[] = [
@@ -62,4 +90,4 @@ const NodeMenu: FC = () => {
   );
 };
 
-export default memo(NodeMenu);
+export default memo(SideMenu);

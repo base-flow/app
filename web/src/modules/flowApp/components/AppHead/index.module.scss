@@ -1,47 +1,44 @@
 :global {
   :local(.AppHead) {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 25px;
-    padding-bottom: 20px;
+    position: relative;
+    max-width: 50%;
+    height: 40px;
+    padding-top: 3px;
+    padding-left: 55px;
 
-    > aside {
-      position: relative;
-      padding-left: 55px;
+    > .icon {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 15px;
+    }
 
-      > .icon {
-        position: absolute;
-        left: 0;
-        font-size: 15px;
-      }
+    > .title {
+      font-size: 14px;
+      font-weight: 500;
+    }
 
-      > .title {
-        padding-top: 5px;
-      }
-
-      > .info {
-        display: block;
-        margin-top: 5px;
-        font-size: 11px;
-        line-height: 1.5;
-        color: var(--bf-tx-summary);
-      }
+    > .info {
+      display: block;
+      margin-top: 9px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 11px;
+      color: var(--bf-tx-summary);
+      white-space: nowrap;
     }
 
     &:global(__star) {
-      margin-left: 5px;
-      font-size: 13px;
+      margin-right: 6px;
+      margin-left: 10px;
     }
 
     &:global(__edit) {
-      margin-left: 5px;
-      font-size: 13px;
       color: var(--bf-bd-input);
       cursor: pointer;
 
       &:hover {
-        font-size: 1em;
+        transform: scale(1.3);
       }
     }
   }

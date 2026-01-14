@@ -12,11 +12,16 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthNodesRouteRouteImport } from './routes/_auth/nodes/route'
+import { Route as AuthTriggersRouteRouteImport } from './routes/_auth/triggers/route'
 import { Route as AuthDashboardRouteRouteImport } from './routes/_auth/dashboard/route'
-import { Route as AuthNodesIndexRouteImport } from './routes/_auth/nodes/index'
+import { Route as AuthActuatorsRouteRouteImport } from './routes/_auth/actuators/route'
+import { Route as AuthTriggersIndexRouteImport } from './routes/_auth/triggers/index'
 import { Route as AuthDashboardIndexRouteImport } from './routes/_auth/dashboard/index'
 import { Route as AuthAppsIndexRouteImport } from './routes/_auth/apps/index'
+import { Route as AuthActuatorsIndexRouteImport } from './routes/_auth/actuators/index'
+import { Route as AuthFlowFlowIdRouteImport } from './routes/_auth/flow/$flowId'
+import { Route as AuthAppsAppIdRouteRouteImport } from './routes/_auth/apps/$appId/route'
+import { Route as AuthAppsAppIdFlowsRouteImport } from './routes/_auth/apps/$appId/flows'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -32,9 +37,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthNodesRouteRoute = AuthNodesRouteRouteImport.update({
-  id: '/nodes',
-  path: '/nodes',
+const AuthTriggersRouteRoute = AuthTriggersRouteRouteImport.update({
+  id: '/triggers',
+  path: '/triggers',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthDashboardRouteRoute = AuthDashboardRouteRouteImport.update({
@@ -42,10 +47,15 @@ const AuthDashboardRouteRoute = AuthDashboardRouteRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthNodesIndexRoute = AuthNodesIndexRouteImport.update({
+const AuthActuatorsRouteRoute = AuthActuatorsRouteRouteImport.update({
+  id: '/actuators',
+  path: '/actuators',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthTriggersIndexRoute = AuthTriggersIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthNodesRouteRoute,
+  getParentRoute: () => AuthTriggersRouteRoute,
 } as any)
 const AuthDashboardIndexRoute = AuthDashboardIndexRouteImport.update({
   id: '/',
@@ -57,56 +67,109 @@ const AuthAppsIndexRoute = AuthAppsIndexRouteImport.update({
   path: '/apps/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthActuatorsIndexRoute = AuthActuatorsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthActuatorsRouteRoute,
+} as any)
+const AuthFlowFlowIdRoute = AuthFlowFlowIdRouteImport.update({
+  id: '/flow/$flowId',
+  path: '/flow/$flowId',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthAppsAppIdRouteRoute = AuthAppsAppIdRouteRouteImport.update({
+  id: '/apps/$appId',
+  path: '/apps/$appId',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthAppsAppIdFlowsRoute = AuthAppsAppIdFlowsRouteImport.update({
+  id: '/flows',
+  path: '/flows',
+  getParentRoute: () => AuthAppsAppIdRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/actuators': typeof AuthActuatorsRouteRouteWithChildren
   '/dashboard': typeof AuthDashboardRouteRouteWithChildren
-  '/nodes': typeof AuthNodesRouteRouteWithChildren
+  '/triggers': typeof AuthTriggersRouteRouteWithChildren
+  '/apps/$appId': typeof AuthAppsAppIdRouteRouteWithChildren
+  '/flow/$flowId': typeof AuthFlowFlowIdRoute
+  '/actuators/': typeof AuthActuatorsIndexRoute
   '/apps': typeof AuthAppsIndexRoute
   '/dashboard/': typeof AuthDashboardIndexRoute
-  '/nodes/': typeof AuthNodesIndexRoute
+  '/triggers/': typeof AuthTriggersIndexRoute
+  '/apps/$appId/flows': typeof AuthAppsAppIdFlowsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/apps/$appId': typeof AuthAppsAppIdRouteRouteWithChildren
+  '/flow/$flowId': typeof AuthFlowFlowIdRoute
+  '/actuators': typeof AuthActuatorsIndexRoute
   '/apps': typeof AuthAppsIndexRoute
   '/dashboard': typeof AuthDashboardIndexRoute
-  '/nodes': typeof AuthNodesIndexRoute
+  '/triggers': typeof AuthTriggersIndexRoute
+  '/apps/$appId/flows': typeof AuthAppsAppIdFlowsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/_auth/actuators': typeof AuthActuatorsRouteRouteWithChildren
   '/_auth/dashboard': typeof AuthDashboardRouteRouteWithChildren
-  '/_auth/nodes': typeof AuthNodesRouteRouteWithChildren
+  '/_auth/triggers': typeof AuthTriggersRouteRouteWithChildren
+  '/_auth/apps/$appId': typeof AuthAppsAppIdRouteRouteWithChildren
+  '/_auth/flow/$flowId': typeof AuthFlowFlowIdRoute
+  '/_auth/actuators/': typeof AuthActuatorsIndexRoute
   '/_auth/apps/': typeof AuthAppsIndexRoute
   '/_auth/dashboard/': typeof AuthDashboardIndexRoute
-  '/_auth/nodes/': typeof AuthNodesIndexRoute
+  '/_auth/triggers/': typeof AuthTriggersIndexRoute
+  '/_auth/apps/$appId/flows': typeof AuthAppsAppIdFlowsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/login'
+    | '/actuators'
     | '/dashboard'
-    | '/nodes'
+    | '/triggers'
+    | '/apps/$appId'
+    | '/flow/$flowId'
+    | '/actuators/'
     | '/apps'
     | '/dashboard/'
-    | '/nodes/'
+    | '/triggers/'
+    | '/apps/$appId/flows'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/apps' | '/dashboard' | '/nodes'
+  to:
+    | '/'
+    | '/login'
+    | '/apps/$appId'
+    | '/flow/$flowId'
+    | '/actuators'
+    | '/apps'
+    | '/dashboard'
+    | '/triggers'
+    | '/apps/$appId/flows'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/login'
+    | '/_auth/actuators'
     | '/_auth/dashboard'
-    | '/_auth/nodes'
+    | '/_auth/triggers'
+    | '/_auth/apps/$appId'
+    | '/_auth/flow/$flowId'
+    | '/_auth/actuators/'
     | '/_auth/apps/'
     | '/_auth/dashboard/'
-    | '/_auth/nodes/'
+    | '/_auth/triggers/'
+    | '/_auth/apps/$appId/flows'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -138,11 +201,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/nodes': {
-      id: '/_auth/nodes'
-      path: '/nodes'
-      fullPath: '/nodes'
-      preLoaderRoute: typeof AuthNodesRouteRouteImport
+    '/_auth/triggers': {
+      id: '/_auth/triggers'
+      path: '/triggers'
+      fullPath: '/triggers'
+      preLoaderRoute: typeof AuthTriggersRouteRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/_auth/dashboard': {
@@ -152,12 +215,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthDashboardRouteRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/nodes/': {
-      id: '/_auth/nodes/'
+    '/_auth/actuators': {
+      id: '/_auth/actuators'
+      path: '/actuators'
+      fullPath: '/actuators'
+      preLoaderRoute: typeof AuthActuatorsRouteRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/triggers/': {
+      id: '/_auth/triggers/'
       path: '/'
-      fullPath: '/nodes/'
-      preLoaderRoute: typeof AuthNodesIndexRouteImport
-      parentRoute: typeof AuthNodesRouteRoute
+      fullPath: '/triggers/'
+      preLoaderRoute: typeof AuthTriggersIndexRouteImport
+      parentRoute: typeof AuthTriggersRouteRoute
     }
     '/_auth/dashboard/': {
       id: '/_auth/dashboard/'
@@ -173,8 +243,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAppsIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/actuators/': {
+      id: '/_auth/actuators/'
+      path: '/'
+      fullPath: '/actuators/'
+      preLoaderRoute: typeof AuthActuatorsIndexRouteImport
+      parentRoute: typeof AuthActuatorsRouteRoute
+    }
+    '/_auth/flow/$flowId': {
+      id: '/_auth/flow/$flowId'
+      path: '/flow/$flowId'
+      fullPath: '/flow/$flowId'
+      preLoaderRoute: typeof AuthFlowFlowIdRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/apps/$appId': {
+      id: '/_auth/apps/$appId'
+      path: '/apps/$appId'
+      fullPath: '/apps/$appId'
+      preLoaderRoute: typeof AuthAppsAppIdRouteRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/apps/$appId/flows': {
+      id: '/_auth/apps/$appId/flows'
+      path: '/flows'
+      fullPath: '/apps/$appId/flows'
+      preLoaderRoute: typeof AuthAppsAppIdFlowsRouteImport
+      parentRoute: typeof AuthAppsAppIdRouteRoute
+    }
   }
 }
+
+interface AuthActuatorsRouteRouteChildren {
+  AuthActuatorsIndexRoute: typeof AuthActuatorsIndexRoute
+}
+
+const AuthActuatorsRouteRouteChildren: AuthActuatorsRouteRouteChildren = {
+  AuthActuatorsIndexRoute: AuthActuatorsIndexRoute,
+}
+
+const AuthActuatorsRouteRouteWithChildren =
+  AuthActuatorsRouteRoute._addFileChildren(AuthActuatorsRouteRouteChildren)
 
 interface AuthDashboardRouteRouteChildren {
   AuthDashboardIndexRoute: typeof AuthDashboardIndexRoute
@@ -187,27 +296,43 @@ const AuthDashboardRouteRouteChildren: AuthDashboardRouteRouteChildren = {
 const AuthDashboardRouteRouteWithChildren =
   AuthDashboardRouteRoute._addFileChildren(AuthDashboardRouteRouteChildren)
 
-interface AuthNodesRouteRouteChildren {
-  AuthNodesIndexRoute: typeof AuthNodesIndexRoute
+interface AuthTriggersRouteRouteChildren {
+  AuthTriggersIndexRoute: typeof AuthTriggersIndexRoute
 }
 
-const AuthNodesRouteRouteChildren: AuthNodesRouteRouteChildren = {
-  AuthNodesIndexRoute: AuthNodesIndexRoute,
+const AuthTriggersRouteRouteChildren: AuthTriggersRouteRouteChildren = {
+  AuthTriggersIndexRoute: AuthTriggersIndexRoute,
 }
 
-const AuthNodesRouteRouteWithChildren = AuthNodesRouteRoute._addFileChildren(
-  AuthNodesRouteRouteChildren,
-)
+const AuthTriggersRouteRouteWithChildren =
+  AuthTriggersRouteRoute._addFileChildren(AuthTriggersRouteRouteChildren)
+
+interface AuthAppsAppIdRouteRouteChildren {
+  AuthAppsAppIdFlowsRoute: typeof AuthAppsAppIdFlowsRoute
+}
+
+const AuthAppsAppIdRouteRouteChildren: AuthAppsAppIdRouteRouteChildren = {
+  AuthAppsAppIdFlowsRoute: AuthAppsAppIdFlowsRoute,
+}
+
+const AuthAppsAppIdRouteRouteWithChildren =
+  AuthAppsAppIdRouteRoute._addFileChildren(AuthAppsAppIdRouteRouteChildren)
 
 interface AuthRouteRouteChildren {
+  AuthActuatorsRouteRoute: typeof AuthActuatorsRouteRouteWithChildren
   AuthDashboardRouteRoute: typeof AuthDashboardRouteRouteWithChildren
-  AuthNodesRouteRoute: typeof AuthNodesRouteRouteWithChildren
+  AuthTriggersRouteRoute: typeof AuthTriggersRouteRouteWithChildren
+  AuthAppsAppIdRouteRoute: typeof AuthAppsAppIdRouteRouteWithChildren
+  AuthFlowFlowIdRoute: typeof AuthFlowFlowIdRoute
   AuthAppsIndexRoute: typeof AuthAppsIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthActuatorsRouteRoute: AuthActuatorsRouteRouteWithChildren,
   AuthDashboardRouteRoute: AuthDashboardRouteRouteWithChildren,
-  AuthNodesRouteRoute: AuthNodesRouteRouteWithChildren,
+  AuthTriggersRouteRoute: AuthTriggersRouteRouteWithChildren,
+  AuthAppsAppIdRouteRoute: AuthAppsAppIdRouteRouteWithChildren,
+  AuthFlowFlowIdRoute: AuthFlowFlowIdRoute,
   AuthAppsIndexRoute: AuthAppsIndexRoute,
 }
 

@@ -5,4 +5,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &.leftTop {
+    display: block;
+    padding-top: 10px;
+    padding-left: 10px;
+  }
 }

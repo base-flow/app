@@ -1,4 +1,5 @@
-import { Controller, Delete, Get, Param, Post, Put, Query, Request } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request } from "@nestjs/common";
+import { sleep } from "@/utils";
 import { FlowService } from "./flow.service";
 
 @Controller("flow")
@@ -7,6 +8,7 @@ export class FlowController {
 
   @Get()
   async getList(@Request() { query }: { query: Flow.IQuery }): Promise<Flow.IQueryResult> {
+    await sleep(1000);
     return this.flowService.findAll(query);
   }
 
@@ -27,8 +29,14 @@ export class FlowController {
     return this.flowService.updateItem(user.id, params.id, body);
   }
 
+  @Delete(":id")
+  async deleteItem(@Param() param: { id: string }): Promise<void> {
+    return this.flowService.deleteItem(param.id);
+  }
+
   @Delete()
-  async deleteItem(@Query() { id }: { id: string }): Promise<void> {
-    return this.flowService.deleteItem(id);
+  async batchDelete(@Body() { ids }: { ids: string[] }): Promise<void> {
+    await sleep(1000);
+    return this.flowService.batchDelete(ids);
   }
 }

@@ -1,6 +1,7 @@
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { ErrorComponent, Link, rootRouteId, useMatch, useRouter } from "@tanstack/react-router";
 import type { FC, MouseEvent } from "react";
+import { memo } from "react";
 
 const Component: FC<ErrorComponentProps> = ({ error }) => {
   const router = useRouter();
@@ -44,4 +45,4 @@ const Component: FC<ErrorComponentProps> = ({ error }) => {
   );
 };
 
-export default Component;
+export default memo(Component);

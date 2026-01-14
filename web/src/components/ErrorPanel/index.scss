@@ -1,0 +1,8 @@
+.comp-ErrorPanel {
+  display: flex;
+  gap: 5px;
+
+  > .icon {
+    color: var(--bf-warn);
+  }
+}

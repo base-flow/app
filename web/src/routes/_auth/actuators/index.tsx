@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import NodeList from "@/modules/flowNode/components/NodeList";
 
-export const Route = createFileRoute("/_auth/nodes/")({
+export const Route = createFileRoute("/_auth/actuators/")({
   validateSearch: z.object({
     runtime: z.enum(["server", "browser"]).default("server"),
     store: z.enum(["remote", "local"]).default("remote"),

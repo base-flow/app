@@ -3,7 +3,7 @@ import { BaseQueryDto } from "@/dto";
 import { sleep } from "@/utils";
 import { FlowNodeService } from "./flowNode.service";
 
-@Controller("nodes")
+@Controller("node")
 export class FlowNodeController {
   constructor(private readonly nodesService: FlowNodeService) {}
 

@@ -13,6 +13,7 @@ const list: Flow.IFlow[] = mockjs
         commitId: "123e4567-e89b-12d3-a456-426614174000",
         name: "@ctitle(10, 20)",
         desc: "@csentence(20, 60)",
+        runtime: "server",
         content: "@cparagraph(50, 100)",
         nodes: "@integer(2, 100)",
         connectors: "@integer(0, 10)",
@@ -75,6 +76,13 @@ export class FlowService {
   async deleteItem(id: string): Promise<void> {
     list.splice(
       list.findIndex((item) => item.id === id),
+      1,
+    );
+  }
+
+  async batchDelete(ids: string[]): Promise<void> {
+    list.splice(
+      list.findIndex((item) => item.id === ids[0]),
       1,
     );
   }

@@ -5,11 +5,12 @@ declare namespace Flow {
   }
 
   interface IFlow extends App.IResource {
+    name: string;
+    desc: string;
+    runtime: App.Runtime;
     version: string;
     commitId: string;
     released: boolean;
-    name: string;
-    desc: string;
     content: string;
     nodes: number;
     connectors: number;

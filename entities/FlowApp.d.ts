@@ -7,6 +7,10 @@ declare namespace FlowApp {
     logo: string;
     updateDate: string;
     collected?: boolean;
+    totalFlows: number;
+    flowsNumber: {
+      [key in App.Runtime]: number;
+    };
   }
 
   type IQueryResult = App.IQueryResult<IApp, IQuery>;

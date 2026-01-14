@@ -1,10 +1,9 @@
-import { Button } from "antd";
-import classnames from "classnames";
+import { Link } from "@tanstack/react-router";
 import { SquarePen, TextAlignJustify, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo } from "react";
+import Collect from "@/components/Collect";
 import Flag from "@/components/Flag";
-import Star from "@/components/Star";
 import styles from "./index.module.scss";
 
 interface Props {
@@ -16,17 +15,8 @@ interface Props {
 
 const Component: FC<Props> = ({ data, setCurEdit, onDelete, onCollect }) => {
   return (
-    <div className={`${styles.AppListItem} g-card`}>
-      <span
-        className={classnames("g-star absolute", { on: data.collected })}
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          onCollect(data.id, !data.collected);
-        }}
-      >
-        <Star />
-      </span>
+    <Link className={`${styles.AppListItem} g-card`} to="/apps/$appId/flows" params={{ appId: data.id }}>
+      <Collect absolute id={data.id} value={data.collected} onChange={onCollect} />
       <div className="head-icon">
         <Flag className="icon" src={data.logo} />
         <h4 className="title">{data.name}</h4>
@@ -38,7 +28,7 @@ const Component: FC<Props> = ({ data, setCurEdit, onDelete, onCollect }) => {
       <div className="footer">
         <div className="flows">
           <TextAlignJustify size={11} strokeWidth={3} />
-          <span>45</span>
+          <span>{data.totalFlows}</span>
         </div>
       </div>
       <div className="tools">
@@ -65,7 +55,7 @@ const Component: FC<Props> = ({ data, setCurEdit, onDelete, onCollect }) => {
           <Trash2 size={13} />
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

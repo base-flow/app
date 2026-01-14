@@ -100,9 +100,15 @@ function RootComponent() {
             colorTextPlaceholder: "var(--bf-tx-placeholder)",
             colorText: "var(--bf-tx-body)",
             colorFillTertiary: "var(--bf-bg-filled2)",
+            colorBorder: "var(--bf-bd-input)",
           },
           components: {
             Pagination: { itemBg: "transparent" },
+            Table: {
+              headerBg: "var(--bf-bg-tr)",
+              rowHoverBg: "var(--bf-bg-side)",
+              borderColor: "var(--bf-bd-tr)",
+            },
           },
         }}
       >

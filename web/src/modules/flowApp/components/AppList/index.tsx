@@ -1,6 +1,5 @@
 import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useRouter } from "@tanstack/react-router";
 import { Button, Pagination, Result } from "antd";
 import { SquarePlus } from "lucide-react";
 import type { FC } from "react";
@@ -9,13 +8,12 @@ import FieldSorter from "@/components/FieldSorter";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import { FlagSrc } from "@/components/utils";
-import { useEvent } from "@/utils/tools";
+import { useEvent } from "@/utils/hooks";
 import { FlowAppAPI } from "../../api";
 import AppEdit from "../AppEdit";
 import ListItem from "../ListItem";
 
 const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
-  const router = useRouter();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState(props.query);
   const apps = useQuery(FlowAppAPI.queryList(query));

@@ -1,3 +1,11 @@
+.ͼbaseflow {
+  --ant-margin-xs: 6px;
+}
+
+.ant-table-wrapper .ant-table-thead > tr > th {
+  border-bottom-color: #00000004;
+}
+
 .ant-btn {
   gap: 5px;
 }
@@ -20,8 +28,12 @@
 
 .ant-modal-title {
   > .anticon {
-    margin-right: 5px;
+    margin-right: 3px;
   }
+}
+
+.ant-table-body {
+  scrollbar-color: var(--bf-bg-filled) transparent;
 }
 
 // .ant-btn-color-primary,

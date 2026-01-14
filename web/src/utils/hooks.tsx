@@ -1,4 +1,5 @@
-import { memo, useMemo, useRef, useState } from "react";
+import { type RefObject, useEffect, useMemo, useRef } from "react";
+import { useInView } from "react-intersection-observer";
 import Pathcrumb from "@/components/Pathcrumb";
 
 // biome-ignore lint/complexity/noBannedTypes: <>
@@ -16,6 +17,35 @@ export function useEvent<F extends Function>(fn: F): F {
   }
 
   return memoizedFn.current!;
+}
+
+export function useInfiniteList(fetchNextPage: () => void): [RefObject<HTMLDivElement | null>, (node?: Element | null | undefined) => void] {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const options = { root: scrollerRef.current, threshold: 0.5 };
+  // const ref = useOnInView(
+  //   (inView) => {
+  //     if (inView) {
+  //       console.log("on inView");
+  //       source.fetchNextPage();
+  //     }
+  //   },
+  //   options,
+  // );
+
+  // useEffect(() => {
+  //   setInViewRef(loaderRef.current);
+  // }, [loaderRef.current]);
+
+  const [loaderRef, inView] = useInView(options);
+
+  useEffect(() => {
+    if (inView) {
+      console.log("on inView");
+      fetchNextPage();
+    }
+  }, [fetchNextPage, inView]);
+
+  return [scrollerRef, loaderRef];
 }
 
 export function useFolderRoute(

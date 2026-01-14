@@ -16,6 +16,7 @@ declare namespace App {
 
   interface IResource {
     id: string;
+    disabled?: boolean;
     updateDate: string;
     createDate: string;
     createBy: string;
@@ -50,4 +51,6 @@ declare namespace App {
   interface IUpdateResult {
     id: string;
   }
+
+  type Runtime = "server" | "browser";
 }
