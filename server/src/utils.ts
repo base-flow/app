@@ -51,6 +51,14 @@ export function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+export function extendAssign(origin: { [key: string]: any }, target: { [key: string]: any }): void {
+  Object.keys(origin).forEach((key) => {
+    if (target.hasOwnProperty(key)) {
+      origin[key] = target[key];
+    }
+  });
+}
+
 export const FlagSrc = {
   list: {
     emoji: [

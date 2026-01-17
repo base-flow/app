@@ -14,13 +14,17 @@ declare namespace App {
     redirect: string;
   }
 
+  interface IRoles {
+    app: { [id: string]: FlowApp.AppRole };
+    node: { [id: string]: string };
+  }
+
   interface IResource {
     id: string;
-    disabled?: boolean;
-    updateDate: string;
-    createDate: string;
-    createBy: string;
-    updateBy: string;
+    updateDate?: string;
+    createDate?: string;
+    createBy?: string;
+    updateBy?: string;
   }
 
   interface IQuery {

@@ -4,16 +4,19 @@ import { Button, Pagination, Result } from "antd";
 import { SquarePlus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import FieldSorter from "@/components/FieldSorter";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import { FlagSrc } from "@/components/utils";
+import { useAppStore } from "@/modules/app/store";
 import { useEvent } from "@/utils/hooks";
 import { FlowAppAPI } from "../../api";
 import AppEdit from "../AppEdit";
 import ListItem from "../ListItem";
 
 const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
+  const [appRoles, auth] = useAppStore(useShallow(({ roles, auth }) => [roles.app, auth]));
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState(props.query);
   const apps = useQuery(FlowAppAPI.queryList(query));
@@ -105,7 +108,7 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
       <div className="bd" ref={scrollerRef}>
         <div className="g-grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
           {appList.map((item) => {
-            return <ListItem key={item.id} data={item} onDelete={onDelete} setCurEdit={setCurEdit} onCollect={onCollect} />;
+            return <ListItem key={item.id} role={appRoles[item.id]} data={item} onDelete={onDelete} setCurEdit={setCurEdit} onCollect={onCollect} />;
           })}
         </div>
         <Pagination

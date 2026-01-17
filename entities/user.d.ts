@@ -2,9 +2,10 @@ declare namespace User {
   interface IUser extends App.IResource {
     id: string;
     username: string;
-    age: number;
+    nickname: string;
+    phone?: string;
+    age?: number;
     password?: string;
-    specialRole?: string;
   }
 
   interface IQuery extends App.IQuery {}

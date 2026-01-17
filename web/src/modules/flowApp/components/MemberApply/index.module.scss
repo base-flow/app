@@ -1,0 +1,15 @@
+:global {
+  :local(.MemberApply) {
+    position: relative;
+
+    .role-item {
+      padding-bottom: 10px;
+
+      > .info {
+        margin-left: 5px;
+        color: var(--bf-tx-lesser);
+        cursor: pointer;
+      }
+    }
+  }
+}

@@ -37,8 +37,27 @@ export class FlowAppController {
   }
 
   @Get(":id/member")
-  async getMemberList(@Param() param: { id: string }): Promise<User.IQueryResult> {
+  async getMemberList(@Param() param: { id: string }): Promise<FlowApp.IMember[]> {
     await sleep(1000);
     return this.flowAppService.findAllMembers(param.id);
+  }
+
+  @Post(":id/member")
+  async createMember(
+    @Request() { user, body, params }: { user: App.IAuthUser; body: Partial<FlowApp.IMember>; params: { id: string } },
+  ): Promise<FlowApp.IMember> {
+    return this.flowAppService.createMember(params.id, body);
+  }
+
+  @Put(":id/member")
+  async updateMember(
+    @Request() { user, body, params }: { user: App.IAuthUser; body: Partial<FlowApp.IMember>; params: { id: string } },
+  ): Promise<void> {
+    return this.flowAppService.updateMember(params.id, body);
+  }
+
+  @Delete(":id/member")
+  async deleteMemberItem(@Request() { user, query, params }: { user: App.IAuthUser; query: { id: string }; params: { id: string } }): Promise<void> {
+    return this.flowAppService.deleteMemberItem(params.id, query.id);
   }
 }

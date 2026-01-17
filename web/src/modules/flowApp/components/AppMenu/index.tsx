@@ -4,9 +4,11 @@ import { Modal } from "antd";
 import { Chromium, Server, TextAlignJustify, UserRoundPlus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useCallback, useMemo, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import ErrorPanel from "@/components/ErrorPanel";
 import LinkNav from "@/components/LinkNav";
 import LoadingMask from "@/components/LoadingMask";
+import { useAppStore } from "@/modules/app/store";
 import { useEvent } from "@/utils/hooks";
 import { FlowAppAPI } from "../../api";
 import AppUsers from "../AppUsers";
@@ -15,15 +17,17 @@ import styles from "./index.module.scss";
 const UsersTitle = (
   <>
     <UserRoundPlus size={15} strokeWidth={2.5} className="anticon" style={{ marginLeft: "4px" }} />
-    <span>分配用户与角色</span>
+    <span>用户与权限</span>
   </>
 );
 
 const FlowMenu: FC<{ appId: string }> = ({ appId }) => {
+  const [appRoles, auth] = useAppStore(useShallow(({ roles, auth }) => [roles.app, auth]));
   const app = useQuery(FlowAppAPI.queryItem(appId));
   const appData = app.data;
   const [showAppUsers, setShowAppUsers] = useState(false);
   const hideAppUsers = useCallback(() => setShowAppUsers(false), []);
+  const curRole = appRoles[appId];
 
   const flowItems = useMemo(() => {
     if (!appData) {
@@ -83,7 +87,7 @@ const FlowMenu: FC<{ appId: string }> = ({ appId }) => {
         children: (
           <>
             <UserRoundPlus size={13} />
-            <span>用户与角色</span>
+            <span>用户与权限</span>
           </>
         ),
       },
@@ -118,14 +122,16 @@ const FlowMenu: FC<{ appId: string }> = ({ appId }) => {
       <div>
         <LinkNav links={flowItems} />
       </div>
-      <div className="config">
-        <div className="title">
-          <span>管理</span>
+      {(curRole === "Admin" || curRole === "Owner") && (
+        <div className="config">
+          <div className="title">
+            <span>管理</span>
+          </div>
+          <LinkNav links={configItems} size="small" onClick={onConfigItemClick} />
         </div>
-        <LinkNav links={configItems} size="small" onClick={onConfigItemClick} />
-      </div>
-      <Modal open={showAppUsers} title={UsersTitle} width={900} onCancel={hideAppUsers} footer={null}>
-        <AppUsers appId={appId} />
+      )}
+      <Modal open={showAppUsers} title={UsersTitle} width={900} onCancel={hideAppUsers} destroyOnHidden footer={null}>
+        <AppUsers appId={appId} role={curRole} authId={auth.id} />
       </Modal>
     </div>
   );

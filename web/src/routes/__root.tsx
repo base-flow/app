@@ -5,10 +5,11 @@ import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { Button, ConfigProvider, Modal, message, Segmented, Spin, Switch } from "antd";
+import { Button, ConfigProvider, Modal, Segmented, Spin, Switch } from "antd";
 import { useState } from "react";
 import Header from "@/modules/app/components/Header";
 import { useAppStore } from "@/modules/app/store";
+import { messageWrap } from "@/utils/tools";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -54,7 +55,7 @@ const expressionUtils: SchemaModel = {
 
 function RootComponent() {
   const [modal, contextHolder] = Modal.useModal();
-
+  modal.error;
   const [widgets] = useState<Partial<IBaseWidgets>>(() => ({
     Button: Button as any,
     Spin: Spin as any,
@@ -66,11 +67,17 @@ function RootComponent() {
     DatePicker,
     TimePicker,
     DescMD,
-    message,
+    message: {
+      success: (text: string) => modal.success({ title: "成功", content: text, width: 500 }),
+      error: (text: string) => modal.error({ title: "错误", content: text, width: 500 }),
+      warning: (text: string) => modal.warning({ title: "警告", content: text, width: 500 }),
+      info: (text: string) => modal.info({ title: "提示", content: messageWrap(text), width: 500 }),
+    },
     confirm: (message: string, callback: (ok: boolean) => void, props?: { title?: string; okText?: string; cancelText?: string }) => {
       modal.confirm({
         title: "提示",
         content: message,
+        width: 500,
         ...props,
         onOk() {
           callback(true);

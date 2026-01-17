@@ -14,6 +14,7 @@ interface Window {
     name: string;
     antd: any;
     baseflow: any;
+    app: any;
   };
   API_PROXY?: string;
 }

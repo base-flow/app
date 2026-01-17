@@ -16,4 +16,15 @@ export class AuthController {
   async login(@Body() body: App.AuthLogin): Promise<App.IProfileUser & { token: string }> {
     return this.authService.login(body);
   }
+
+  @Get("role")
+  async getRoles(@Request() req: { user: App.IAuthUser }): Promise<App.IRoles> {
+    return {
+      app: {
+        "3": "Admin",
+        "5": "Guest",
+      },
+      node: {},
+    };
+  }
 }

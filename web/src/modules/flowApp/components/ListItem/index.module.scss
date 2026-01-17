@@ -21,6 +21,12 @@
         display: flex;
         gap: 3px;
       }
+
+      > .member {
+        display: flex;
+        gap: 2px;
+        color: var(--bf-success);
+      }
     }
   }
 }

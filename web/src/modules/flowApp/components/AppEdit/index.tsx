@@ -51,15 +51,8 @@ const AppEdit: FC<Props> = ({ item, setItem }) => {
     },
   });
 
-  return (
-    <Modal
-      open={Boolean(item)}
-      title={item?.id ? modifyTitle : createrTitle}
-      destroyOnHidden
-      onCancel={onCloseEdit}
-      maskClosable={false}
-      footer={null}
-    >
+  return item ? (
+    <Modal open title={item.id ? modifyTitle : createrTitle} onCancel={onCloseEdit} maskClosable={false} footer={null}>
       <div className={styles.AppEdit}>
         <LoadingMask show={appEdit.isPending} />
         <Form layout="vertical" initialValues={item} onFinish={appEdit.mutate}>
@@ -84,7 +77,7 @@ const AppEdit: FC<Props> = ({ item, setItem }) => {
         </Form>
       </div>
     </Modal>
-  );
+  ) : null;
 };
 
 export default memo(AppEdit);

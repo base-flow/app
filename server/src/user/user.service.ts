@@ -8,6 +8,8 @@ const list: User.IUser[] = mockjs
       {
         "id|+1": 3,
         username: "@ctitle(5, 10)",
+        nickname: "@ctitle(2, 10)",
+        phone: "13984783987",
       },
     ],
   })
@@ -17,22 +19,18 @@ list.unshift(
   {
     id: "1",
     username: "admin",
+    nickname: "管理员",
+    phone: "13984783987",
     age: 20,
     password: "123456",
-    updateDate: "",
-    createDate: "",
-    createBy: "",
-    updateBy: "",
   },
   {
     id: "2",
     username: "maria",
+    nickname: "吹笛子的小猪",
+    phone: "13783445874",
     age: 21,
     password: "guess",
-    updateDate: "",
-    createDate: "",
-    createBy: "",
-    updateBy: "",
   },
 );
 @Injectable()

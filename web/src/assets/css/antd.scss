@@ -10,6 +10,14 @@
   gap: 5px;
 }
 
+.ant-form-item .ant-form-item-explain-error {
+  font-size: 12px;
+}
+
+.ant-input-textarea-show-count .ant-input-data-count {
+  font-size: 12px;
+}
+
 .ant-btn-color-primary,
 .ant-btn-color-default {
   box-shadow: none !important;
@@ -28,7 +36,7 @@
 
 .ant-modal-title {
   > .anticon {
-    margin-right: 3px;
+    margin-right: 5px;
   }
 }
 

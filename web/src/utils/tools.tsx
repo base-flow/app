@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { API_PROXY, AUTH_TOKEN_KEY, LoginPage } from "../const";
 import { router } from "../router";
 
@@ -60,4 +61,8 @@ export function arrayInsertSeparator(arr: any[], separator: any): any[] {
     }
     return result;
   }, []);
+}
+export function messageWrap(message: string): ReactNode {
+  const arr = message.split("\n");
+  return arr.length > 1 ? arr.map((line) => <div key={line}>{line}</div>) : message;
 }

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { FlagSrc } from "@/utils";
+import { extendAssign, FlagSrc } from "@/utils";
 
 const mockjs = require("mockjs");
 
@@ -22,18 +22,32 @@ const list: FlowApp.IApp[] = mockjs
   })
   .list.map((item: any) => ({ ...item, id: `${item.id}`, logo: FlagSrc.create() }));
 
-const memberList: User.IUser[] = mockjs
+const memberList: FlowApp.IMember[] = mockjs
   .mock({
     "list|15": [
       {
-        "id|+1": 1,
+        "id|+1": 3,
         username: "@ctitle(5, 10)",
-        specialRole: "developer",
+        nickname: "@ctitle(2, 10)",
+        appRole: "Developer",
       },
     ],
   })
   .list.map((item: any) => ({ ...item, id: `${item.id}` }));
-
+memberList.unshift(
+  {
+    id: "1",
+    username: "admin",
+    nickname: "管理员",
+    appRole: "Admin",
+  },
+  {
+    id: "2",
+    username: "maria",
+    nickname: "吹笛子的小猪",
+    appRole: "Admin",
+  },
+);
 @Injectable()
 export class FlowAppService {
   async findAll(query: FlowApp.IQuery): Promise<FlowApp.IQueryResult> {
@@ -75,7 +89,29 @@ export class FlowAppService {
     return item;
   }
 
-  async findAllMembers(id: string): Promise<User.IQueryResult> {
-    return { query: {}, list: memberList, summary: { total: memberList.length, page: 1, pageSize: memberList.length } };
+  async findAllMembers(id: string): Promise<FlowApp.IMember[]> {
+    return memberList;
+  }
+
+  async updateMember(id: string, member: Partial<FlowApp.IMember>): Promise<void> {
+    memberList.forEach((item) => {
+      if (item.id === member.id) {
+        extendAssign(item, member);
+      }
+    });
+  }
+
+  async createMember(id: string, member: Partial<FlowApp.IMember>): Promise<FlowApp.IMember> {
+    const newMember = { ...memberList[0] };
+    extendAssign(newMember, { ...member, appRole: "Tester" });
+    memberList.push(newMember);
+    return newMember;
+  }
+
+  async deleteMemberItem(id: string, memberId: string): Promise<void> {
+    memberList.splice(
+      memberList.findIndex((item) => item.id === memberId),
+      1,
+    );
   }
 }

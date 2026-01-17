@@ -22,8 +22,20 @@ export const FlowAppAPI = {
   deleteItem(id: string): Promise<void> {
     return request.delete("/api/app", { params: { id } });
   },
-  getMemberList(id: string): Promise<User.IQueryResult> {
-    return request.get<User.IQueryResult>(`/api/app/${id}/member`).then((res) => res.data);
+  getMemberList(id: string): Promise<FlowApp.IMemberQueryResult> {
+    return request.get<FlowApp.IMemberQueryResult>(`/api/app/${id}/member`).then((res) => res.data);
+  },
+  createMember(data: { appId: string; member: Partial<FlowApp.IMember> }): Promise<FlowApp.IMember> {
+    return request.post(`/api/app/${data.appId}/member`, data.member).then((res) => res.data);
+  },
+  updateMember(data: { appId: string; member: Partial<FlowApp.IMember> }): Promise<void> {
+    return request.put(`/api/app/${data.appId}/member`, data.member);
+  },
+  deleteMemberItem(data: { appId: string; memberId: string }): Promise<void> {
+    return request.delete(`/api/app/${data.appId}/member`, { params: { id: data.memberId } });
+  },
+  applyMember(data: { appId: string; member: Partial<FlowApp.IMember> }): Promise<void> {
+    console.log(data);
   },
   queryItem(id: string) {
     return queryOptions({
