@@ -1,4 +1,6 @@
 declare namespace FlowApp {
+  type AppRole = "Owner" | "Admin" | "Developer" | "Tester" | "Member";
+
   interface IQuery extends App.IQuery {}
 
   interface IApp extends App.IResource {
@@ -18,8 +20,6 @@ declare namespace FlowApp {
   type ICreateResult = App.ICreateResult;
 
   type IUpdateResult = App.IUpdateResult;
-
-  type AppRole = "Owner" | "Admin" | "Developer" | "Tester" | "Guest";
 
   interface IMember {
     id: string;

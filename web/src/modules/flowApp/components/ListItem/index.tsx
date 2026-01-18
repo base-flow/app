@@ -11,13 +11,13 @@ import styles from "./index.module.scss";
 
 interface Props {
   data: FlowApp.IApp;
-  role: FlowApp.AppRole;
+  appRole?: FlowApp.AppRole;
   setCurEdit: (data: FlowApp.IApp) => void;
   onDelete: (id: string, name: string) => void;
   onCollect: (id: string, collected: boolean) => void;
 }
 
-const Component: FC<Props> = ({ data, role, setCurEdit, onDelete, onCollect }) => {
+const Component: FC<Props> = ({ data, appRole, setCurEdit, onDelete, onCollect }) => {
   return (
     <Link className={`${styles.AppListItem} g-card`} to="/apps/$appId/flows" params={{ appId: data.id }}>
       <Collect absolute id={data.id} value={data.collected} onChange={onCollect} />
@@ -34,14 +34,14 @@ const Component: FC<Props> = ({ data, role, setCurEdit, onDelete, onCollect }) =
           <TextAlignJustify size={11} strokeWidth={3} />
           <span>{data.totalFlows}</span>
         </div>
-        {role && (
+        {appRole && (
           <div className="member">
             <UserRound size={11} strokeWidth={2.5} />
-            <span>{role}</span>
+            <span>{appRole}</span>
           </div>
         )}
       </div>
-      {role && (
+      {appRole && (
         <div className="tools">
           <div
             title="编辑"

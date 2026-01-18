@@ -1,1 +1,6 @@
-export interface TokenPayload { sub: string; username: string; roles?: string[] }
+export interface TokenPayload {
+  sub: string;
+  username: string;
+  nickname: string;
+  roles: string[];
+}

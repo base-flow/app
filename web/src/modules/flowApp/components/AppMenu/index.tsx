@@ -21,13 +21,12 @@ const UsersTitle = (
   </>
 );
 
-const FlowMenu: FC<{ appId: string }> = ({ appId }) => {
-  const [appRoles, auth] = useAppStore(useShallow(({ roles, auth }) => [roles.app, auth]));
+const FlowMenu: FC<{ appId: string; permissions: App.IPermissions }> = ({ appId, permissions }) => {
+  const [auth] = useAppStore(useShallow(({ auth }) => [auth]));
   const app = useQuery(FlowAppAPI.queryItem(appId));
   const appData = app.data;
   const [showAppUsers, setShowAppUsers] = useState(false);
   const hideAppUsers = useCallback(() => setShowAppUsers(false), []);
-  const curRole = appRoles[appId];
 
   const flowItems = useMemo(() => {
     if (!appData) {
@@ -122,17 +121,17 @@ const FlowMenu: FC<{ appId: string }> = ({ appId }) => {
       <div>
         <LinkNav links={flowItems} />
       </div>
-      {(curRole === "Admin" || curRole === "Owner") && (
+      {permissions.app_assignUsers && (
         <div className="config">
           <div className="title">
             <span>管理</span>
           </div>
           <LinkNav links={configItems} size="small" onClick={onConfigItemClick} />
+          <Modal open={showAppUsers} title={UsersTitle} width={900} onCancel={hideAppUsers} destroyOnHidden footer={null}>
+            <AppUsers appId={appId} myId={auth.id} myRoleZone={permissions.app_assignUsers} />
+          </Modal>
         </div>
       )}
-      <Modal open={showAppUsers} title={UsersTitle} width={900} onCancel={hideAppUsers} destroyOnHidden footer={null}>
-        <AppUsers appId={appId} role={curRole} authId={auth.id} />
-      </Modal>
     </div>
   );
 };

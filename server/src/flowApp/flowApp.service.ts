@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { ResourceRoles } from "@/permissions";
 import { extendAssign, FlagSrc } from "@/utils";
 
 const mockjs = require("mockjs");
@@ -39,19 +40,19 @@ memberList.unshift(
     id: "1",
     username: "admin",
     nickname: "管理员",
-    appRole: "Admin",
+    appRole: "Owner",
   },
   {
     id: "2",
     username: "maria",
     nickname: "吹笛子的小猪",
-    appRole: "Admin",
+    appRole: "Owner",
   },
 );
 @Injectable()
 export class FlowAppService {
-  async findAll(query: FlowApp.IQuery): Promise<FlowApp.IQueryResult> {
-    const result = list;
+  async findAll(query: FlowApp.IQuery, permission: "all" | "involved"): Promise<FlowApp.IQueryResult> {
+    const result = permission === "involved" ? list.filter((item) => ResourceRoles.app[item.id]) : list;
     // if (query.keyword) {
     //   result = result.filter((item) => item.name.includes(query.keyword!));
     // }

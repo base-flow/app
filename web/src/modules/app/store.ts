@@ -1,20 +1,22 @@
 import { create } from "zustand";
 import { logined, logouted } from "@/utils/tools";
-import { AppAPI } from "./api";
+import { AppAPI, GuestUser } from "./api";
 
 export interface AppState {
   auth: App.IAuthUser;
-  roles: App.IRoles;
+  sysRolesConfg?: App.SysRolesConfg;
+  appRolesConfg?: App.AppRolesConfg;
+  resourceRoles: App.ResourceRoles;
+  sysPermissions?: App.IPermissions;
   login: (args: App.AuthLogin) => Promise<void>;
   logout: () => Promise<void>;
   authCheck: () => Promise<void>;
+  getPermissions: (appId?: string) => App.IPermissions;
 }
 
-let Roles: App.IRoles | undefined;
-
 export const useAppStore = create<AppState>((set, get) => ({
-  auth: { id: "", username: "" },
-  roles: { app: {}, node: {} },
+  auth: GuestUser,
+  resourceRoles: { app: {} },
   login: async (args: App.AuthLogin) => {
     const { token } = await AppAPI.login(args);
     logined(token, args.redirect);
@@ -31,11 +33,25 @@ export const useAppStore = create<AppState>((set, get) => ({
         location.reload();
         throw new Error("Refresh...");
       } else {
-        if (!Roles) {
-          Roles = await AppAPI.getRoles();
-        }
-        set((state) => ({ ...state, auth: curAuth, roles: Roles }));
+        const { sysRolesConfg, appRolesConfg, resourceRoles } = await AppAPI.getPermissions();
+        const sysPermissions = curAuth.roles.reduce((obj, role) => {
+          Object.assign(obj, sysRolesConfg[role]);
+          return obj;
+        }, {} as App.IPermissions);
+        set((state) => ({ ...state, auth: curAuth, sysRolesConfg, appRolesConfg, resourceRoles, sysPermissions }));
       }
     }
+  },
+  getPermissions: (appId?: string): App.IPermissions => {
+    const state = get();
+    const { sysPermissions = {}, resourceRoles, appRolesConfg } = state;
+    if (appId && resourceRoles && appRolesConfg) {
+      const appRole = resourceRoles.app[appId];
+      if (appRole) {
+        const appPermissions = appRolesConfg[appRole];
+        return { ...appPermissions, ...sysPermissions };
+      }
+    }
+    return sysPermissions;
   },
 }));

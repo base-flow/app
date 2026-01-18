@@ -1,18 +1,15 @@
 import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
-import type { TransferProps } from "antd";
-import { Button, Dropdown, Skeleton, Space } from "antd";
+import { Button, Dropdown } from "antd";
 import classnames from "classnames";
 import { ChevronDown, ChevronRight, CircleUserRound, CircleX, Info, Search } from "lucide-react";
 import type { FC } from "react";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 import Lang from "@/assets/Lang";
 import type { ValueType } from "@/components/FetchSelect";
 import FetchSelect from "@/components/FetchSelect";
-import FlagSelector from "@/components/FlagSelector";
 import LoadingMask from "@/components/LoadingMask";
-import { AppRoleOptions } from "@/const";
+import { AppRoleLower, GetAppRoleOptions } from "@/const";
 import { UserAPI } from "@/modules/user/api";
 import { useEvent } from "@/utils/hooks";
 import { FlowAppAPI } from "../../api";
@@ -29,11 +26,11 @@ const UserFetchTitle = (
 
 export interface Props {
   appId: string;
-  role: FlowApp.AppRole;
-  authId: string;
+  myRoleZone: "all" | "admin" | "dev";
+  myId: string;
 }
 
-const AppUsers: FC<Props> = ({ appId, role, authId }) => {
+const AppUsers: FC<Props> = ({ appId, myId, myRoleZone }) => {
   const members = useQuery(FlowAppAPI.queryMemberList(appId));
   const memberList = members.data;
   const memberMaps = useMemo(
@@ -102,7 +99,7 @@ const AppUsers: FC<Props> = ({ appId, role, authId }) => {
     });
   });
 
-  const RoleItems = role === "Owner" ? AppRoleOptions : AppRoleOptions.slice(1);
+  const RoleOptions = useMemo(() => GetAppRoleOptions(myRoleZone), [myRoleZone]);
 
   return (
     <div className={styles.AppUsers}>
@@ -120,8 +117,8 @@ const AppUsers: FC<Props> = ({ appId, role, authId }) => {
       </div>
       <div className="bd">
         {(memberList || []).map((item) => {
-          const isCurrent = item.id === authId;
-          const readonly = isCurrent || item.appRole === "Owner" || (item.appRole === "Admin" && role !== "Owner");
+          const isCurrent = item.id === myId;
+          const readonly = isCurrent || !AppRoleLower(myRoleZone, item.appRole);
           return (
             <div key={item.id} className={classnames(`${styles.AppUsers}__item`, { cur: isCurrent })}>
               {!readonly && <CircleX className="remove" size={13} onClick={() => memberDeleter.mutate({ appId: appId, memberId: item.id })} />}
@@ -140,7 +137,7 @@ const AppUsers: FC<Props> = ({ appId, role, authId }) => {
                   menu={{
                     selectable: true,
                     defaultSelectedKeys: [item.appRole],
-                    items: RoleItems,
+                    items: RoleOptions,
                     onClick: ({ key, domEvent }: { key: string; domEvent: any }) => {
                       domEvent.stopPropagation();
                       if (key !== item.appRole) {

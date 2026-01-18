@@ -1,5 +1,6 @@
-import { Controller, Delete, Get, Param, Post, Put, Query, Request } from "@nestjs/common";
+import { Controller, Delete, ForbiddenException, Get, Param, Post, Put, Query, Request } from "@nestjs/common";
 import { BaseQueryDto } from "@/dto";
+import { getPermissions } from "@/permissions";
 import { sleep } from "@/utils";
 import { FlowAppService } from "./flowApp.service";
 
@@ -8,9 +9,13 @@ export class FlowAppController {
   constructor(private readonly flowAppService: FlowAppService) {}
 
   @Get()
-  async getList(@Query() query: BaseQueryDto): Promise<FlowApp.IQueryResult> {
+  async getList(@Request() { user, query }: { user: App.IAuthUser; query: BaseQueryDto }): Promise<FlowApp.IQueryResult> {
     await sleep(1000);
-    return this.flowAppService.findAll(query);
+    const permissions = getPermissions(user);
+    if (!permissions.app_list) {
+      throw new ForbiddenException();
+    }
+    return this.flowAppService.findAll(query, permissions.app_list);
   }
 
   @Get(":id")
@@ -21,6 +26,10 @@ export class FlowAppController {
 
   @Post()
   async createItem(@Request() { user, body }: { user: App.IAuthUser; body: FlowApp.IApp }): Promise<FlowApp.ICreateResult> {
+    const permissions = getPermissions(user);
+    if (!permissions.app_create) {
+      throw new ForbiddenException();
+    }
     return this.flowAppService.createItem(user.id, body);
   }
 

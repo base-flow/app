@@ -1,9 +1,8 @@
 import request from "@/utils/request";
 
-const GuestUser: App.IAuthUser = { id: "", username: "" };
+export const GuestUser: App.IAuthUser = { id: "", username: "", nickname: "", roles: ["Guest"] };
 
 export const AppAPI = {
-  rolesQueryKey: "AppRoles",
   login(args: App.AuthLogin): Promise<{ token: string }> {
     return request.put("/api/auth", args).then((res) => res.data);
   },
@@ -16,10 +15,7 @@ export const AppAPI = {
       .then((res) => res.data)
       .catch(() => GuestUser);
   },
-  getRoles(): Promise<App.IRoles> {
-    return request
-      .get("/api/auth/role")
-      .then((res) => res.data)
-      .catch(() => ({}));
+  getPermissions(): Promise<App.IQueryPermissionsResult> {
+    return request.get("/api/auth/permissions").then((res) => res.data);
   },
 };

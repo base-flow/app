@@ -46,7 +46,7 @@ export const FlowAppAPI = {
       refetchOnWindowFocus: false,
     });
   },
-  queryList(query: FlowApp.IQuery = {}) {
+  queryList(query: FlowApp.IQuery) {
     query = filterQuery(query);
     return queryOptions({
       queryKey: [FlowAppAPI.listQueryKey, query] as any[],

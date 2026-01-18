@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Put, Request } from "@nestjs/common";
 import { Public } from "../decorators";
+import { AppRolesConfg, ResourceRoles, SysRolesConfg } from "../permissions";
 import { AuthService } from "./auth.service";
 
 @Controller("auth")
@@ -17,14 +18,12 @@ export class AuthController {
     return this.authService.login(body);
   }
 
-  @Get("role")
-  async getRoles(@Request() req: { user: App.IAuthUser }): Promise<App.IRoles> {
+  @Get("permissions")
+  async getPermissions(@Request() req: { user: App.IAuthUser }): Promise<App.IQueryPermissionsResult> {
     return {
-      app: {
-        "3": "Admin",
-        "5": "Guest",
-      },
-      node: {},
+      sysRolesConfg: SysRolesConfg,
+      appRolesConfg: AppRolesConfg,
+      resourceRoles: ResourceRoles,
     };
   }
 }

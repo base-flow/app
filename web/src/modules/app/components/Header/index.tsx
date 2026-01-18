@@ -1,4 +1,4 @@
-import { BaseLang, getLocale } from "@baseflow/react";
+import { getLocale } from "@baseflow/react";
 import { StringSelect } from "@baseflow/widgets";
 import { Link, useMatchRoute, useRouter } from "@tanstack/react-router";
 import { Button, Dropdown } from "antd";
@@ -26,7 +26,7 @@ const Header: FC = () => {
           key: "user",
           label: (
             <Button block size="small" type="text">
-              {auth.username}
+              {`${auth.nickname} (${auth.username}) (${auth.roles})`}
             </Button>
           ),
           type: "group",

@@ -15,8 +15,9 @@ import { FlowAppAPI } from "../../api";
 import AppEdit from "../AppEdit";
 import ListItem from "../ListItem";
 
-const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
-  const [appRoles, auth] = useAppStore(useShallow(({ roles, auth }) => [roles.app, auth]));
+const AppList: FC<{ query: FlowApp.IQuery; permissions: App.IPermissions }> = (props) => {
+  const permissions = props.permissions;
+  const [appsRole] = useAppStore(useShallow(({ resourceRoles }) => [resourceRoles.app]));
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState(props.query);
   const apps = useQuery(FlowAppAPI.queryList(query));
@@ -77,7 +78,19 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
   // }, [query]);
 
   if (apps.isError) {
-    return <Result status="warning" title={apps.error.message || "错误"} />;
+    return (
+      <section className="g-page">
+        <Result status="warning" title={apps.error.message || "错误"} />
+      </section>
+    );
+  }
+
+  if (!apps.isEnabled) {
+    return (
+      <section className="g-page">
+        <Result status="403" title="您没有权限访问..." />
+      </section>
+    );
   }
 
   if (!appList || !appListSummary) {
@@ -93,7 +106,7 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
       <LoadingMask show={apps!.isFetching} />
       <div className="hd">
         <div>
-          <Button color="primary" variant="text" icon={<SquarePlus size={14} />} onClick={onCreate}>
+          <Button disabled={!permissions.app_create} color="primary" variant="text" icon={<SquarePlus size={14} />} onClick={onCreate}>
             创建应用
           </Button>
         </div>
@@ -108,7 +121,9 @@ const AppList: FC<{ query: FlowApp.IQuery }> = (props) => {
       <div className="bd" ref={scrollerRef}>
         <div className="g-grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
           {appList.map((item) => {
-            return <ListItem key={item.id} role={appRoles[item.id]} data={item} onDelete={onDelete} setCurEdit={setCurEdit} onCollect={onCollect} />;
+            return (
+              <ListItem key={item.id} appRole={appsRole[item.id]} data={item} onDelete={onDelete} setCurEdit={setCurEdit} onCollect={onCollect} />
+            );
           })}
         </div>
         <Pagination
