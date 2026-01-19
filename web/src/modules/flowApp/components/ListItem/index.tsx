@@ -1,38 +1,37 @@
-import { BaseWidgets } from "@baseflow/react";
 import { Link } from "@tanstack/react-router";
-import classnames from "classnames";
 import { SquarePen, TextAlignJustify, Trash2, UserRound } from "lucide-react";
 import type { FC } from "react";
 import { memo } from "react";
 import Collect from "@/components/Collect";
 import Flag from "@/components/Flag";
-import { useEvent } from "@/utils/hooks";
 import styles from "./index.module.scss";
 
 interface Props {
-  data: FlowApp.IApp;
-  appRole?: FlowApp.AppRole;
-  setCurEdit: (data: FlowApp.IApp) => void;
+  item: FlowApp.IApp;
+  getPermissionsInApp: (appId: string) => App.IPermissions;
+  setCurEdit: (item: FlowApp.IApp) => void;
   onDelete: (id: string, name: string) => void;
   onCollect: (id: string, collected: boolean) => void;
+  appRole?: FlowApp.AppRole;
 }
 
-const Component: FC<Props> = ({ data, appRole, setCurEdit, onDelete, onCollect }) => {
+const Component: FC<Props> = ({ item, getPermissionsInApp, setCurEdit, onDelete, onCollect, appRole }) => {
+  const permissions = getPermissionsInApp(item.id);
   return (
-    <Link className={`${styles.AppListItem} g-card`} to="/apps/$appId/flows" params={{ appId: data.id }}>
-      <Collect absolute id={data.id} value={data.collected} onChange={onCollect} />
+    <Link className={`${styles.AppListItem} g-card`} to="/apps/$appId/flows" params={{ appId: item.id }}>
+      <Collect absolute id={item.id} value={item.collected} onChange={onCollect} />
       <div className="head-icon">
-        <Flag className="icon" src={data.logo} />
-        <h4 className="title">{data.name}</h4>
-        <div className="info">{data.updateDate}</div>
+        <Flag className="icon" src={item.logo} />
+        <h4 className="title">{item.name}</h4>
+        <div className="info">{item.updateDate}</div>
       </div>
-      <div className="summary" title={data.desc}>
-        {data.desc}
+      <div className="summary" title={item.desc}>
+        {item.desc}
       </div>
       <div className="footer">
         <div className="flows">
           <TextAlignJustify size={11} strokeWidth={3} />
-          <span>{data.totalFlows}</span>
+          <span>{item.totalFlows}</span>
         </div>
         {appRole && (
           <div className="member">
@@ -41,30 +40,34 @@ const Component: FC<Props> = ({ data, appRole, setCurEdit, onDelete, onCollect }
           </div>
         )}
       </div>
-      {appRole && (
+      {(permissions.app_edit || permissions.app_delete) && (
         <div className="tools">
-          <div
-            title="编辑"
-            className="btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              setCurEdit(data);
-            }}
-          >
-            <SquarePen size={13} />
-          </div>
-          <div
-            title="删除"
-            className="btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              onDelete(data.id, data.name);
-            }}
-          >
-            <Trash2 size={13} />
-          </div>
+          {permissions.app_edit && (
+            <div
+              title="编辑"
+              className="btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setCurEdit(item);
+              }}
+            >
+              <SquarePen size={13} />
+            </div>
+          )}
+          {permissions.app_delete && (
+            <div
+              title="删除"
+              className="btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                onDelete(item.id, item.name);
+              }}
+            >
+              <Trash2 size={13} />
+            </div>
+          )}
         </div>
       )}
     </Link>

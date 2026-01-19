@@ -26,6 +26,7 @@ export class FlowAppController {
 
   @Post()
   async createItem(@Request() { user, body }: { user: App.IAuthUser; body: FlowApp.IApp }): Promise<FlowApp.ICreateResult> {
+    await sleep(1000);
     const permissions = getPermissions(user);
     if (!permissions.app_create) {
       throw new ForbiddenException();
@@ -37,6 +38,7 @@ export class FlowAppController {
   async updateItem(
     @Request() { user, body, params }: { user: App.IAuthUser; body: FlowApp.IApp; params: { id: string } },
   ): Promise<FlowApp.IUpdateResult> {
+    await sleep(1000);
     return this.flowAppService.updateItem(user.id, params.id, body);
   }
 

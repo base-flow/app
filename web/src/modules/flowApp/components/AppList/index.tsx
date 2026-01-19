@@ -3,20 +3,24 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Pagination, Result } from "antd";
 import { SquarePlus } from "lucide-react";
 import type { FC } from "react";
-import { memo, useRef, useState } from "react";
+import { memo, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import FieldSorter from "@/components/FieldSorter";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import { FlagSrc } from "@/components/utils";
 import { useAppStore } from "@/modules/app/store";
-import { useEvent } from "@/utils/hooks";
+import { useEvent, usePermissions } from "@/utils/hooks";
 import { FlowAppAPI } from "../../api";
 import AppEdit from "../AppEdit";
 import ListItem from "../ListItem";
 
-const AppList: FC<{ query: FlowApp.IQuery; permissions: App.IPermissions }> = (props) => {
-  const permissions = props.permissions;
+interface AppListProps {
+  query: FlowApp.IQuery;
+}
+
+const AppList: FC<AppListProps> = (props) => {
+  const { permissions, getPermissionsInApp } = usePermissions();
   const [appsRole] = useAppStore(useShallow(({ resourceRoles }) => [resourceRoles.app]));
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState(props.query);
@@ -26,6 +30,9 @@ const AppList: FC<{ query: FlowApp.IQuery; permissions: App.IPermissions }> = (p
   const appList = apps.data?.list;
   const appListSummary = apps.data?.summary;
 
+  useMemo(() => {
+    setQuery(props.query);
+  }, [props.query]);
   const onSearch = useEvent((keyword?: string) => {
     setQuery({ ...query, page: undefined, keyword });
   });
@@ -53,7 +60,9 @@ const AppList: FC<{ query: FlowApp.IQuery; permissions: App.IPermissions }> = (p
     mutationFn: FlowAppAPI.editItem,
     onSuccess: (result, args) => {
       queryClient.invalidateQueries({ queryKey: [FlowAppAPI.listQueryKey] });
-      queryClient.invalidateQueries({ queryKey: [FlowAppAPI.itemQueryKey, args.id] });
+      queryClient.setQueryData<FlowApp.IApp>([FlowAppAPI.itemQueryKey, args.id], (old) => {
+        return old ? { ...old, ...args } : old;
+      });
     },
   });
 
@@ -103,7 +112,7 @@ const AppList: FC<{ query: FlowApp.IQuery; permissions: App.IPermissions }> = (p
 
   return (
     <section className="g-page">
-      <LoadingMask show={apps!.isFetching} />
+      <LoadingMask show={apps.isFetching || appAlter.isPending || appDeleter.isPending} />
       <div className="hd">
         <div>
           <Button disabled={!permissions.app_create} color="primary" variant="text" icon={<SquarePlus size={14} />} onClick={onCreate}>
@@ -122,7 +131,15 @@ const AppList: FC<{ query: FlowApp.IQuery; permissions: App.IPermissions }> = (p
         <div className="g-grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
           {appList.map((item) => {
             return (
-              <ListItem key={item.id} appRole={appsRole[item.id]} data={item} onDelete={onDelete} setCurEdit={setCurEdit} onCollect={onCollect} />
+              <ListItem
+                key={item.id}
+                getPermissionsInApp={getPermissionsInApp}
+                appRole={appsRole[item.id]}
+                item={item}
+                onDelete={onDelete}
+                setCurEdit={setCurEdit}
+                onCollect={onCollect}
+              />
             );
           })}
         </div>

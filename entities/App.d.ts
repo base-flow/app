@@ -1,13 +1,16 @@
 declare namespace App {
+  type AppAssignUserScope = "all" | "admin" | "dev";
+  type AppListScope = "all" | "involved";
+  type FlowViewScope = "all" | "blockingConfigs";
   interface Actions {
-    app_list: "all" | "involved";
+    app_list: AppListScope;
     app_view: "all";
     app_edit: "all";
     app_create: "all";
     app_delete: "all";
-    app_assignUsers: "all" | "admin" | "dev";
+    app_assignUsers: AppAssignUserScope;
     flow_list: "all";
-    flow_view: "all" | "blockingConfigs";
+    flow_view: FlowViewScope;
     flow_edit: "all";
     flow_create: "all";
     flow_delete: "all";

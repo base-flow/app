@@ -71,7 +71,7 @@ export const AppRolesConfg: { [key in App.AppRole]: { [key in keyof App.Actions]
 export const ResourceRoles: App.ResourceRoles = {
   app: {
     "3": "Owner",
-    "5": "Member",
+    "5": "Admin",
   },
 };
 export function getPermissions(user: App.IAuthUser): App.IPermissions {

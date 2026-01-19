@@ -1,25 +1,19 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Result } from "antd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { FC } from "react";
-import { memo, useCallback, useState } from "react";
+import { memo, useState } from "react";
 import Collect from "@/components/Collect";
 import Edit from "@/components/Edit";
-import ErrorPanel from "@/components/ErrorPanel";
 import Flag from "@/components/Flag";
 import LoadingMask from "@/components/LoadingMask";
-import { useEvent } from "@/utils/hooks";
+import { useEvent, useFlowAppData, usePermissions } from "@/utils/hooks";
 import { FlowAppAPI } from "../../api";
 import AppEdit from "../AppEdit";
 import styles from "./index.module.scss";
 
-export interface Props {
-  appId: string;
-}
-
-const AppHead: FC<Props> = ({ appId }) => {
+const AppHead: FC = () => {
+  const { permissions } = usePermissions();
+  const { appData } = useFlowAppData();
   const queryClient = useQueryClient();
-  const app = useQuery(FlowAppAPI.queryItem(appId));
-  const appData = app.data;
   const [appEditor, setAppEditor] = useState<FlowApp.IApp>();
 
   const onEditApp = useEvent(() => {
@@ -30,7 +24,9 @@ const AppHead: FC<Props> = ({ appId }) => {
     mutationFn: FlowAppAPI.editItem,
     onSuccess: (result, args) => {
       queryClient.invalidateQueries({ queryKey: [FlowAppAPI.listQueryKey] });
-      queryClient.invalidateQueries({ queryKey: [FlowAppAPI.itemQueryKey, args.id] });
+      queryClient.setQueryData<FlowApp.IApp>([FlowAppAPI.itemQueryKey, args.id], (old) => {
+        return old ? { ...old, ...args } : old;
+      });
     },
   });
 
@@ -38,29 +34,13 @@ const AppHead: FC<Props> = ({ appId }) => {
     appAlter.mutate({ id: appData!.id, collected: !appData!.collected });
   });
 
-  if (app.isError) {
-    return (
-      <div className={styles.AppHead}>
-        <ErrorPanel message={app.error?.message || "错误"} />
-      </div>
-    );
-  }
-
-  if (!appData) {
-    return (
-      <div className={styles.AppHead}>
-        <LoadingMask show />
-      </div>
-    );
-  }
-
   return (
     <div className={styles.AppHead}>
-      <LoadingMask show={app.isFetching} />
+      <LoadingMask show={appAlter.isPending} />
       <Flag className="icon" src={appData.logo} />
       <span className="title">{appData.name}</span>
       <Collect className={`${styles.AppHead}__star`} id={appData.id} value={appData.collected} onChange={onCollect} />
-      <Edit className={`${styles.AppHead}__edit`} onClick={onEditApp} />
+      {permissions.app_edit && <Edit className={`${styles.AppHead}__edit`} onClick={onEditApp} />}
       <div className="info">{appData.desc}</div>
       <AppEdit item={appEditor} setItem={setAppEditor} />
     </div>

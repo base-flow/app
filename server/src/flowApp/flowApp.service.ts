@@ -51,7 +51,7 @@ memberList.unshift(
 );
 @Injectable()
 export class FlowAppService {
-  async findAll(query: FlowApp.IQuery, permission: "all" | "involved"): Promise<FlowApp.IQueryResult> {
+  async findAll(query: FlowApp.IQuery, permission: App.AppListScope): Promise<FlowApp.IQueryResult> {
     const result = permission === "involved" ? list.filter((item) => ResourceRoles.app[item.id]) : list;
     // if (query.keyword) {
     //   result = result.filter((item) => item.name.includes(query.keyword!));
@@ -61,7 +61,7 @@ export class FlowAppService {
   }
 
   async createItem(userId: string, data: FlowApp.IApp): Promise<FlowApp.ICreateResult> {
-    const newItem: FlowApp.IApp = { ...data, id: `${Date.now()}`, updateDate: `${Date.now()}` };
+    const newItem: FlowApp.IApp = { ...data, flowsNumber: { server: 0, browser: 0 }, id: `${Date.now()}`, updateDate: `${Date.now()}` };
     list.unshift(newItem);
     return { id: newItem.id };
   }

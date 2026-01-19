@@ -1,16 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import type { LinkProps } from "@tanstack/react-router";
 import { Modal } from "antd";
 import { Chromium, Server, TextAlignJustify, UserRoundPlus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useCallback, useMemo, useState } from "react";
-import { useShallow } from "zustand/react/shallow";
-import ErrorPanel from "@/components/ErrorPanel";
 import LinkNav from "@/components/LinkNav";
-import LoadingMask from "@/components/LoadingMask";
-import { useAppStore } from "@/modules/app/store";
-import { useEvent } from "@/utils/hooks";
-import { FlowAppAPI } from "../../api";
+import { useEvent, useFlowAppData, usePermissions } from "@/utils/hooks";
 import AppUsers from "../AppUsers";
 import styles from "./index.module.scss";
 
@@ -21,12 +15,13 @@ const UsersTitle = (
   </>
 );
 
-const FlowMenu: FC<{ appId: string; permissions: App.IPermissions }> = ({ appId, permissions }) => {
-  const [auth] = useAppStore(useShallow(({ auth }) => [auth]));
-  const app = useQuery(FlowAppAPI.queryItem(appId));
-  const appData = app.data;
+const FlowMenu: FC = () => {
+  const { auth, permissions } = usePermissions();
+  const { appData } = useFlowAppData();
   const [showAppUsers, setShowAppUsers] = useState(false);
   const hideAppUsers = useCallback(() => setShowAppUsers(false), []);
+
+  const appId = appData.id;
 
   const flowItems = useMemo(() => {
     if (!appData) {
@@ -44,7 +39,10 @@ const FlowMenu: FC<{ appId: string; permissions: App.IPermissions }> = ({ appId,
           <>
             <TextAlignJustify size={13} style={{ marginTop: 1 }} />
             <span>
-              全部流程<small>({appData.totalFlows})</small>
+              全部流程
+              <small>
+                (<em>{appData.totalFlows}</em>)
+              </small>
             </span>
           </>
         ),
@@ -57,7 +55,10 @@ const FlowMenu: FC<{ appId: string; permissions: App.IPermissions }> = ({ appId,
           <>
             <Server size={13} style={{ marginTop: 1 }} />
             <span>
-              服务器运行<small>({appData.flowsNumber.server})</small>
+              服务器运行
+              <small>
+                (<em>{appData.flowsNumber.server}</em>)
+              </small>
             </span>
           </>
         ),
@@ -70,7 +71,10 @@ const FlowMenu: FC<{ appId: string; permissions: App.IPermissions }> = ({ appId,
           <>
             <Chromium size={14} />
             <span>
-              浏览器运行<small>({appData.flowsNumber.browser})</small>
+              浏览器运行
+              <small>
+                (<em>{appData.flowsNumber.browser}</em>)
+              </small>
             </span>
           </>
         ),
@@ -100,22 +104,6 @@ const FlowMenu: FC<{ appId: string; permissions: App.IPermissions }> = ({ appId,
     }
   });
 
-  if (app.isError) {
-    return (
-      <div className={`${styles.AppMenu} g-nav`}>
-        <ErrorPanel message={app.error?.message || "错误"} />
-      </div>
-    );
-  }
-
-  if (!appData) {
-    return (
-      <div className={`${styles.AppMenu} g-nav`}>
-        <LoadingMask show />
-      </div>
-    );
-  }
-
   return (
     <div className={`${styles.AppMenu} g-nav`}>
       <div>
@@ -128,7 +116,7 @@ const FlowMenu: FC<{ appId: string; permissions: App.IPermissions }> = ({ appId,
           </div>
           <LinkNav links={configItems} size="small" onClick={onConfigItemClick} />
           <Modal open={showAppUsers} title={UsersTitle} width={900} onCancel={hideAppUsers} destroyOnHidden footer={null}>
-            <AppUsers appId={appId} myId={auth.id} myRoleZone={permissions.app_assignUsers} />
+            <AppUsers appId={appId} myId={auth.id} myRoleScope={permissions.app_assignUsers} />
           </Modal>
         </div>
       )}

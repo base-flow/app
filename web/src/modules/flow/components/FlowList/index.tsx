@@ -15,8 +15,13 @@ import { debounce } from "@/utils/tools";
 import { FlowAPI } from "../../api";
 import styles from "./index.module.scss";
 
-const FlowsList: FC<{ query: Flow.IQuery }> = ({ query }) => {
+interface FlowsListProps {
+  query: Flow.IQuery;
+}
+
+const FlowsList: FC<FlowsListProps> = (props) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [query, setQuery] = useState(props.query);
   const appId = query.appId || "";
   const flows = useQuery(FlowAPI.queryList(query));
   const queryClient = useQueryClient();
@@ -27,6 +32,10 @@ const FlowsList: FC<{ query: Flow.IQuery }> = ({ query }) => {
       flowSummary: flows.data?.summary,
     };
   }, [flows.data]);
+
+  useMemo(() => {
+    setQuery(props.query);
+  }, [props.query]);
 
   const [tableScroll, setTableScroll] = useState({ y: 0 });
   const [loading, setLoading] = useState<"batch" | "">("");
@@ -134,6 +143,7 @@ const FlowsList: FC<{ query: Flow.IQuery }> = ({ query }) => {
         dataIndex: "runtime",
         key: "runtime",
         width: 140,
+        align: "center",
       },
       {
         title: "创建者",
@@ -240,7 +250,6 @@ const FlowsList: FC<{ query: Flow.IQuery }> = ({ query }) => {
   );
 
   useEffect(() => {
-    console.log({ y: (scrollerRef.current?.scrollHeight || 0) - 135 });
     setTableScroll({ y: (scrollerRef.current?.scrollHeight || 0) - 135 });
     const onResize = debounce(() => setTableScroll({ y: (scrollerRef.current?.scrollHeight || 0) - 135 }), 300);
     window.addEventListener("resize", onResize);
@@ -249,11 +258,11 @@ const FlowsList: FC<{ query: Flow.IQuery }> = ({ query }) => {
     };
   }, []);
 
-  if (flows.isError || !appId) {
+  if (flows.isError) {
     return (
       <div className={`${styles.FlowsList} g-page min-wrap`}>
         <div className="hd">
-          <AppHead appId={appId} />
+          <AppHead />
         </div>
         <div className="bd" ref={scrollerRef}>
           <Result status="warning" title={flows.error?.message || "错误"} />
@@ -266,7 +275,7 @@ const FlowsList: FC<{ query: Flow.IQuery }> = ({ query }) => {
     return (
       <div className={`${styles.FlowsList} g-page min-wrap`}>
         <div className="hd">
-          <AppHead appId={appId} />
+          <AppHead />
         </div>
         <div className="bd" ref={scrollerRef}>
           <Skeleton active />
@@ -279,7 +288,7 @@ const FlowsList: FC<{ query: Flow.IQuery }> = ({ query }) => {
     <div className={`${styles.FlowsList} g-page min-wrap`}>
       <LoadingMask show={flows.isFetching || flowDeleter.isPending} />
       <div className="hd">
-        <AppHead appId={appId} />
+        <AppHead />
         <Space>
           <SearchInput value={query.keyword} onChange={onSearch} />
           <Button icon={<Plus size={14} strokeWidth={2.5} className="anticon" />} type="primary" onClick={() => onCreate()}>

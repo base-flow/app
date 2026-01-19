@@ -1,4 +1,5 @@
-import { type RefObject, useEffect, useMemo, useRef } from "react";
+import type { RefObject } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import Pathcrumb from "@/components/Pathcrumb";
 
@@ -92,4 +93,26 @@ export function useFolderRoute(
   }, [currentPath]);
 
   return breadcrumb;
+}
+
+export interface IPermissionsContext {
+  auth: App.IAuthUser;
+  permissions: App.IPermissions;
+  getPermissionsInApp: (appId: string) => App.IPermissions;
+}
+
+export const PermissionsContext = createContext<IPermissionsContext>({} as any);
+
+export function usePermissions(): IPermissionsContext {
+  return useContext(PermissionsContext);
+}
+
+export interface IFlowAppDataContext {
+  appData: FlowApp.IApp;
+}
+
+export const FlowAppDataContext = createContext<IFlowAppDataContext>({} as any);
+
+export function useFlowAppData(): IFlowAppDataContext {
+  return useContext(FlowAppDataContext);
 }

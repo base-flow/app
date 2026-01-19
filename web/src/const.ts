@@ -41,12 +41,12 @@ export const AppRoleOptions = [
   },
 ];
 
-export function GetAppRoleOptions(zone: "all" | "admin" | "dev"): { key: string; label: string; value: string }[] {
-  if (zone === "all") {
+export function GetAppRoleOptions(scope: App.AppAssignUserScope): { key: string; label: string; value: string }[] {
+  if (scope === "all") {
     return AppRoleOptions;
-  } else if (zone === "admin") {
+  } else if (scope === "admin") {
     return AppRoleOptions.slice(1);
-  } else if (zone === "dev") {
+  } else if (scope === "dev") {
     return AppRoleOptions.slice(2);
   } else {
     return [];
@@ -61,12 +61,12 @@ const AppRoleLevel: { [key in App.AppRole]: number } = {
   Member: 1,
 };
 
-export function AppRoleLower(zone: "all" | "admin" | "dev", target: App.AppRole): boolean {
-  if (zone === "all") {
+export function AppRoleLower(scope: App.AppAssignUserScope, target: App.AppRole): boolean {
+  if (scope === "all") {
     return true;
-  } else if (zone === "admin") {
+  } else if (scope === "admin") {
     return AppRoleLevel.Owner > AppRoleLevel[target];
-  } else if (zone === "dev") {
+  } else if (scope === "dev") {
     return AppRoleLevel.Admin > AppRoleLevel[target];
   }
   return true;

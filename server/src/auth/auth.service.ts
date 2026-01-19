@@ -18,7 +18,7 @@ const Users: App.IProfileUser[] = [
     id: "2",
     username: "maria",
     nickname: "多啦啊嘛",
-    password: "guess",
+    password: "123456",
     roles: ["Member"],
     age: 21,
   },

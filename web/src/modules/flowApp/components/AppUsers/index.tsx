@@ -26,11 +26,11 @@ const UserFetchTitle = (
 
 export interface Props {
   appId: string;
-  myRoleZone: "all" | "admin" | "dev";
+  myRoleScope: App.AppAssignUserScope;
   myId: string;
 }
 
-const AppUsers: FC<Props> = ({ appId, myId, myRoleZone }) => {
+const AppUsers: FC<Props> = ({ appId, myId, myRoleScope }) => {
   const members = useQuery(FlowAppAPI.queryMemberList(appId));
   const memberList = members.data;
   const memberMaps = useMemo(
@@ -51,7 +51,7 @@ const AppUsers: FC<Props> = ({ appId, myId, myRoleZone }) => {
     mutationFn: FlowAppAPI.updateMember,
     onSuccess: (data, args) => {
       queryClient.setQueryData<FlowApp.IMemberQueryResult>([FlowAppAPI.memberListQueryKey, appId], (oldData) => {
-        return (oldData || []).map((item) => (item.id === args.member.id ? Object.assign({}, item, args.member) : item));
+        return oldData ? oldData.map((item) => (item.id === args.member.id ? Object.assign({}, item, args.member) : item)) : oldData;
       });
     },
   });
@@ -61,7 +61,7 @@ const AppUsers: FC<Props> = ({ appId, myId, myRoleZone }) => {
     onSuccess: (data, args) => {
       BaseWidgets.message.success("操作成功！");
       queryClient.setQueryData<FlowApp.IMemberQueryResult>([FlowAppAPI.memberListQueryKey, appId], (oldData) => {
-        return [data, ...(oldData || [])];
+        return oldData ? [data, ...oldData] : [data];
       });
     },
   });
@@ -70,7 +70,7 @@ const AppUsers: FC<Props> = ({ appId, myId, myRoleZone }) => {
     mutationFn: FlowAppAPI.deleteMemberItem,
     onSuccess: (data, args) => {
       queryClient.setQueryData<FlowApp.IMemberQueryResult>([FlowAppAPI.memberListQueryKey, appId], (oldData) => {
-        return (oldData || []).filter((item) => item.id !== args.memberId);
+        return oldData ? oldData.filter((item) => item.id !== args.memberId) : oldData;
       });
     },
   });
@@ -82,7 +82,7 @@ const AppUsers: FC<Props> = ({ appId, myId, myRoleZone }) => {
   const createMember = useEvent((value: User.IUser | undefined, member: UserOption | undefined) => {
     if (member) {
       if (memberMaps[member.id]) {
-        BaseWidgets.message.warning("该用户已加入！");
+        BaseWidgets.message.warning("该用户已在成员列表中！");
       } else {
         const { id, username, nickname } = member;
         memberCreater.mutate({ appId, member: { id, username, nickname } });
@@ -99,7 +99,7 @@ const AppUsers: FC<Props> = ({ appId, myId, myRoleZone }) => {
     });
   });
 
-  const RoleOptions = useMemo(() => GetAppRoleOptions(myRoleZone), [myRoleZone]);
+  const RoleOptions = useMemo(() => GetAppRoleOptions(myRoleScope), [myRoleScope]);
 
   return (
     <div className={styles.AppUsers}>
@@ -118,7 +118,7 @@ const AppUsers: FC<Props> = ({ appId, myId, myRoleZone }) => {
       <div className="bd">
         {(memberList || []).map((item) => {
           const isCurrent = item.id === myId;
-          const readonly = isCurrent || !AppRoleLower(myRoleZone, item.appRole);
+          const readonly = isCurrent || !AppRoleLower(myRoleScope, item.appRole);
           return (
             <div key={item.id} className={classnames(`${styles.AppUsers}__item`, { cur: isCurrent })}>
               {!readonly && <CircleX className="remove" size={13} onClick={() => memberDeleter.mutate({ appId: appId, memberId: item.id })} />}
@@ -128,7 +128,7 @@ const AppUsers: FC<Props> = ({ appId, myId, myRoleZone }) => {
                 <span className="username">{`(${item.username})`}</span>
               </div>
               {readonly ? (
-                <Button className="role" size="small" type="link" icon={<ChevronRight size={13} />}>
+                <Button className="role" size="small" type="link" style={{ color: "var(--bf-tx-lesser)" }} icon={<ChevronRight size={13} />}>
                   {item.appRole}
                 </Button>
               ) : (
@@ -151,7 +151,7 @@ const AppUsers: FC<Props> = ({ appId, myId, myRoleZone }) => {
                   </Button>
                 </Dropdown>
               )}
-              <Info className="info anticon" size={13} onClick={() => BaseWidgets.message.info(Lang.appRolesTips)} />
+              <Info className="info anticon" size={13} onClick={() => BaseWidgets.message.info(Lang.appRolesTips, "500px")} />
             </div>
           );
         })}

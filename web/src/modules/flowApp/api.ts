@@ -34,9 +34,6 @@ export const FlowAppAPI = {
   deleteMemberItem(data: { appId: string; memberId: string }): Promise<void> {
     return request.delete(`/api/app/${data.appId}/member`, { params: { id: data.memberId } });
   },
-  applyMember(data: { appId: string; member: Partial<FlowApp.IMember> }): Promise<void> {
-    console.log(data);
-  },
   queryItem(id: string) {
     return queryOptions({
       queryKey: [FlowAppAPI.itemQueryKey, id],

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { useShallow } from "zustand/react/shallow";
 import { useAppStore } from "@/modules/app/store";
 import AppList from "@/modules/flowApp/components/AppList";
+import { PermissionsContext } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/apps/")({
   validateSearch: z.object({
@@ -17,7 +18,7 @@ export const Route = createFileRoute("/_auth/apps/")({
 
 function RouteComponent() {
   const search = Route.useSearch();
-  const [getPermissions] = useAppStore(useShallow(({ getPermissions }) => [getPermissions]));
+  const [getPermissions, auth] = useAppStore(useShallow(({ getPermissions, auth }) => [getPermissions, auth]));
   const permissions = useMemo(() => getPermissions(), [getPermissions]);
 
   if (!permissions.app_list) {
@@ -28,5 +29,9 @@ function RouteComponent() {
     );
   }
 
-  return <AppList query={search} permissions={permissions} />;
+  return (
+    <PermissionsContext.Provider value={{ auth, permissions, getPermissionsInApp: getPermissions }}>
+      <AppList query={search} />
+    </PermissionsContext.Provider>
+  );
 }
