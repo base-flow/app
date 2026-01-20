@@ -6,8 +6,9 @@ import { UserService } from "./user.service";
 @Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
   @Get()
-  async getList(@Query() query: BaseQueryDto): Promise<User.IQueryResult> {
+  async getList(@Query() query: BaseQueryDto): Promise<_User.QueryResult> {
     await sleep(3000);
     return this.userService.findAll(query);
   }

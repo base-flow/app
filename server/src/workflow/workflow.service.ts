@@ -4,7 +4,7 @@ import { FlagSrc } from "@/utils";
 // eslint-disable-next-line ts/no-require-imports
 const mockjs = require("mockjs");
 
-const list: Flow.IFlow[] = mockjs
+const list: _Workflow.IWorkflow[] = mockjs
   .mock({
     "list|50": [
       {
@@ -27,30 +27,22 @@ const list: Flow.IFlow[] = mockjs
   .list.map((item: any) => ({ ...item, id: `${item.id}`, released: false, appId: `${item.appId}`, appLogo: FlagSrc.create() }));
 
 @Injectable()
-export class FlowService {
-  async findAll(query: Flow.IQuery): Promise<Flow.IQueryResult> {
+export class WorkflowService {
+  async findAll(query: _Workflow.Query): Promise<_Workflow.QueryResult> {
     let result = list;
     if (query.keyword) {
       result = result.filter((item) => item.id === query.keyword || item.name.includes(query.keyword!));
-    }
-    if (query.templated) {
-      result = result.filter((item) => item.templated);
     }
     const { page = 1 } = query;
     const pageSize = 20;
     return {
       query,
-      list: result.slice((page - 1) * pageSize, page * pageSize).map((item) => {
-        if (!query.templated) {
-          return { ...item, appLogo: undefined, appName: undefined };
-        }
-        return item;
-      }),
+      list: result.slice((page - 1) * pageSize, page * pageSize),
       summary: { total: result.length, page, pageSize },
     };
   }
 
-  async findOne(id: string): Promise<Flow.IFlow> {
+  async findOne(id: string): Promise<_Workflow.IWorkflow> {
     const item = list.find((item) => item.id === id);
     if (!item) {
       throw new NotFoundException(`Flow[${id}]不存在`);
@@ -58,13 +50,13 @@ export class FlowService {
     return item;
   }
 
-  async createItem(userId: string, data: Flow.IFlow): Promise<Flow.ICreateResult> {
-    const newItem: Flow.IFlow = { ...data, id: `${Date.now()}`, updateDate: `${Date.now()}` };
+  async createItem(userId: string, data: _Workflow.IWorkflow): Promise<_Workflow.CreateResult> {
+    const newItem: _Workflow.IWorkflow = { ...data, id: `${Date.now()}`, updateDate: `${Date.now()}` };
     list.unshift(newItem);
     return { id: newItem.id };
   }
 
-  async updateItem(userId: string, id: string, data: Flow.IFlow): Promise<Flow.IUpdateResult> {
+  async updateItem(userId: string, id: string, data: _Workflow.IWorkflow): Promise<_Workflow.UpdateResult> {
     const item = list.find((item) => item.id === id);
     if (!item) {
       throw new NotFoundException(`Flow[${id}]不存在`);

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 const mockjs = require("mockjs");
 
-const list: User.IUser[] = mockjs
+const list: _User.IUser[] = mockjs
   .mock({
     "list|95": [
       {
@@ -35,7 +35,7 @@ list.unshift(
 );
 @Injectable()
 export class UserService {
-  async findAll(query: User.IQuery): Promise<User.IQueryResult> {
+  async findAll(query: _User.Query): Promise<_User.QueryResult> {
     let result = list;
     if (query.keyword) {
       result = result.filter((item) => item.username.includes(query.keyword!));
@@ -44,7 +44,7 @@ export class UserService {
     return { query, list: result.slice((page - 1) * pageSize, page * pageSize), summary: { total: result.length, page, pageSize } };
   }
 
-  async findOne(username: string): Promise<User.IUser | undefined> {
+  async findOne(username: string): Promise<_User.IUser | undefined> {
     return list.find((user) => user.username === username);
   }
 }

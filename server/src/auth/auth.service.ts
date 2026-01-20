@@ -5,7 +5,7 @@ import { CacheService } from "@/cache/cache.service";
 import { TokenExpiredSecond } from "@/consts";
 import type { TokenPayload } from "./index";
 
-const Users: App.IProfileUser[] = [
+const Users: _App.IProfileUser[] = [
   {
     id: "1",
     username: "admin",
@@ -31,7 +31,7 @@ export class AuthService {
     private cacheService: CacheService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<App.IProfileUser | undefined> {
+  async validateUser(username: string, password: string): Promise<_App.IProfileUser | undefined> {
     const user = Users.find((user) => user.username === username);
     if (user && user.password === password) {
       // eslint-disable-next-line unused-imports/no-unused-vars
@@ -41,7 +41,7 @@ export class AuthService {
     return undefined;
   }
 
-  async login({ username, password }: App.AuthLogin): Promise<App.IProfileUser & { token: string }> {
+  async login({ username, password }: _App.AuthLogin): Promise<_App.IProfileUser & { token: string }> {
     const user = await this.validateUser(username, password);
     if (!user) {
       throw new NotFoundException("用户名或密码错误");

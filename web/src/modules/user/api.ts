@@ -5,10 +5,10 @@ import { filterQuery } from "@/utils/tools";
 export const UserAPI = {
   listQueryKey: "UserList",
   itemQueryKey: "UserItem",
-  getList(query: User.IQuery): Promise<User.IQueryResult> {
-    return request.get<User.IQueryResult>("/api/user", { params: query }).then((res) => res.data);
+  getList(query: _User.Query): Promise<_User.QueryResult> {
+    return request.get("/api/user", { params: query }).then((res) => res.data);
   },
-  queryList(query: Flow.IQuery) {
+  queryList(query: _User.Query) {
     query = filterQuery(query);
     return queryOptions({
       queryKey: [UserAPI.listQueryKey, query],

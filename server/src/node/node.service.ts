@@ -1,0 +1,389 @@
+import { Injectable, NotFoundException } from "@nestjs/common";
+
+const mockjs = require("mockjs");
+
+const UID = 1000;
+// const executorList2: Array<_Node.INode | _App.IDirectory> = mockjs
+//   .mock({
+//     "list|50": [
+//       {
+//         "id|+1": 1,
+//         type: "node",
+//         nodeType: "executor",
+//         name: "@ctitle(10, 20)",
+//         icon: "",
+//         desc: "@csentence(20, 60)",
+//         content: "",
+//         version: "1.0.0",
+//       },
+//     ],
+//   })
+//   .list.map((item: any) => ({ ...item, id: `${item.id}` }));
+
+// executorList2.unshift(
+//   {
+//     id: `FolderTest`,
+//     type: "directory",
+//     name: "数据库操作",
+//     desc: "包含数据库的增删改查等常用节点",
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "node",
+//     nodeType: "executor",
+//     name: "条件选择",
+//     icon: "",
+//     desc: "根据不同条件选择执行分支",
+//     content: JSON.stringify({
+//       nodes: [
+//         { tag: "@baseflow-nodes/choice", id: "choice1", childrenIds: ["branch1", "branch2"] },
+//         { tag: "@baseflow-nodes/branch", id: "branch1", parentId: "choice1" },
+//         { tag: "@baseflow-nodes/branch", id: "branch2", parentId: "choice1" },
+//       ],
+//       sources: {
+//         "@baseflow-nodes/choice": "@baseflow-nodes/choice",
+//         "@baseflow-nodes/branch": "@baseflow-nodes/branch",
+//       },
+//     }),
+//     version: "1.0.0",
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "node",
+//     nodeType: "executor",
+//     name: "迭代Foreach",
+//     icon: "",
+//     desc: "对Array或Map中的元素迭代",
+//     content: JSON.stringify({
+//       nodes: [{ tag: "@baseflow-nodes/foreach" }],
+//       sources: { "@baseflow-nodes/foreach": "@baseflow-nodes/foreach" },
+//     }),
+//     version: "1.0.0",
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "node",
+//     nodeType: "executor",
+//     name: "Continue循环",
+//     icon: "",
+//     desc: "放置于[循环]节点中，跳过本次循环，继续下一次循环",
+//     content: JSON.stringify({
+//       nodes: [{ tag: "@baseflow-nodes/continue" }],
+//       sources: { "@baseflow-nodes/continue": "@baseflow-nodes/continue" },
+//     }),
+//     version: "1.0.0",
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "node",
+//     nodeType: "executor",
+//     name: "Break循环",
+//     icon: "",
+//     desc: "放置于[循环]节点中，退出整个循环",
+//     content: JSON.stringify({
+//       nodes: [{ tag: "@baseflow-nodes/break" }],
+//       sources: { "@baseflow-nodes/break": "@baseflow-nodes/break" },
+//     }),
+//     version: "1.0.0",
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "node",
+//     nodeType: "executor",
+//     name: "TryCatch",
+//     icon: "",
+//     desc: "提供一个可以捕获子节点运行时错误的容器节点",
+//     content: JSON.stringify({
+//       nodes: [{ tag: "@baseflow-nodes/try-catch" }],
+//       sources: { "@baseflow-nodes/try-catch": "@baseflow-nodes/try-catch" },
+//     }),
+//     version: "1.0.0",
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "node",
+//     nodeType: "executor",
+//     name: "task任务",
+//     icon: "",
+//     desc: "task任务",
+//     content: JSON.stringify({
+//       nodes: [{ tag: "@baseflow-nodes/task" }],
+//       sources: { "@baseflow-nodes/task": "@baseflow-nodes/task" },
+//     }),
+//     version: "1.0.0",
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "node",
+//     nodeType: "executor",
+//     name: "变量定义",
+//     icon: "",
+//     desc: "变量定义",
+//     content: JSON.stringify({
+//       nodes: [{ tag: "@baseflow-nodes/variable" }],
+//       sources: { "@baseflow-nodes/variable": "@baseflow-nodes/variable" },
+//     }),
+//     version: "1.0.0",
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "node",
+//     nodeType: "executor",
+//     name: "变量修改",
+//     icon: "",
+//     desc: "变量修改",
+//     content: JSON.stringify({
+//       nodes: [{ tag: "@baseflow-nodes/variable-update" }],
+//       sources: { "@baseflow-nodes/variable-update": "@baseflow-nodes/variable-update" },
+//     }),
+//     version: "1.0.0",
+//     updateDate: "",
+//     createDate: "",
+//     createBy: "",
+//     updateBy: "",
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "node",
+//     nodeType: "executor",
+//     name: "流程返回",
+//     icon: "",
+//     desc: "流程返回",
+//     content: JSON.stringify({
+//       nodes: [{ tag: "@baseflow-nodes/return" }],
+//       sources: { "@baseflow-nodes/return": "@baseflow-nodes/return" },
+//     }),
+//     version: "1.0.0",
+//   },
+// );
+
+// const triggerList2: Array<_Node.INode | _App.IDirectory> = mockjs
+//   .mock({
+//     "list|50": [
+//       {
+//         "id|+1": 100,
+//         type: "node",
+//         nodeType: "trigger",
+//         name: "@ctitle(10, 20)",
+//         icon: "",
+//         desc: "@csentence(20, 60)",
+//         version: "1.0.0",
+//       },
+//     ],
+//   })
+//   .list.map((item: any) => ({ ...item, id: `${item.id}` }));
+
+// triggerList2.unshift({
+//   id: `${UID++}`,
+//   type: "node",
+//   nodeType: "trigger",
+//   name: "Webhook触发器",
+//   desc: "通过发送Http请求触发流程",
+//   content: JSON.stringify({
+//     nodes: [{ tag: "@baseflow-nodes/trigger-webhook" }],
+//     sources: { "@baseflow-nodes/trigger-webhook": "@baseflow-nodes/trigger-webhook" },
+//   }),
+//   icon: "",
+//   version: "1.0.0",
+// });
+
+// const executorList1: Array<_Node.INode | _App.IDirectory> = [
+//   {
+//     id: `Base`,
+//     type: "directory",
+//     name: "基础逻辑节点",
+//     desc: "包含流程控制、循环、变量等常用基础逻辑节点",
+//   },
+//   {
+//     id: `Database`,
+//      type: "directory",
+//     name: "数据库操作",
+//     desc: "包含数据库的增删改查等常用节点",
+//   },
+//   {
+//     id: `NetRequest`,
+//     type: "node",
+//     nodeType: "executor",
+//     name: "HTTP请求",
+//     icon: "",
+//     desc: "发送HTTP请求",
+//     package: "@baseflow-nodes/http",
+//     content: JSON.stringify({
+//       nodes: [{ tag: "@baseflow-nodes/http" }],
+//       sources: { "@baseflow-nodes/http": "@baseflow-nodes/http" },
+//     }),
+//     version: "1.0.0",
+//     likes: 20,
+//     updateDate: "",
+//     createDate: "",
+//     createBy: "",
+//     updateBy: "",
+//   },
+// ];
+
+// const triggerList1: _Node.INode[] = [
+//   {
+//     id: `Webhook`,
+//     type: "node",
+//     nodeType: "trigger",
+//     name: "Webhook触发器",
+//     desc: "通过发送Http请求触发流程",
+//     version: "1.0.0",
+//     content: "",
+//     icon: "",
+//     updateDate: "",
+//     createDate: "",
+//     createBy: "",
+//     updateBy: "",
+//     isFolder: true,
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "trigger",
+//     name: "定时任务触发器",
+//     desc: "通过设置定时任务触发流程",
+//     version: "1.0.0",
+//     content: "",
+//     icon: "",
+//     updateDate: "",
+//     createDate: "",
+//     createBy: "",
+//     updateBy: "",
+//     isFolder: true,
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "trigger",
+//     name: "MQ消息队列触发器",
+//     desc: "通过消息的发布/订阅触发流程",
+//     version: "1.0.0",
+//     content: "",
+//     icon: "",
+//     updateDate: "",
+//     createDate: "",
+//     createBy: "",
+//     updateBy: "",
+//     isFolder: true,
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "trigger",
+//     name: "STDIO进程触发器",
+//     desc: "通过进程管道stdio触发流程",
+//     version: "1.0.0",
+//     content: "",
+//     icon: "",
+//     updateDate: "",
+//     createDate: "",
+//     createBy: "",
+//     updateBy: "",
+//     isFolder: true,
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "trigger",
+//     name: "gRPC触发器",
+//     desc: "通过RPC协议触发流程",
+//     version: "1.0.0",
+//     content: "",
+//     icon: "",
+//     updateDate: "",
+//     createDate: "",
+//     createBy: "",
+//     updateBy: "",
+//     isFolder: true,
+//   },
+//   {
+//     id: `${UID++}`,
+//     type: "trigger",
+//     name: "数据库触发器",
+//     desc: "通过数据库CDC触发流程",
+//     version: "1.0.0",
+//     content: "",
+//     icon: "",
+//     updateDate: "",
+//     createDate: "",
+//     createBy: "",
+//     updateBy: "",
+//     isFolder: true,
+//   },
+// ];
+
+// const branchNode: _Node.INode = {
+//   id: `${UID++}`,
+//   type: "executor",
+//   name: "条件分支",
+//   icon: "",
+//   desc: "定义条件选择的分支和执行条件",
+//   content: JSON.stringify({
+//     nodes: [{ tag: "@baseflow-nodes/branch" }],
+//     sources: { "@baseflow-nodes/branch": "@baseflow-nodes/branch" },
+//   }),
+//   version: "1.0.0",
+//   updateDate: "",
+//   createDate: "",
+//   createBy: "",
+//   updateBy: "",
+// };
+
+// http://localhost:4873/-/verdaccio/data/search/@baseflow-nodes-private
+@Injectable()
+export class NodeService {
+  async findAll(query: _Node.Query): Promise<_Node.QueryResult> {
+    const result: _Node.INode[] = [];
+    // let path: [string, string][] | undefined;
+    // if (query.type === "executor") {
+    //   if (query.parent === "Choice") {
+    //     result = [branchNode];
+    //   } else if (query.parent === "Base") {
+    //     result = executorList2;
+    //     path = [["Base", "基础逻辑节点"]];
+    //   } else if (query.parent === "FolderTest") {
+    //     result = executorList2;
+    //     path = [
+    //       ["Base", "基础逻辑节点"],
+    //       ["FolderTest", "数据库操作"],
+    //     ];
+    //   } else {
+    //     result = executorList1;
+    //   }
+    // } else if (query.type === "trigger") {
+    //   if (query.parent === "Webhook") {
+    //     result = triggerList2;
+    //     path = [["Webhook", "Webhook触发器"]];
+    //   } else {
+    //     result = triggerList1;
+    //   }
+    // }
+    const { page = 1, pageSize = 10 } = query;
+    return { query, list: result.slice((page - 1) * pageSize, page * pageSize), summary: { total: result.length, page, pageSize, path: [] } };
+  }
+
+  async createItem(userId: string, data: _Node.INode): Promise<_Node.CreateResult> {
+    // const newItem: _Node.INode = { ...data, id: `${Date.now()}`, updateDate: `${Date.now()}` };
+    // list.unshift(newItem);
+    return { id: "" };
+  }
+
+  async updateItem(userId: string, id: string, data: _Node.INode): Promise<_Node.UpdateResult> {
+    // const item = list.find(item => item.id === id);
+    // if (!item) {
+    //   throw new NotFoundException(`Node[${id}]不存在`);
+    // }
+    // Object.assign(item, data, { updateDate: `${Date.now()}` });
+    return { id };
+  }
+
+  async deleteItem(id: string): Promise<void> {
+    // list.splice(list.findIndex(item => item.id === id), 1);
+  }
+
+  async findOne(id: string): Promise<_Node.INode> {
+    throw new NotFoundException(`Node[${id}]不存在`);
+    // const item = list.find(item => item.id === id);
+    // if (!item) {
+    //   throw new NotFoundException(`Node[${id}]不存在`);
+    // }
+    // return item;
+  }
+}

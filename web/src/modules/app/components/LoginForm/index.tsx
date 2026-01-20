@@ -6,7 +6,7 @@ import styles from "./index.module.scss";
 
 const FormItem = Form.Item;
 
-const LoginForm: FC<{ auth: App.IAuthUser; onSubmit: (data: App.AuthLogin) => void }> = ({ auth, onSubmit }) => {
+const LoginForm: FC<{ auth: _App.IAuthUser; onSubmit: (data: _App.AuthLogin) => void }> = ({ auth, onSubmit }) => {
   if (auth.id) {
     return null;
   }

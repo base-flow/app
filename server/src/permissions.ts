@@ -1,11 +1,11 @@
-export const SysRolesConfg: { [key in App.SysRole]: { [key in keyof App.Actions]?: App.Actions[key] } } = {
+export const SystemRoleConfg: _Permission.SystemRoleConfg = {
   Admin: {
-    app_list: "all",
-    app_view: "all",
-    app_create: "all",
-    app_edit: "all",
-    app_delete: "all",
-    app_assignUsers: "all",
+    project_list: "all",
+    project_view: "all",
+    project_create: "all",
+    project_edit: "all",
+    project_delete: "all",
+    project_assignUsers: "all",
     flow_list: "all",
     flow_view: "all",
     flow_edit: "all",
@@ -18,8 +18,8 @@ export const SysRolesConfg: { [key in App.SysRole]: { [key in keyof App.Actions]
     node_delete: "all",
   },
   Member: {
-    app_list: "involved",
-    app_create: "all",
+    project_list: "involved",
+    project_create: "all",
     node_list: "all",
     node_create: "all",
     node_edit: "owner",
@@ -28,12 +28,12 @@ export const SysRolesConfg: { [key in App.SysRole]: { [key in keyof App.Actions]
   Guest: {},
 };
 
-export const AppRolesConfg: { [key in App.AppRole]: { [key in keyof App.Actions]?: App.Actions[key] } } = {
+export const ProjectRoleConfg: _Permission.ProjectRoleConfg = {
   Owner: {
-    app_view: "all",
-    app_edit: "all",
-    app_delete: "all",
-    app_assignUsers: "admin",
+    project_view: "all",
+    project_edit: "all",
+    project_delete: "all",
+    project_assignUsers: "admin",
     flow_list: "all",
     flow_view: "all",
     flow_edit: "all",
@@ -41,8 +41,8 @@ export const AppRolesConfg: { [key in App.AppRole]: { [key in keyof App.Actions]
     flow_delete: "all",
   },
   Admin: {
-    app_view: "all",
-    app_assignUsers: "dev",
+    project_view: "all",
+    project_assignUsers: "dev",
     flow_list: "all",
     flow_view: "all",
     flow_edit: "all",
@@ -50,7 +50,7 @@ export const AppRolesConfg: { [key in App.AppRole]: { [key in keyof App.Actions]
     flow_delete: "all",
   },
   Developer: {
-    app_view: "all",
+    project_view: "all",
     flow_list: "all",
     flow_view: "all",
     flow_edit: "all",
@@ -58,26 +58,24 @@ export const AppRolesConfg: { [key in App.AppRole]: { [key in keyof App.Actions]
     flow_delete: "all",
   },
   Tester: {
-    app_view: "all",
+    project_view: "all",
     flow_list: "all",
     flow_view: "all",
   },
   Member: {
-    app_view: "all",
+    project_view: "all",
     flow_list: "all",
     flow_view: "blockingConfigs",
   },
 };
-export const ResourceRoles: App.ResourceRoles = {
-  app: {
-    "3": "Owner",
-    "5": "Admin",
-  },
+export const MyProjectRoles: _Permission.MyProjectRoles = {
+  "3": "Owner",
+  "5": "Admin",
 };
-export function getPermissions(user: App.IAuthUser): App.IPermissions {
-  const sysPermissions = user.roles.reduce((obj, role) => {
-    Object.assign(obj, SysRolesConfg[role]);
+export function getPermissions(user: _App.IAuthUser): _Permission.IPermissions {
+  const systemPermissions = user.roles.reduce((obj, role) => {
+    Object.assign(obj, SystemRoleConfg[role]);
     return obj;
-  }, {} as App.IPermissions);
-  return sysPermissions;
+  }, {} as _Permission.IPermissions);
+  return systemPermissions;
 }

@@ -10,11 +10,11 @@ import { CacheModule } from "./cache/cache.module";
 import type { JwtConfig } from "./config/jwt.config";
 import jwtConfig from "./config/jwt.config";
 import redisConfig from "./config/redis.config";
-import { FlowModule } from "./flow/flow.module";
-import { FlowAppModule } from "./flowApp/flowApp.module";
-import { FlowNodeModule } from "./flowNode/flowNode.module";
 import { AuthGuard } from "./guards/auth.guard";
+import { NodeModule } from "./node/node.module";
+import { ProjectModule } from "./project/project.module";
 import { UserModule } from "./user/user.module";
+import { WorkflowModule } from "./workflow/workflow.module";
 
 @Module({
   imports: [
@@ -38,9 +38,9 @@ import { UserModule } from "./user/user.module";
     }),
     AuthModule,
     UserModule,
-    FlowAppModule,
-    FlowModule,
-    FlowNodeModule,
+    ProjectModule,
+    WorkflowModule,
+    NodeModule,
     CacheModule,
   ],
   controllers: [AppController],
