@@ -12,5 +12,16 @@
     .comp-Collect {
       margin-left: 5px;
     }
+
+    &:global(__item) {
+      padding-left: 18px;
+
+      > .doc-icon {
+        position: absolute;
+        margin-top: 4px;
+        margin-left: -18px;
+        color: var(--bf-tx-summary);
+      }
+    }
   }
 }

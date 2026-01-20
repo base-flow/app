@@ -1,9 +1,9 @@
 import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
-import type { TableProps } from "antd";
-import { Button, Dropdown, type MenuProps, Result, Skeleton, Space, Table, type TablePaginationConfig } from "antd";
-import { ChevronDown, Delete, Plus, Trash2 } from "lucide-react";
+import type { TablePaginationConfig, TableProps } from "antd";
+import { Button, Dropdown, type MenuProps, Result, Skeleton, Space, Table } from "antd";
+import { ChevronDown, Delete, GitMerge, GitPullRequest, Plus, TextAlignJustify, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Collect from "@/components/Collect";
@@ -125,11 +125,12 @@ const FlowsList: FC<FlowsListProps> = (props) => {
   const columns = useMemo<TableProps<Flow.IFlow>["columns"]>(() => {
     return [
       {
-        title: "流程名称",
+        title: "名称",
         dataIndex: "name",
         key: "name",
         render: (name, row) => (
-          <div>
+          <div className={`${styles.FlowsList}__item`}>
+            <GitPullRequest className="doc-icon" size={13} />
             <Link to="/flow/$flowId" params={{ flowId: row.id }}>
               {name}
             </Link>
@@ -289,19 +290,20 @@ const FlowsList: FC<FlowsListProps> = (props) => {
       <LoadingMask show={flows.isFetching || flowDeleter.isPending} />
       <div className="hd">
         <AppHead />
-        <Space>
-          <SearchInput value={query.keyword} onChange={onSearch} />
-          <Button icon={<Plus size={14} strokeWidth={2.5} className="anticon" />} type="primary" onClick={() => onCreate()}>
-            新建流程
-          </Button>
-          {!!selectedRows.length && (
-            <Dropdown menu={batchMenu}>
-              <Button loading={flowDeleter.isPending} icon={<ChevronDown size={13} className="anticon" />} iconPlacement="end">
-                批量操作
-              </Button>
-            </Dropdown>
-          )}
-        </Space>
+        {!selectedRows.length ? (
+          <Space>
+            <SearchInput value={query.keyword} onChange={onSearch} />
+            <Button icon={<Plus size={14} strokeWidth={2.5} className="anticon" />} type="primary" onClick={() => onCreate()}>
+              新建流程
+            </Button>
+          </Space>
+        ) : (
+          <Dropdown menu={batchMenu}>
+            <Button loading={flowDeleter.isPending} icon={<ChevronDown size={13} className="anticon" />} iconPlacement="end">
+              批量操作
+            </Button>
+          </Dropdown>
+        )}
       </div>
       <div className="bd" ref={scrollerRef}>
         <Table<any>

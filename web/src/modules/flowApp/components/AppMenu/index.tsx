@@ -1,6 +1,6 @@
 import type { LinkProps } from "@tanstack/react-router";
 import { Modal } from "antd";
-import { Chromium, Server, TextAlignJustify, UserRoundPlus } from "lucide-react";
+import { GitMerge, GitPullRequest, Settings2, TextAlignJustify, UserRoundPlus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useCallback, useMemo, useState } from "react";
 import LinkNav from "@/components/LinkNav";
@@ -37,9 +37,9 @@ const FlowMenu: FC = () => {
         },
         children: (
           <>
-            <TextAlignJustify size={13} style={{ marginTop: 1 }} />
+            <GitPullRequest size={14} strokeWidth={2} />
             <span>
-              全部流程
+              流程管理
               <small>
                 (<em>{appData.totalFlows}</em>)
               </small>
@@ -53,27 +53,11 @@ const FlowMenu: FC = () => {
         search: { runtime: "server" },
         children: (
           <>
-            <Server size={13} style={{ marginTop: 1 }} />
+            <Settings2 size={14} strokeWidth={2} />
             <span>
-              服务器运行
+              节点管理
               <small>
                 (<em>{appData.flowsNumber.server}</em>)
-              </small>
-            </span>
-          </>
-        ),
-      },
-      {
-        to: "/apps/$appId/flows",
-        params: { appId },
-        search: { runtime: "browser" },
-        children: (
-          <>
-            <Chromium size={14} />
-            <span>
-              浏览器运行
-              <small>
-                (<em>{appData.flowsNumber.browser}</em>)
               </small>
             </span>
           </>
