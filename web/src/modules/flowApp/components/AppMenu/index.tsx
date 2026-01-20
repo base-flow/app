@@ -84,22 +84,23 @@ const FlowMenu: FC = () => {
   }, [appId, appData]);
 
   const configItems = useMemo(() => {
-    const list: LinkProps[] = [
-      {
-        href: "users",
+    const list: LinkProps[] = [];
+    if (permissions.app_assignUsers) {
+      list.push({
+        href: "members",
         children: (
           <>
             <UserRoundPlus size={13} />
             <span>用户与权限</span>
           </>
         ),
-      },
-    ];
+      });
+    }
     return list;
-  }, []);
+  }, [permissions]);
 
   const onConfigItemClick = useEvent((item: LinkProps) => {
-    if (item.href === "users") {
+    if (item.href === "members") {
       setShowAppUsers(true);
     }
   });

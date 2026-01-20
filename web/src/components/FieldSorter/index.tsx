@@ -24,7 +24,7 @@ const DefaultOptions: SortField[] = ["updateDate", "createDate", "collect"];
 const DefaultField = "createDate";
 const DefaultOrder = "descend";
 
-const FieldSorter: FC<FieldSorterProps> = ({ value, onChange, options = DefaultOptions }) => {
+const Component: FC<FieldSorterProps> = ({ value, onChange, options = DefaultOptions }) => {
   const filedsOptions = useMemo(() => options.map((name) => SortOptions[name]).filter(Boolean), [options]);
   const onFieldChange = useEvent((field: string) => {
     onChange({ sorterField: field === DefaultField ? undefined : field, sorterOrder: value.sorterOrder });
@@ -45,4 +45,4 @@ const FieldSorter: FC<FieldSorterProps> = ({ value, onChange, options = DefaultO
   );
 };
 
-export default memo(FieldSorter);
+export default memo(Component);

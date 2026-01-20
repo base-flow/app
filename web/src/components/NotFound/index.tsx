@@ -1,5 +1,6 @@
 import { Result } from "antd";
 import type { FC } from "react";
+import { memo } from "react";
 
 const Component: FC = () => {
   return (
@@ -9,4 +10,4 @@ const Component: FC = () => {
   );
 };
 
-export default Component;
+export default memo(Component);

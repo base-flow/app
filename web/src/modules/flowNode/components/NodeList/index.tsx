@@ -1,26 +1,28 @@
 import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { Pagination, Result, Segmented } from "antd";
-import { SquarePlus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo, useRef, useState } from "react";
 import FieldSorter, { type SortField } from "@/components/FieldSorter";
 import LoadingMask from "@/components/LoadingMask";
-import Pathcrumb from "@/components/Pathcrumb";
 import SearchInput from "@/components/SearchInput";
-import { useEvent, useFolderRoute } from "@/utils/hooks";
+import SkeletonCardList from "@/components/SkeletonCardList";
+import { DomIds } from "@/const";
+import { useEvent, useFolderRoute, usePermissions } from "@/utils/hooks";
 import { FlowNodeAPI } from "../../api";
 import ListItem from "../ListItem";
+import NodeEdit from "../NodeEdit";
 
 const StoreOptions: { label: string; value: string }[] = [
   { label: "开放平台", value: "remote" },
   { label: "本地仓库", value: "local" },
 ];
 
-const SorterOptions: SortField[] = ["createDate", "likes"];
+const SorterOptions: SortField[] = ["collect", "createDate", "likes"];
 
 const NodeList: FC<{ query: FlowNode.IQuery }> = (props) => {
+  const { permissions, auth } = usePermissions();
   const router = useRouter();
   const [query, setQuery] = useState(props.query);
   useMemo(() => setQuery(props.query), [props.query]);
@@ -29,8 +31,8 @@ const NodeList: FC<{ query: FlowNode.IQuery }> = (props) => {
   const nodeList = nodes.data?.list;
   const nodeListSummary = nodes.data?.summary;
   const queryClient = useQueryClient();
-  const [curEdit, setCurEdit] = useState<FlowNode.INode>();
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [curEdit, setCurEdit] = useState<FlowNode.INode>();
 
   const onStoreChange = useEvent((store?: "remote" | "local") => {
     router.navigate({ to: ".", search: { store, runtime: query.runtime } });
@@ -90,6 +92,17 @@ const NodeList: FC<{ query: FlowNode.IQuery }> = (props) => {
 
   const breadcrumb = useFolderRoute(query, setQuery, resetQuery, nodeListSummary);
 
+  const currentPath = useMemo(() => {
+    const listPath = nodeListSummary?.path || [];
+    let parent: string = "";
+    const pathLabel: string[] = [];
+    listPath.forEach(([id, title]) => {
+      parent = id;
+      pathLabel.push(title);
+    });
+    return { value: parent, label: pathLabel.join(" / ") };
+  }, [nodeListSummary]);
+
   // // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   // useEffect(() => {
   //   console.log("set top 0");
@@ -99,13 +112,20 @@ const NodeList: FC<{ query: FlowNode.IQuery }> = (props) => {
   // }, [query]);
 
   if (nodes.isError) {
-    return <Result status="warning" title={nodes.error.message || "错误"} />;
+    return (
+      <section className="g-page">
+        <Result status="warning" title={nodes.error.message || "错误"} />
+      </section>
+    );
   }
 
   if (!nodeList || !nodeListSummary) {
     return (
       <section className="g-page">
-        <LoadingMask show />
+        <div className="hd"></div>
+        <div className="bd">
+          <SkeletonCardList />
+        </div>
       </section>
     );
   }
@@ -129,7 +149,18 @@ const NodeList: FC<{ query: FlowNode.IQuery }> = (props) => {
       <div className="bd" ref={scrollerRef}>
         <div className="g-grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
           {nodeList.map((item) => {
-            return <ListItem key={item.id} data={item} onDelete={onDelete} setCurEdit={setCurEdit} onCollect={onCollect} onItemClick={onItemClick} />;
+            return (
+              <ListItem
+                key={item.id}
+                item={item}
+                permissions={permissions}
+                authId={auth.id}
+                onDelete={onDelete}
+                setCurEdit={setCurEdit}
+                onCollect={onCollect}
+                onItemClick={onItemClick}
+              />
+            );
           })}
         </div>
         <Pagination
@@ -142,6 +173,15 @@ const NodeList: FC<{ query: FlowNode.IQuery }> = (props) => {
           total={nodeListSummary.total}
           onChange={onPageChange}
         />
+      </div>
+      <NodeEdit item={curEdit} setItem={setCurEdit} currentPath={currentPath.label} />
+      <div className="ft" style={{ display: "none" }}>
+        <span id={DomIds.Button_CreateNode} onClick={() => setCurEdit({ type: query.type, parent: currentPath.value } as FlowNode.INode)}>
+          createNode
+        </span>
+        <span id={DomIds.Button_CreateNodeFolder} onClick={() => setCurEdit({ type: query.type, parent: currentPath.value } as FlowNode.INode)}>
+          createFolder
+        </span>
       </div>
     </section>
   );

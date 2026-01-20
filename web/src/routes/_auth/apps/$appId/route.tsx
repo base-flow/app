@@ -23,7 +23,7 @@ function RouteComponent() {
   if (!permissions.app_view || !permissions.flow_list) {
     return (
       <section>
-        <Result status="403" title="您没有权限访问..." />
+        <Result status="403" subTitle="您没有访问权限..." />
       </section>
     );
   }

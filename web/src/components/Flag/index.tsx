@@ -14,7 +14,7 @@ interface Props {
   onClick?: (src: string) => void;
 }
 
-const Flag: FC<Props> = ({ className, src, onClick }) => {
+const Component: FC<Props> = ({ className, src, onClick }) => {
   const { icon, emoji, bgColor } = useMemo(() => FlagSrc.decode(src), [src]);
   const clickHandler = useEvent(() => onClick?.(src));
   return (
@@ -24,4 +24,4 @@ const Flag: FC<Props> = ({ className, src, onClick }) => {
   );
 };
 
-export default memo(Flag);
+export default memo(Component);

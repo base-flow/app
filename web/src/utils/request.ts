@@ -63,7 +63,7 @@ instance.interceptors.response.use(
       // });
     }
     const errorMessage = `${toErrorMessage(httpErrorCode)}(${data.message || requestUrl}）`;
-    if (httpErrorCode && !requestHeaders.Quiet) {
+    if (!requestHeaders.Quiet) {
       BaseWidgets.message?.error(errorMessage);
     }
     throw new Error(`(${httpErrorCode})${requestUrl}`);

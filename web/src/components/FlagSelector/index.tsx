@@ -1,7 +1,7 @@
 import emojiData from "@emoji-mart/data";
 import { Button, Popover } from "antd";
 import type { FC } from "react";
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { useEvent } from "@/utils/hooks";
 import Flag from "../Flag";
 import { FlagSrc } from "../utils";
@@ -14,7 +14,7 @@ interface Props {
   fontSize?: string;
 }
 
-const FlagSelector: FC<Props> = ({ value = "emoji://#fef7c3@:smile:@😄", onChange, fontSize = "15px" }) => {
+const Component: FC<Props> = ({ value = "emoji://#fef7c3@:smile:@😄", onChange, fontSize = "15px" }) => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState({ ...FlagSrc.decode(value), value });
   const [current, setCurrent] = useState(selected);
@@ -89,4 +89,4 @@ const FlagSelector: FC<Props> = ({ value = "emoji://#fef7c3@:smile:@😄", onCha
   );
 };
 
-export default FlagSelector;
+export default memo(Component);

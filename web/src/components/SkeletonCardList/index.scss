@@ -1,0 +1,10 @@
+.comp-SkeletonCardList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  .ant-skeleton-node {
+    width: 250px !important;
+    height: 120px !important;
+  }
+}

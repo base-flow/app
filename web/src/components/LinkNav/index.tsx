@@ -16,7 +16,7 @@ export interface LinkNavProps {
   onClick?: (item: LinkProps) => void;
 }
 
-const LinkNav: FC<LinkNavProps> = ({ className, size, links, onClick }) => {
+const Component: FC<LinkNavProps> = ({ className, size, links, onClick }) => {
   return (
     <div className={classnames("comp-LinkNav", className, size)}>
       {links.map((item, index) =>
@@ -36,4 +36,4 @@ const LinkNav: FC<LinkNavProps> = ({ className, size, links, onClick }) => {
   );
 };
 
-export default memo(LinkNav);
+export default memo(Component);

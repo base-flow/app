@@ -1,14 +1,18 @@
 import type { LinkProps } from "@tanstack/react-router";
-import { Chromium, Plus, Server, Settings } from "lucide-react";
+import { Chromium, FolderGit, Server, Settings2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo } from "react";
 import LinkNav from "@/components/LinkNav";
+import { DomIds } from "@/const";
+import { useEvent, usePermissions } from "@/utils/hooks";
 
-interface SideMenuProps {
+interface NodeMenuProps {
   type: "actuator" | "trigger";
 }
 
-const SideMenu: FC<SideMenuProps> = ({ type }) => {
+const NodeMenu: FC<NodeMenuProps> = ({ type }) => {
+  const { permissions } = usePermissions();
+
   const nodeItems = useMemo(() => {
     const list: LinkProps[] =
       type === "actuator"
@@ -60,34 +64,55 @@ const SideMenu: FC<SideMenuProps> = ({ type }) => {
   }, [type]);
 
   const configItems = useMemo(() => {
-    const list: LinkProps[] = [
-      {
-        to: "/apps",
+    const list: LinkProps[] = [];
+    if (permissions.node_create) {
+      list.push({
+        href: "createNode",
         children: (
           <>
-            <Plus size={13} />
+            <Settings2 size={13} />
             <span>添加节点</span>
           </>
         ),
-      },
-    ];
+      });
+      list.push({
+        href: "createFolder",
+        children: (
+          <>
+            <FolderGit size={13} />
+            <span>添加文件夹</span>
+          </>
+        ),
+      });
+    }
     return list;
-  }, []);
+  }, [permissions]);
+
+  const onConfigItemClick = useEvent((item: LinkProps) => {
+    if (item.href === "createNode") {
+      const btn = document.getElementById(DomIds.Button_CreateNode);
+      btn?.click();
+    } else if (item.href === "createFolder") {
+      const btn = document.getElementById(DomIds.Button_CreateNodeFolder);
+      btn?.click();
+    }
+  });
 
   return (
     <div className="g-nav">
       <div>
         <LinkNav links={nodeItems} />
       </div>
-      <div className="config">
-        <div className="title">
-          <Settings size={12} />
-          <span style={{ marginLeft: "5px" }}>管理</span>
+      {permissions.node_create && (
+        <div className="config">
+          <div className="title">
+            <span>管理</span>
+          </div>
+          <LinkNav links={configItems} size="small" onClick={onConfigItemClick} />
         </div>
-        <LinkNav links={configItems} size="small" />
-      </div>
+      )}
     </div>
   );
 };
 
-export default memo(SideMenu);
+export default memo(NodeMenu);

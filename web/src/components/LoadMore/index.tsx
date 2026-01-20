@@ -9,7 +9,7 @@ export interface VersionSelectProps {
   hasNextPage: boolean;
 }
 
-const VersionSelect: FC<VersionSelectProps> = ({ fetchNextPage, isFetching, hasNextPage }) => {
+const Component: FC<VersionSelectProps> = ({ fetchNextPage, isFetching, hasNextPage }) => {
   return (
     <Divider plain>
       <span className={classnames({ enable: !isFetching && hasNextPage })} onClick={() => fetchNextPage()}>
@@ -19,4 +19,4 @@ const VersionSelect: FC<VersionSelectProps> = ({ fetchNextPage, isFetching, hasN
   );
 };
 
-export default memo(VersionSelect);
+export default memo(Component);

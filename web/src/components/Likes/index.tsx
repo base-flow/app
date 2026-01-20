@@ -6,7 +6,7 @@ export type LikesProps = {
   likesNum?: number;
 };
 
-const Likes: FC<LikesProps> = ({ likesNum = 0 }) => {
+const Component: FC<LikesProps> = ({ likesNum = 0 }) => {
   return (
     <div className="comp-Likes">
       <span className="btn anticon">
@@ -24,4 +24,4 @@ const Likes: FC<LikesProps> = ({ likesNum = 0 }) => {
   );
 };
 
-export default memo(Likes);
+export default memo(Component);

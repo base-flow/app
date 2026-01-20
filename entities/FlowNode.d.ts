@@ -18,7 +18,7 @@ declare namespace FlowNode {
     likes?: number;
     collected?: boolean;
     isFolder?: boolean;
-    isSystem?: boolean;
+    parent?: string;
   }
 
   type IQueryResult = App.IQueryResult<INode, IQuery>;

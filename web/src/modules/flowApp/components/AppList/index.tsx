@@ -8,6 +8,7 @@ import { useShallow } from "zustand/react/shallow";
 import FieldSorter from "@/components/FieldSorter";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
+import SkeletonCardList from "@/components/SkeletonCardList";
 import { FlagSrc } from "@/components/utils";
 import { useAppStore } from "@/modules/app/store";
 import { useEvent, usePermissions } from "@/utils/hooks";
@@ -105,7 +106,10 @@ const AppList: FC<AppListProps> = (props) => {
   if (!appList || !appListSummary) {
     return (
       <section className="g-page">
-        <LoadingMask show />
+        <div className="hd"></div>
+        <div className="bd">
+          <SkeletonCardList />
+        </div>
       </section>
     );
   }
@@ -115,9 +119,11 @@ const AppList: FC<AppListProps> = (props) => {
       <LoadingMask show={apps.isFetching || appAlter.isPending || appDeleter.isPending} />
       <div className="hd">
         <div>
-          <Button disabled={!permissions.app_create} color="primary" variant="text" icon={<SquarePlus size={14} />} onClick={onCreate}>
-            创建应用
-          </Button>
+          {permissions.app_create && (
+            <Button color="primary" variant="text" icon={<SquarePlus size={14} />} onClick={onCreate}>
+              创建应用
+            </Button>
+          )}
         </div>
         <div className="space">
           <SearchInput variant="filled" onChange={onSearch} value={query.keyword} />

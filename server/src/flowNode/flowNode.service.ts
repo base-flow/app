@@ -32,7 +32,6 @@ actuatorList2.unshift(
     createDate: "",
     createBy: "",
     updateBy: "",
-    isSystem: true,
     isFolder: true,
   },
   {
@@ -221,7 +220,6 @@ triggerList2.unshift({
   createDate: "",
   createBy: "",
   updateBy: "",
-  isSystem: true,
 });
 
 const actuatorList1: FlowNode.INode[] = [
@@ -235,9 +233,8 @@ const actuatorList1: FlowNode.INode[] = [
     icon: "",
     updateDate: "",
     createDate: "",
-    createBy: "",
+    createBy: "2",
     updateBy: "",
-    isSystem: true,
     isFolder: true,
   },
   {
@@ -252,7 +249,6 @@ const actuatorList1: FlowNode.INode[] = [
     createDate: "",
     createBy: "",
     updateBy: "",
-    isSystem: true,
     isFolder: true,
   },
   {
@@ -289,7 +285,6 @@ const triggerList1: FlowNode.INode[] = [
     createDate: "",
     createBy: "",
     updateBy: "",
-    isSystem: true,
     isFolder: true,
   },
   {
@@ -304,7 +299,6 @@ const triggerList1: FlowNode.INode[] = [
     createDate: "",
     createBy: "",
     updateBy: "",
-    isSystem: true,
     isFolder: true,
   },
   {
@@ -319,7 +313,6 @@ const triggerList1: FlowNode.INode[] = [
     createDate: "",
     createBy: "",
     updateBy: "",
-    isSystem: true,
     isFolder: true,
   },
   {
@@ -334,7 +327,6 @@ const triggerList1: FlowNode.INode[] = [
     createDate: "",
     createBy: "",
     updateBy: "",
-    isSystem: true,
     isFolder: true,
   },
   {
@@ -349,7 +341,6 @@ const triggerList1: FlowNode.INode[] = [
     createDate: "",
     createBy: "",
     updateBy: "",
-    isSystem: true,
     isFolder: true,
   },
   {
@@ -364,7 +355,6 @@ const triggerList1: FlowNode.INode[] = [
     createDate: "",
     createBy: "",
     updateBy: "",
-    isSystem: true,
     isFolder: true,
   },
 ];

@@ -2,6 +2,8 @@ declare namespace App {
   type AppAssignUserScope = "all" | "admin" | "dev";
   type AppListScope = "all" | "involved";
   type FlowViewScope = "all" | "blockingConfigs";
+  type ResourceOwnerScope = "all" | "owner";
+
   interface Actions {
     app_list: AppListScope;
     app_view: "all";
@@ -14,7 +16,11 @@ declare namespace App {
     flow_edit: "all";
     flow_create: "all";
     flow_delete: "all";
-    user_list: "all";
+    node_list: "all";
+    node_view: "all";
+    node_edit: ResourceOwnerScope;
+    node_create: "all";
+    node_delete: ResourceOwnerScope;
   }
 
   type SysRole = "Admin" | "Member" | "Guest";

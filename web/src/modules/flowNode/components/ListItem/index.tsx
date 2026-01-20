@@ -12,64 +12,77 @@ const DefaultFolderIcon =
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjY0IDY0IDg5NiA4OTYiIHdpZHRoPSI4OTZweCIgaGVpZ2h0PSI4OTZweCIgc3R5bGU9ImZpbGw6IzJiN2JlYSI+PHBhdGggZD0iTTE2MCAxNDRoMzA0YTE2IDE2IDAgMDExNiAxNnYzMDRhMTYgMTYgMCAwMS0xNiAxNkgxNjBhMTYgMTYgMCAwMS0xNi0xNlYxNjBhMTYgMTYgMCAwMTE2LTE2bTU2NC4zMS0yNS4zM2wxODEuMDIgMTgxLjAyYTE2IDE2IDAgMDEwIDIyLjYyTDcyNC4zMSA1MDMuMzNhMTYgMTYgMCAwMS0yMi42MiAwTDUyMC42NyAzMjIuMzFhMTYgMTYgMCAwMTAtMjIuNjJsMTgxLjAyLTE4MS4wMmExNiAxNiAwIDAxMjIuNjIgME0xNjAgNTQ0aDMwNGExNiAxNiAwIDAxMTYgMTZ2MzA0YTE2IDE2IDAgMDEtMTYgMTZIMTYwYTE2IDE2IDAgMDEtMTYtMTZWNTYwYTE2IDE2IDAgMDExNi0xNm00MDAgMGgzMDRhMTYgMTYgMCAwMTE2IDE2djMwNGExNiAxNiAwIDAxLTE2IDE2SDU2MGExNiAxNiAwIDAxLTE2LTE2VjU2MGExNiAxNiAwIDAxMTYtMTYiPjwvcGF0aD48L3N2Zz4=";
 
 interface Props {
-  data: FlowNode.INode;
-  setCurEdit: (data: FlowNode.INode) => void;
+  item: FlowNode.INode;
+  permissions: App.IPermissions;
+  authId: string;
+  setCurEdit: (item: FlowNode.INode) => void;
   onDelete: (id: string, name: string) => void;
   onCollect: (id: string, collected: boolean) => void;
-  onItemClick: (data: FlowNode.INode) => void;
+  onItemClick: (item: FlowNode.INode) => void;
 }
 
-const Component: FC<Props> = ({ data, setCurEdit, onDelete, onCollect, onItemClick }) => {
+const Component: FC<Props> = ({ item, permissions, authId, setCurEdit, onDelete, onCollect, onItemClick }) => {
   return (
-    <div className={classnames(styles.NodeListItem, "g-card", { folder: data.isFolder })} onClick={() => onItemClick(data)}>
-      <Collect absolute id={data.id} value={data.collected} onChange={onCollect} />
+    <div className={classnames(styles.NodeListItem, "g-card", { folder: item.isFolder })} onClick={() => onItemClick(item)}>
+      <Collect absolute id={item.id} value={item.collected} onChange={onCollect} />
       <div className="head-icon">
-        <img className="icon" alt="node" src={data.icon || (data.isFolder ? DefaultFolderIcon : DefaultIcon)} />
-        <h4 className="title">{data.name}</h4>
-        <div className={classnames("info", data.isFolder ? "g-dot" : `${styles.NodeListItem}__package`)}>
-          {data.isFolder ? (
-            <span>{data.package}</span>
+        <img className="icon" alt="node" src={item.icon || (item.isFolder ? DefaultFolderIcon : DefaultIcon)} />
+        <h4 className="title">{item.name}</h4>
+        <div className={classnames("info", item.isFolder ? "g-dot" : `${styles.NodeListItem}__package`)}>
+          {item.isFolder ? (
+            <span>{item.package}</span>
           ) : (
             <>
               <ExternalLink className="icon" size={10} />
-              <a className="link">{data.package}</a>
+              <a className="link">{item.package}</a>
             </>
           )}
         </div>
       </div>
-      <div className="summary" title={data.desc}>
-        {data.desc}
+      <div className="summary" title={item.desc}>
+        {item.desc}
       </div>
-      {!data.isFolder && (
+      {!item.isFolder && (
         <div className="footer">
-          <Likes likesNum={data.likes} />
+          <Likes likesNum={item.likes} />
           <div>v1.0.0</div>
         </div>
       )}
-      <div className="tools">
-        <div
-          title="编辑"
-          className="btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            setCurEdit(data);
-          }}
-        >
-          <SquarePen size={13} />
+      {(permissions.node_edit === "all" ||
+        (permissions.node_edit === "owner" && item.createBy === authId) ||
+        permissions.node_delete === "all" ||
+        (permissions.node_delete === "owner" && item.createBy === authId)) && (
+        <div className="tools">
+          {permissions.node_edit === "all" ||
+            (permissions.node_edit === "owner" && item.createBy === authId && (
+              <div
+                title="编辑"
+                className="btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setCurEdit(item);
+                }}
+              >
+                <SquarePen size={13} />
+              </div>
+            ))}
+          {permissions.node_delete === "all" ||
+            (permissions.node_delete === "owner" && item.createBy === authId && (
+              <div
+                title="删除"
+                className="btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  onDelete(item.id, item.name);
+                }}
+              >
+                <Trash2 size={13} />
+              </div>
+            ))}
         </div>
-        <div
-          title="删除"
-          className="btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            onDelete(data.id, data.name);
-          }}
-        >
-          <Trash2 size={13} />
-        </div>
-      </div>
+      )}
     </div>
   );
 };

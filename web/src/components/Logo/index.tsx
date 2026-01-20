@@ -1,4 +1,6 @@
-export default function Logo(props: { className?: string }): React.ReactNode {
+import { memo } from "react";
+
+function Component(props: { className?: string }): React.ReactNode {
   return (
     <span className={props.className}>
       <svg viewBox="35.021 278.708 157.736 23.5" width="157.736px" height="23.5px">
@@ -16,3 +18,4 @@ export default function Logo(props: { className?: string }): React.ReactNode {
     </span>
   );
 }
+export default memo(Component);
