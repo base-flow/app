@@ -2,13 +2,13 @@ import { getLocale } from "@baseflow/react";
 import { StringSelect } from "@baseflow/widgets";
 import { Link, useMatchRoute, useRouter } from "@tanstack/react-router";
 import { Button, Dropdown } from "antd";
-import { LampCeiling, LayoutGrid, ListPlus, LogOut, MousePointerClick, NotepadText, Settings2 } from "lucide-react";
+import { HatGlasses, LayoutGrid, ListPlus, LogOut, MousePointerClick, NotepadText, Settings2, UserRoundPen, Wifi } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
-import { LOCALE_KEY } from "@/const";
+import { LOCALE_KEY, MY_PERSONAL_ID } from "@/const";
 import { useAppStore } from "@/modules/app/store";
 import styles from "./index.module.scss";
 
@@ -17,7 +17,8 @@ const Header: FC = () => {
   const router = useRouter();
   const [auth, logout] = useAppStore(useShallow(({ auth, logout }) => [auth, logout]));
   const matchRoute = useMatchRoute();
-  const isGraph = matchRoute({ to: "/flow/$flowId" });
+  // const isGraph = matchRoute({ to: "/flow/$flowId" });
+  const isPersonal = matchRoute({ to: "/personal/$personalId", fuzzy: true });
 
   const userMenu: any = useMemo(() => {
     return {
@@ -56,31 +57,23 @@ const Header: FC = () => {
   // });
   // console.log(pathname);
 
-  if (isGraph) {
-    return null;
-  }
   return (
     <div className={styles.Header}>
       <Logo className={`${styles.Header}__logo`} />
       <div className="main">
         <nav className={`${styles.Header}__nav`}>
-          <Link
-            to="/dashboard"
-            activeProps={{
-              className: "on",
-            }}
-          >
-            <LampCeiling size={15} strokeWidth={2.5} />
-            <span>工作台</span>
+          <Link to="/personal/$personalId/workflow" params={{ personalId: MY_PERSONAL_ID }} className={isPersonal ? "on" : ""}>
+            <UserRoundPen size={14} strokeWidth={2.5} />
+            <span>个人空间</span>
           </Link>
           <Link
-            to="/apps"
+            to="/project"
             activeProps={{
               className: "on",
             }}
           >
-            <LayoutGrid size={15} strokeWidth={2.5} />
-            <span>应用</span>
+            <LayoutGrid size={14} strokeWidth={2.5} />
+            <span>项目空间</span>
           </Link>
           <Link
             to="/actuators"
@@ -88,10 +81,10 @@ const Header: FC = () => {
               className: "on",
             }}
           >
-            <Settings2 size={16} strokeWidth={2.5} />
-            <span>节点</span>
+            <Wifi size={14} strokeWidth={2.5} />
+            <span>开放空间</span>
           </Link>
-          <Link
+          {/* <Link
             to="/triggers"
             activeProps={{
               className: "on",
@@ -115,9 +108,9 @@ const Header: FC = () => {
               className: "on",
             }}
           >
-            <NotepadText size={15} strokeWidth={2.5} />
+            <NotepadText size={14} strokeWidth={2.5} />
             <span>模版</span>
-          </Link>
+          </Link> */}
           {/* <a href="https://www.baidu.com" target="_blank" rel="noreferrer noopener">
             <BulbFilled />
             <span>探索</span>

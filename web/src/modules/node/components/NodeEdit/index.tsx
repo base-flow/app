@@ -5,7 +5,7 @@ import type { FC } from "react";
 import { memo, useCallback } from "react";
 import FlagSelector from "@/components/FlagSelector";
 import LoadingMask from "@/components/LoadingMask";
-import { FlowNodeAPI } from "../../api";
+import { NodeAPI } from "../../api";
 import styles from "./index.module.scss";
 
 const FormItem = Form.Item;
@@ -24,8 +24,8 @@ const modifyTitle = (
   </>
 );
 export interface Props {
-  setItem: (item: FlowNode.INode | undefined) => void;
-  item?: FlowNode.INode;
+  setItem: (item: _Node.INode | _App.IDirectory | undefined) => void;
+  item?: _Node.INode | _App.IDirectory;
   currentPath: string;
 }
 
@@ -37,12 +37,12 @@ const AppEdit: FC<Props> = ({ item, setItem, currentPath }) => {
   }, [setItem]);
 
   const nodeEdit = useMutation({
-    mutationFn: FlowNodeAPI.editItem,
+    mutationFn: NodeAPI.editItem,
     onSuccess: (result, args) => {
       setItem(undefined);
       const id = result.id;
-      queryClient.invalidateQueries({ queryKey: [FlowNodeAPI.listQueryKey] });
-      queryClient.invalidateQueries({ queryKey: [FlowNodeAPI.itemQueryKey, id] });
+      queryClient.invalidateQueries({ queryKey: [NodeAPI.listQueryKey] });
+      queryClient.invalidateQueries({ queryKey: [NodeAPI.itemQueryKey, id] });
     },
   });
 

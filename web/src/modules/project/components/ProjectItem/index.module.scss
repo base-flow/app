@@ -1,0 +1,32 @@
+:global {
+  :local(.ProjectItem) {
+    height: 144px;
+
+    > .head-icon {
+      padding-bottom: 10px;
+      padding-left: 45px;
+
+      > .title {
+        margin-bottom: 7px;
+      }
+
+      > .icon {
+        width: 34px;
+        height: 34px;
+      }
+    }
+
+    > .footer {
+      > .flows {
+        display: flex;
+        gap: 3px;
+      }
+
+      > .member {
+        display: flex;
+        gap: 2px;
+        color: var(--bf-third);
+      }
+    }
+  }
+}

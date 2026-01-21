@@ -170,9 +170,15 @@ a {
   justify-content: space-between;
   height: 100%;
   padding: 16px 15px;
+  padding-top: 25px;
 
-  > .menu {
-    padding-top: 10px;
+  small {
+    margin-left: 2px;
+  }
+
+  em {
+    font-style: normal;
+    color: var(--bf-tx-lesser);
   }
 
   > .config {
@@ -183,6 +189,47 @@ a {
       margin-bottom: 8px;
       font-size: 11px;
       border-bottom: 1px solid var(--bf-bd-input);
+    }
+  }
+}
+
+.g-head {
+  position: relative;
+  box-sizing: border-box;
+  max-width: 45%;
+  height: 45px;
+  padding-top: 5px;
+  padding-left: 55px;
+
+  > .icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 15px;
+  }
+
+  > .title {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  > .info {
+    display: block;
+    margin-top: 9px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 11px;
+    color: var(--bf-tx-lesser);
+    white-space: nowrap;
+  }
+
+  .comp-IconEdit {
+    margin-left: 3px;
+    color: var(--bf-bd-input);
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.3);
     }
   }
 }

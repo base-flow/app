@@ -1,0 +1,25 @@
+:global {
+  :local(.NodeItem) {
+    height: 140px;
+
+    &:global(__package) {
+      padding-left: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      > .icon {
+        position: absolute;
+        margin-left: -12px;
+      }
+
+      > .link {
+        cursor: pointer;
+
+        &:hover {
+          color: var(--bf-primary);
+        }
+      }
+    }
+  }
+}

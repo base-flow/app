@@ -12,12 +12,15 @@ export const API_PROXY: { "/i18n/": string; "/api/": string } = (window.API_PROX
 export const AUTH_TOKEN_KEY = "_baseflow_auth_token_key_";
 export const PAGE_SIZE_OPTIONS = ["20", "50", "100"];
 export const LOCALE_KEY = "_baseflow_locale_key_";
+export const MY_PERSONAL_ID = "~";
+export const DEFAULT_HOME = `/personal/${MY_PERSONAL_ID}/workflow`;
+
 export const DomIds = {
   Button_CreateNode: "_Button_CreateNode_",
   Button_CreateNodeFolder: "_Button_CreateNodeFolder_",
 };
 
-export const AppRoleOptions = [
+export const ProjectRoleOptions = [
   {
     key: "Owner",
     label: "Owner",
@@ -45,19 +48,19 @@ export const AppRoleOptions = [
   },
 ];
 
-export function GetAppRoleOptions(scope: App.AppAssignUserScope): { key: string; label: string; value: string }[] {
+export function GetProjectRoleOptions(scope: _Permission.ProjectAssignUserScope): { key: string; label: string; value: string }[] {
   if (scope === "all") {
-    return AppRoleOptions;
+    return ProjectRoleOptions;
   } else if (scope === "admin") {
-    return AppRoleOptions.slice(1);
+    return ProjectRoleOptions.slice(1);
   } else if (scope === "dev") {
-    return AppRoleOptions.slice(2);
+    return ProjectRoleOptions.slice(2);
   } else {
     return [];
   }
 }
 
-const AppRoleLevel: { [key in App.AppRole]: number } = {
+const ProjectRoleLevel: { [key in _Permission.ProjectRole]: number } = {
   Owner: 5,
   Admin: 4,
   Developer: 3,
@@ -65,13 +68,13 @@ const AppRoleLevel: { [key in App.AppRole]: number } = {
   Member: 1,
 };
 
-export function AppRoleLower(scope: App.AppAssignUserScope, target: App.AppRole): boolean {
+export function ProjectRoleLowerThan(scope: _Permission.ProjectAssignUserScope, than: _Permission.ProjectRole): boolean {
   if (scope === "all") {
     return true;
   } else if (scope === "admin") {
-    return AppRoleLevel.Owner > AppRoleLevel[target];
+    return ProjectRoleLevel.Owner > ProjectRoleLevel[than];
   } else if (scope === "dev") {
-    return AppRoleLevel.Admin > AppRoleLevel[target];
+    return ProjectRoleLevel.Admin > ProjectRoleLevel[than];
   }
   return true;
 }

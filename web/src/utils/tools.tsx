@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { API_PROXY, AUTH_TOKEN_KEY, LoginPage } from "../const";
+import { API_PROXY, AUTH_TOKEN_KEY, DEFAULT_HOME, LoginPage } from "../const";
 import { router } from "../router";
 
 export const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
@@ -9,7 +9,7 @@ export function getAuthToken(): string {
 }
 
 export function getUserRedirect(redirect?: string): string {
-  return !redirect || redirect === "/" ? "/dashboard" : redirect;
+  return !redirect || redirect === "/" ? DEFAULT_HOME : redirect;
 }
 
 export function isEmptyObject(obj: any): boolean {
@@ -65,4 +65,7 @@ export function arrayInsertSeparator(arr: any[], separator: any): any[] {
 export function messageWrap(message: string): ReactNode {
   const arr = message.split("\n");
   return arr.length > 1 ? arr.map((line) => <div key={line}>{line}</div>) : message;
+}
+export function isDirectory(item: { type: string }): item is _App.IDirectory {
+  return item.type === "directory";
 }

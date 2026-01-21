@@ -1,0 +1,13 @@
+.comp-IconEdit {
+  font-size: 14px;
+  color: var(--bf-bd-input);
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.3);
+  }
+
+  > svg {
+    pointer-events: none;
+  }
+}

@@ -3,4 +3,5 @@ export interface TokenPayload {
   username: string;
   nickname: string;
   roles: string[];
+  directory: string;
 }

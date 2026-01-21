@@ -1,13 +1,13 @@
 declare namespace _Workflow {
   interface Query extends _Resource.IQuery {
-    scope?: _App.Scope;
-    runtime?: _App.Runtime;
     directory?: string;
+    runtime?: _App.Runtime;
   }
 
   interface IWorkflow extends _Resource.IItem {
     name: string;
     type: "workflow";
+    directoryId: string;
     desc: string;
   }
 

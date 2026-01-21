@@ -10,9 +10,9 @@ import SearchInput from "@/components/SearchInput";
 import SkeletonCardList from "@/components/SkeletonCardList";
 import { DomIds } from "@/const";
 import { useEvent, useFolderRoute, usePermissions } from "@/utils/hooks";
-import { FlowNodeAPI } from "../../api";
-import ListItem from "../ListItem";
+import { NodeAPI } from "../../api";
 import NodeEdit from "../NodeEdit";
+import ListItem from "../NodeItem";
 
 const StoreOptions: { label: string; value: string }[] = [
   { label: "开放平台", value: "remote" },
@@ -21,18 +21,18 @@ const StoreOptions: { label: string; value: string }[] = [
 
 const SorterOptions: SortField[] = ["collect", "createDate", "likes"];
 
-const NodeList: FC<{ query: FlowNode.IQuery }> = (props) => {
+const NodeList: FC<{ query: _Node.Query }> = (props) => {
   const { permissions, auth } = usePermissions();
   const router = useRouter();
   const [query, setQuery] = useState(props.query);
   useMemo(() => setQuery(props.query), [props.query]);
-  const queryOptions = useMemo(() => FlowNodeAPI.queryList(query), [query]);
+  const queryOptions = useMemo(() => NodeAPI.queryList(query), [query]);
   const nodes = useQuery(queryOptions);
   const nodeList = nodes.data?.list;
   const nodeListSummary = nodes.data?.summary;
   const queryClient = useQueryClient();
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const [curEdit, setCurEdit] = useState<FlowNode.INode>();
+  const [curEdit, setCurEdit] = useState<_Node.INode | _App.IDirectory>();
 
   const onStoreChange = useEvent((store?: "remote" | "local") => {
     router.navigate({ to: ".", search: { store, runtime: query.runtime } });
@@ -54,26 +54,26 @@ const NodeList: FC<{ query: FlowNode.IQuery }> = (props) => {
   });
 
   const onCreate = useEvent(() => {
-    setCurEdit({} as FlowNode.INode);
+    setCurEdit({} as _Node.INode);
   });
 
   const nodeDeleter = useMutation({
-    mutationFn: FlowNodeAPI.deleteItem,
+    mutationFn: NodeAPI.deleteItem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [FlowNodeAPI.listQueryKey] });
+      queryClient.invalidateQueries({ queryKey: [NodeAPI.listQueryKey] });
     },
   });
 
   const nodeAlter = useMutation({
-    mutationFn: FlowNodeAPI.editItem,
+    mutationFn: NodeAPI.editItem,
     onSuccess: (result, args) => {
-      queryClient.invalidateQueries({ queryKey: [FlowNodeAPI.listQueryKey] });
-      queryClient.invalidateQueries({ queryKey: [FlowNodeAPI.itemQueryKey, args.id] });
+      queryClient.invalidateQueries({ queryKey: [NodeAPI.listQueryKey] });
+      queryClient.invalidateQueries({ queryKey: [NodeAPI.itemQueryKey, args.id] });
     },
   });
 
   const onCollect = useEvent((id: string, collected: boolean) => {
-    nodeAlter.mutate({ id, collected });
+    //nodeAlter.mutate({ id, collected });
   });
 
   const onDelete = useEvent((id: string, name: string) => {
@@ -84,9 +84,9 @@ const NodeList: FC<{ query: FlowNode.IQuery }> = (props) => {
     });
   });
 
-  const onItemClick = useEvent((item: FlowNode.INode) => {
-    if (item.isFolder) {
-      setQuery({ ...query, keyword: undefined, parent: item.id });
+  const onItemClick = useEvent((item: _Node.INode | _App.IDirectory) => {
+    if (item.type === "directory") {
+      setQuery({ ...query, keyword: undefined, directory: item.id });
     }
   });
 
@@ -176,12 +176,12 @@ const NodeList: FC<{ query: FlowNode.IQuery }> = (props) => {
       </div>
       <NodeEdit item={curEdit} setItem={setCurEdit} currentPath={currentPath.label} />
       <div className="ft" style={{ display: "none" }}>
-        <span id={DomIds.Button_CreateNode} onClick={() => setCurEdit({ type: query.type, parent: currentPath.value } as FlowNode.INode)}>
+        {/* <span id={DomIds.Button_CreateNode} onClick={() => setCurEdit({ type: query.type, parent: currentPath.value } as _Node.INode)}>
           createNode
         </span>
-        <span id={DomIds.Button_CreateNodeFolder} onClick={() => setCurEdit({ type: query.type, parent: currentPath.value } as FlowNode.INode)}>
+        <span id={DomIds.Button_CreateNodeFolder} onClick={() => setCurEdit({ type: query.type, parent: currentPath.value } as _Node.INode)}>
           createFolder
-        </span>
+        </span> */}
       </div>
     </section>
   );

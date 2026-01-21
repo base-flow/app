@@ -1,0 +1,101 @@
+:global {
+  :local(.ProjectMembers) {
+    width: 100%;
+    height: 500px;
+
+    > .hd {
+      > .fetch-user {
+        width: 100%;
+      }
+
+      > .count {
+        padding: 4px 10px 4px 0;
+        font-size: 11px;
+        color: var(--bf-third);
+        text-align: right;
+      }
+    }
+
+    > .bd {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 0;
+      place-content: flex-start space-between;
+      height: 440px;
+      padding-right: 10px;
+      padding-left: 10px;
+      overflow: auto;
+    }
+
+    &:global(__item) {
+      position: relative;
+      box-sizing: border-box;
+      width: 49.4%;
+      padding: 5px 10px 5px 0;
+      background: var(--bf-bg-side);
+      border: 1px solid var(--bf-bd-input);
+      border-radius: var(--bf-rd-btn);
+
+      &:hover {
+        background: #fff;
+      }
+
+      &.cur {
+        background: linear-gradient(180deg, #eff5ff 0%, #fff 100%);
+      }
+
+      > .remove {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: var(--bf-bd-input);
+
+        &:hover {
+          color: var(--bf-primary);
+          cursor: pointer;
+        }
+      }
+
+      > .label {
+        padding: 5px 10px 2px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        > .avatar {
+          margin-right: 4px;
+        }
+
+        > .username {
+          margin-left: 3px;
+          font-size: 11px;
+          color: var(--bf-tx-lesser);
+          text-decoration: underline;
+        }
+      }
+
+      > .role {
+        margin-left: 2px;
+        font-size: 12px;
+        color: var(--bf-third);
+      }
+
+      > .info {
+        vertical-align: middle;
+        color: var(--bf-tx-placeholder);
+        cursor: pointer;
+
+        &:hover {
+          color: var(--bf-primary);
+        }
+      }
+    }
+
+    &:global(__fetch) {
+      padding-right: 10px;
+      margin-right: 5px;
+      color: var(--bf-tx-summary);
+      border-right: 1px solid #ddd;
+    }
+  }
+}

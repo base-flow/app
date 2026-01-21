@@ -14,6 +14,8 @@ const list: _Project.IProject[] = mockjs
         desc: "@csentence(20, 60)",
         updateDate: "@datetime",
         totalItems: 34,
+        totalWorkflows: 4,
+        totalNodes: 5,
       },
     ],
   })

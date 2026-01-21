@@ -15,7 +15,11 @@ export const router = createRouter({
     </div>
   ),
   defaultErrorComponent: CatchBoundary,
-  defaultNotFoundComponent: () => NotFound,
+  defaultNotFoundComponent: () => (
+    <section>
+      <NotFound />
+    </section>
+  ),
   //defaultPreload: "intent",
   context: {
     queryClient,

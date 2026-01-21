@@ -1,0 +1,27 @@
+:global {
+  :local(.WorkflowList) {
+    > .hd {
+      align-items: flex-end;
+      padding: 25px;
+    }
+
+    .ant-pagination {
+      margin: 30px 0 0 !important;
+    }
+
+    .comp-Collect {
+      margin-left: 5px;
+    }
+
+    &:global(__item) {
+      padding-left: 18px;
+
+      > .doc-icon {
+        position: absolute;
+        margin-top: 4px;
+        margin-left: -18px;
+        color: var(--bf-tx-summary);
+      }
+    }
+  }
+}

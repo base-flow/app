@@ -12,16 +12,17 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthTriggersRouteRouteImport } from './routes/_auth/triggers/route'
-import { Route as AuthDashboardRouteRouteImport } from './routes/_auth/dashboard/route'
-import { Route as AuthActuatorsRouteRouteImport } from './routes/_auth/actuators/route'
-import { Route as AuthTriggersIndexRouteImport } from './routes/_auth/triggers/index'
-import { Route as AuthDashboardIndexRouteImport } from './routes/_auth/dashboard/index'
-import { Route as AuthAppsIndexRouteImport } from './routes/_auth/apps/index'
-import { Route as AuthActuatorsIndexRouteImport } from './routes/_auth/actuators/index'
-import { Route as AuthFlowFlowIdRouteImport } from './routes/_auth/flow/$flowId'
-import { Route as AuthAppsAppIdRouteRouteImport } from './routes/_auth/apps/$appId/route'
-import { Route as AuthAppsAppIdFlowsRouteImport } from './routes/_auth/apps/$appId/flows'
+import { Route as AuthTriggerRouteRouteImport } from './routes/_auth/trigger/route'
+import { Route as AuthExecutorRouteRouteImport } from './routes/_auth/executor/route'
+import { Route as AuthTriggerIndexRouteImport } from './routes/_auth/trigger/index'
+import { Route as AuthProjectIndexRouteImport } from './routes/_auth/project/index'
+import { Route as AuthExecutorIndexRouteImport } from './routes/_auth/executor/index'
+import { Route as AuthWorkflowWorkflowIdRouteImport } from './routes/_auth/workflow/$workflowId'
+import { Route as AuthProjectProjectIdRouteRouteImport } from './routes/_auth/project/$projectId/route'
+import { Route as AuthPersonalPersonalIdRouteRouteImport } from './routes/_auth/personal/$personalId/route'
+import { Route as AuthProjectProjectIdWorkflowRouteImport } from './routes/_auth/project/$projectId/workflow'
+import { Route as AuthPersonalPersonalIdWorkflowRouteImport } from './routes/_auth/personal/$personalId/workflow'
+import { Route as AuthPersonalPersonalIdNodeRouteImport } from './routes/_auth/personal/$personalId/node'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -37,139 +38,157 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthTriggersRouteRoute = AuthTriggersRouteRouteImport.update({
-  id: '/triggers',
-  path: '/triggers',
+const AuthTriggerRouteRoute = AuthTriggerRouteRouteImport.update({
+  id: '/trigger',
+  path: '/trigger',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthDashboardRouteRoute = AuthDashboardRouteRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AuthExecutorRouteRoute = AuthExecutorRouteRouteImport.update({
+  id: '/executor',
+  path: '/executor',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthActuatorsRouteRoute = AuthActuatorsRouteRouteImport.update({
-  id: '/actuators',
-  path: '/actuators',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthTriggersIndexRoute = AuthTriggersIndexRouteImport.update({
+const AuthTriggerIndexRoute = AuthTriggerIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthTriggersRouteRoute,
+  getParentRoute: () => AuthTriggerRouteRoute,
 } as any)
-const AuthDashboardIndexRoute = AuthDashboardIndexRouteImport.update({
+const AuthProjectIndexRoute = AuthProjectIndexRouteImport.update({
+  id: '/project/',
+  path: '/project/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthExecutorIndexRoute = AuthExecutorIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthDashboardRouteRoute,
+  getParentRoute: () => AuthExecutorRouteRoute,
 } as any)
-const AuthAppsIndexRoute = AuthAppsIndexRouteImport.update({
-  id: '/apps/',
-  path: '/apps/',
+const AuthWorkflowWorkflowIdRoute = AuthWorkflowWorkflowIdRouteImport.update({
+  id: '/workflow/$workflowId',
+  path: '/workflow/$workflowId',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthActuatorsIndexRoute = AuthActuatorsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthActuatorsRouteRoute,
-} as any)
-const AuthFlowFlowIdRoute = AuthFlowFlowIdRouteImport.update({
-  id: '/flow/$flowId',
-  path: '/flow/$flowId',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthAppsAppIdRouteRoute = AuthAppsAppIdRouteRouteImport.update({
-  id: '/apps/$appId',
-  path: '/apps/$appId',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthAppsAppIdFlowsRoute = AuthAppsAppIdFlowsRouteImport.update({
-  id: '/flows',
-  path: '/flows',
-  getParentRoute: () => AuthAppsAppIdRouteRoute,
-} as any)
+const AuthProjectProjectIdRouteRoute =
+  AuthProjectProjectIdRouteRouteImport.update({
+    id: '/project/$projectId',
+    path: '/project/$projectId',
+    getParentRoute: () => AuthRouteRoute,
+  } as any)
+const AuthPersonalPersonalIdRouteRoute =
+  AuthPersonalPersonalIdRouteRouteImport.update({
+    id: '/personal/$personalId',
+    path: '/personal/$personalId',
+    getParentRoute: () => AuthRouteRoute,
+  } as any)
+const AuthProjectProjectIdWorkflowRoute =
+  AuthProjectProjectIdWorkflowRouteImport.update({
+    id: '/workflow',
+    path: '/workflow',
+    getParentRoute: () => AuthProjectProjectIdRouteRoute,
+  } as any)
+const AuthPersonalPersonalIdWorkflowRoute =
+  AuthPersonalPersonalIdWorkflowRouteImport.update({
+    id: '/workflow',
+    path: '/workflow',
+    getParentRoute: () => AuthPersonalPersonalIdRouteRoute,
+  } as any)
+const AuthPersonalPersonalIdNodeRoute =
+  AuthPersonalPersonalIdNodeRouteImport.update({
+    id: '/node',
+    path: '/node',
+    getParentRoute: () => AuthPersonalPersonalIdRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/actuators': typeof AuthActuatorsRouteRouteWithChildren
-  '/dashboard': typeof AuthDashboardRouteRouteWithChildren
-  '/triggers': typeof AuthTriggersRouteRouteWithChildren
-  '/apps/$appId': typeof AuthAppsAppIdRouteRouteWithChildren
-  '/flow/$flowId': typeof AuthFlowFlowIdRoute
-  '/actuators/': typeof AuthActuatorsIndexRoute
-  '/apps': typeof AuthAppsIndexRoute
-  '/dashboard/': typeof AuthDashboardIndexRoute
-  '/triggers/': typeof AuthTriggersIndexRoute
-  '/apps/$appId/flows': typeof AuthAppsAppIdFlowsRoute
+  '/executor': typeof AuthExecutorRouteRouteWithChildren
+  '/trigger': typeof AuthTriggerRouteRouteWithChildren
+  '/personal/$personalId': typeof AuthPersonalPersonalIdRouteRouteWithChildren
+  '/project/$projectId': typeof AuthProjectProjectIdRouteRouteWithChildren
+  '/workflow/$workflowId': typeof AuthWorkflowWorkflowIdRoute
+  '/executor/': typeof AuthExecutorIndexRoute
+  '/project': typeof AuthProjectIndexRoute
+  '/trigger/': typeof AuthTriggerIndexRoute
+  '/personal/$personalId/node': typeof AuthPersonalPersonalIdNodeRoute
+  '/personal/$personalId/workflow': typeof AuthPersonalPersonalIdWorkflowRoute
+  '/project/$projectId/workflow': typeof AuthProjectProjectIdWorkflowRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/apps/$appId': typeof AuthAppsAppIdRouteRouteWithChildren
-  '/flow/$flowId': typeof AuthFlowFlowIdRoute
-  '/actuators': typeof AuthActuatorsIndexRoute
-  '/apps': typeof AuthAppsIndexRoute
-  '/dashboard': typeof AuthDashboardIndexRoute
-  '/triggers': typeof AuthTriggersIndexRoute
-  '/apps/$appId/flows': typeof AuthAppsAppIdFlowsRoute
+  '/personal/$personalId': typeof AuthPersonalPersonalIdRouteRouteWithChildren
+  '/project/$projectId': typeof AuthProjectProjectIdRouteRouteWithChildren
+  '/workflow/$workflowId': typeof AuthWorkflowWorkflowIdRoute
+  '/executor': typeof AuthExecutorIndexRoute
+  '/project': typeof AuthProjectIndexRoute
+  '/trigger': typeof AuthTriggerIndexRoute
+  '/personal/$personalId/node': typeof AuthPersonalPersonalIdNodeRoute
+  '/personal/$personalId/workflow': typeof AuthPersonalPersonalIdWorkflowRoute
+  '/project/$projectId/workflow': typeof AuthProjectProjectIdWorkflowRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
-  '/_auth/actuators': typeof AuthActuatorsRouteRouteWithChildren
-  '/_auth/dashboard': typeof AuthDashboardRouteRouteWithChildren
-  '/_auth/triggers': typeof AuthTriggersRouteRouteWithChildren
-  '/_auth/apps/$appId': typeof AuthAppsAppIdRouteRouteWithChildren
-  '/_auth/flow/$flowId': typeof AuthFlowFlowIdRoute
-  '/_auth/actuators/': typeof AuthActuatorsIndexRoute
-  '/_auth/apps/': typeof AuthAppsIndexRoute
-  '/_auth/dashboard/': typeof AuthDashboardIndexRoute
-  '/_auth/triggers/': typeof AuthTriggersIndexRoute
-  '/_auth/apps/$appId/flows': typeof AuthAppsAppIdFlowsRoute
+  '/_auth/executor': typeof AuthExecutorRouteRouteWithChildren
+  '/_auth/trigger': typeof AuthTriggerRouteRouteWithChildren
+  '/_auth/personal/$personalId': typeof AuthPersonalPersonalIdRouteRouteWithChildren
+  '/_auth/project/$projectId': typeof AuthProjectProjectIdRouteRouteWithChildren
+  '/_auth/workflow/$workflowId': typeof AuthWorkflowWorkflowIdRoute
+  '/_auth/executor/': typeof AuthExecutorIndexRoute
+  '/_auth/project/': typeof AuthProjectIndexRoute
+  '/_auth/trigger/': typeof AuthTriggerIndexRoute
+  '/_auth/personal/$personalId/node': typeof AuthPersonalPersonalIdNodeRoute
+  '/_auth/personal/$personalId/workflow': typeof AuthPersonalPersonalIdWorkflowRoute
+  '/_auth/project/$projectId/workflow': typeof AuthProjectProjectIdWorkflowRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/login'
-    | '/actuators'
-    | '/dashboard'
-    | '/triggers'
-    | '/apps/$appId'
-    | '/flow/$flowId'
-    | '/actuators/'
-    | '/apps'
-    | '/dashboard/'
-    | '/triggers/'
-    | '/apps/$appId/flows'
+    | '/executor'
+    | '/trigger'
+    | '/personal/$personalId'
+    | '/project/$projectId'
+    | '/workflow/$workflowId'
+    | '/executor/'
+    | '/project'
+    | '/trigger/'
+    | '/personal/$personalId/node'
+    | '/personal/$personalId/workflow'
+    | '/project/$projectId/workflow'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
-    | '/apps/$appId'
-    | '/flow/$flowId'
-    | '/actuators'
-    | '/apps'
-    | '/dashboard'
-    | '/triggers'
-    | '/apps/$appId/flows'
+    | '/personal/$personalId'
+    | '/project/$projectId'
+    | '/workflow/$workflowId'
+    | '/executor'
+    | '/project'
+    | '/trigger'
+    | '/personal/$personalId/node'
+    | '/personal/$personalId/workflow'
+    | '/project/$projectId/workflow'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/login'
-    | '/_auth/actuators'
-    | '/_auth/dashboard'
-    | '/_auth/triggers'
-    | '/_auth/apps/$appId'
-    | '/_auth/flow/$flowId'
-    | '/_auth/actuators/'
-    | '/_auth/apps/'
-    | '/_auth/dashboard/'
-    | '/_auth/triggers/'
-    | '/_auth/apps/$appId/flows'
+    | '/_auth/executor'
+    | '/_auth/trigger'
+    | '/_auth/personal/$personalId'
+    | '/_auth/project/$projectId'
+    | '/_auth/workflow/$workflowId'
+    | '/_auth/executor/'
+    | '/_auth/project/'
+    | '/_auth/trigger/'
+    | '/_auth/personal/$personalId/node'
+    | '/_auth/personal/$personalId/workflow'
+    | '/_auth/project/$projectId/workflow'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -201,139 +220,155 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/triggers': {
-      id: '/_auth/triggers'
-      path: '/triggers'
-      fullPath: '/triggers'
-      preLoaderRoute: typeof AuthTriggersRouteRouteImport
+    '/_auth/trigger': {
+      id: '/_auth/trigger'
+      path: '/trigger'
+      fullPath: '/trigger'
+      preLoaderRoute: typeof AuthTriggerRouteRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/dashboard': {
-      id: '/_auth/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthDashboardRouteRouteImport
+    '/_auth/executor': {
+      id: '/_auth/executor'
+      path: '/executor'
+      fullPath: '/executor'
+      preLoaderRoute: typeof AuthExecutorRouteRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/actuators': {
-      id: '/_auth/actuators'
-      path: '/actuators'
-      fullPath: '/actuators'
-      preLoaderRoute: typeof AuthActuatorsRouteRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/triggers/': {
-      id: '/_auth/triggers/'
+    '/_auth/trigger/': {
+      id: '/_auth/trigger/'
       path: '/'
-      fullPath: '/triggers/'
-      preLoaderRoute: typeof AuthTriggersIndexRouteImport
-      parentRoute: typeof AuthTriggersRouteRoute
+      fullPath: '/trigger/'
+      preLoaderRoute: typeof AuthTriggerIndexRouteImport
+      parentRoute: typeof AuthTriggerRouteRoute
     }
-    '/_auth/dashboard/': {
-      id: '/_auth/dashboard/'
+    '/_auth/project/': {
+      id: '/_auth/project/'
+      path: '/project'
+      fullPath: '/project'
+      preLoaderRoute: typeof AuthProjectIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/executor/': {
+      id: '/_auth/executor/'
       path: '/'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof AuthDashboardIndexRouteImport
-      parentRoute: typeof AuthDashboardRouteRoute
+      fullPath: '/executor/'
+      preLoaderRoute: typeof AuthExecutorIndexRouteImport
+      parentRoute: typeof AuthExecutorRouteRoute
     }
-    '/_auth/apps/': {
-      id: '/_auth/apps/'
-      path: '/apps'
-      fullPath: '/apps'
-      preLoaderRoute: typeof AuthAppsIndexRouteImport
+    '/_auth/workflow/$workflowId': {
+      id: '/_auth/workflow/$workflowId'
+      path: '/workflow/$workflowId'
+      fullPath: '/workflow/$workflowId'
+      preLoaderRoute: typeof AuthWorkflowWorkflowIdRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/actuators/': {
-      id: '/_auth/actuators/'
-      path: '/'
-      fullPath: '/actuators/'
-      preLoaderRoute: typeof AuthActuatorsIndexRouteImport
-      parentRoute: typeof AuthActuatorsRouteRoute
-    }
-    '/_auth/flow/$flowId': {
-      id: '/_auth/flow/$flowId'
-      path: '/flow/$flowId'
-      fullPath: '/flow/$flowId'
-      preLoaderRoute: typeof AuthFlowFlowIdRouteImport
+    '/_auth/project/$projectId': {
+      id: '/_auth/project/$projectId'
+      path: '/project/$projectId'
+      fullPath: '/project/$projectId'
+      preLoaderRoute: typeof AuthProjectProjectIdRouteRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/apps/$appId': {
-      id: '/_auth/apps/$appId'
-      path: '/apps/$appId'
-      fullPath: '/apps/$appId'
-      preLoaderRoute: typeof AuthAppsAppIdRouteRouteImport
+    '/_auth/personal/$personalId': {
+      id: '/_auth/personal/$personalId'
+      path: '/personal/$personalId'
+      fullPath: '/personal/$personalId'
+      preLoaderRoute: typeof AuthPersonalPersonalIdRouteRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/apps/$appId/flows': {
-      id: '/_auth/apps/$appId/flows'
-      path: '/flows'
-      fullPath: '/apps/$appId/flows'
-      preLoaderRoute: typeof AuthAppsAppIdFlowsRouteImport
-      parentRoute: typeof AuthAppsAppIdRouteRoute
+    '/_auth/project/$projectId/workflow': {
+      id: '/_auth/project/$projectId/workflow'
+      path: '/workflow'
+      fullPath: '/project/$projectId/workflow'
+      preLoaderRoute: typeof AuthProjectProjectIdWorkflowRouteImport
+      parentRoute: typeof AuthProjectProjectIdRouteRoute
+    }
+    '/_auth/personal/$personalId/workflow': {
+      id: '/_auth/personal/$personalId/workflow'
+      path: '/workflow'
+      fullPath: '/personal/$personalId/workflow'
+      preLoaderRoute: typeof AuthPersonalPersonalIdWorkflowRouteImport
+      parentRoute: typeof AuthPersonalPersonalIdRouteRoute
+    }
+    '/_auth/personal/$personalId/node': {
+      id: '/_auth/personal/$personalId/node'
+      path: '/node'
+      fullPath: '/personal/$personalId/node'
+      preLoaderRoute: typeof AuthPersonalPersonalIdNodeRouteImport
+      parentRoute: typeof AuthPersonalPersonalIdRouteRoute
     }
   }
 }
 
-interface AuthActuatorsRouteRouteChildren {
-  AuthActuatorsIndexRoute: typeof AuthActuatorsIndexRoute
+interface AuthExecutorRouteRouteChildren {
+  AuthExecutorIndexRoute: typeof AuthExecutorIndexRoute
 }
 
-const AuthActuatorsRouteRouteChildren: AuthActuatorsRouteRouteChildren = {
-  AuthActuatorsIndexRoute: AuthActuatorsIndexRoute,
+const AuthExecutorRouteRouteChildren: AuthExecutorRouteRouteChildren = {
+  AuthExecutorIndexRoute: AuthExecutorIndexRoute,
 }
 
-const AuthActuatorsRouteRouteWithChildren =
-  AuthActuatorsRouteRoute._addFileChildren(AuthActuatorsRouteRouteChildren)
+const AuthExecutorRouteRouteWithChildren =
+  AuthExecutorRouteRoute._addFileChildren(AuthExecutorRouteRouteChildren)
 
-interface AuthDashboardRouteRouteChildren {
-  AuthDashboardIndexRoute: typeof AuthDashboardIndexRoute
+interface AuthTriggerRouteRouteChildren {
+  AuthTriggerIndexRoute: typeof AuthTriggerIndexRoute
 }
 
-const AuthDashboardRouteRouteChildren: AuthDashboardRouteRouteChildren = {
-  AuthDashboardIndexRoute: AuthDashboardIndexRoute,
+const AuthTriggerRouteRouteChildren: AuthTriggerRouteRouteChildren = {
+  AuthTriggerIndexRoute: AuthTriggerIndexRoute,
 }
 
-const AuthDashboardRouteRouteWithChildren =
-  AuthDashboardRouteRoute._addFileChildren(AuthDashboardRouteRouteChildren)
+const AuthTriggerRouteRouteWithChildren =
+  AuthTriggerRouteRoute._addFileChildren(AuthTriggerRouteRouteChildren)
 
-interface AuthTriggersRouteRouteChildren {
-  AuthTriggersIndexRoute: typeof AuthTriggersIndexRoute
+interface AuthPersonalPersonalIdRouteRouteChildren {
+  AuthPersonalPersonalIdNodeRoute: typeof AuthPersonalPersonalIdNodeRoute
+  AuthPersonalPersonalIdWorkflowRoute: typeof AuthPersonalPersonalIdWorkflowRoute
 }
 
-const AuthTriggersRouteRouteChildren: AuthTriggersRouteRouteChildren = {
-  AuthTriggersIndexRoute: AuthTriggersIndexRoute,
+const AuthPersonalPersonalIdRouteRouteChildren: AuthPersonalPersonalIdRouteRouteChildren =
+  {
+    AuthPersonalPersonalIdNodeRoute: AuthPersonalPersonalIdNodeRoute,
+    AuthPersonalPersonalIdWorkflowRoute: AuthPersonalPersonalIdWorkflowRoute,
+  }
+
+const AuthPersonalPersonalIdRouteRouteWithChildren =
+  AuthPersonalPersonalIdRouteRoute._addFileChildren(
+    AuthPersonalPersonalIdRouteRouteChildren,
+  )
+
+interface AuthProjectProjectIdRouteRouteChildren {
+  AuthProjectProjectIdWorkflowRoute: typeof AuthProjectProjectIdWorkflowRoute
 }
 
-const AuthTriggersRouteRouteWithChildren =
-  AuthTriggersRouteRoute._addFileChildren(AuthTriggersRouteRouteChildren)
+const AuthProjectProjectIdRouteRouteChildren: AuthProjectProjectIdRouteRouteChildren =
+  {
+    AuthProjectProjectIdWorkflowRoute: AuthProjectProjectIdWorkflowRoute,
+  }
 
-interface AuthAppsAppIdRouteRouteChildren {
-  AuthAppsAppIdFlowsRoute: typeof AuthAppsAppIdFlowsRoute
-}
-
-const AuthAppsAppIdRouteRouteChildren: AuthAppsAppIdRouteRouteChildren = {
-  AuthAppsAppIdFlowsRoute: AuthAppsAppIdFlowsRoute,
-}
-
-const AuthAppsAppIdRouteRouteWithChildren =
-  AuthAppsAppIdRouteRoute._addFileChildren(AuthAppsAppIdRouteRouteChildren)
+const AuthProjectProjectIdRouteRouteWithChildren =
+  AuthProjectProjectIdRouteRoute._addFileChildren(
+    AuthProjectProjectIdRouteRouteChildren,
+  )
 
 interface AuthRouteRouteChildren {
-  AuthActuatorsRouteRoute: typeof AuthActuatorsRouteRouteWithChildren
-  AuthDashboardRouteRoute: typeof AuthDashboardRouteRouteWithChildren
-  AuthTriggersRouteRoute: typeof AuthTriggersRouteRouteWithChildren
-  AuthAppsAppIdRouteRoute: typeof AuthAppsAppIdRouteRouteWithChildren
-  AuthFlowFlowIdRoute: typeof AuthFlowFlowIdRoute
-  AuthAppsIndexRoute: typeof AuthAppsIndexRoute
+  AuthExecutorRouteRoute: typeof AuthExecutorRouteRouteWithChildren
+  AuthTriggerRouteRoute: typeof AuthTriggerRouteRouteWithChildren
+  AuthPersonalPersonalIdRouteRoute: typeof AuthPersonalPersonalIdRouteRouteWithChildren
+  AuthProjectProjectIdRouteRoute: typeof AuthProjectProjectIdRouteRouteWithChildren
+  AuthWorkflowWorkflowIdRoute: typeof AuthWorkflowWorkflowIdRoute
+  AuthProjectIndexRoute: typeof AuthProjectIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthActuatorsRouteRoute: AuthActuatorsRouteRouteWithChildren,
-  AuthDashboardRouteRoute: AuthDashboardRouteRouteWithChildren,
-  AuthTriggersRouteRoute: AuthTriggersRouteRouteWithChildren,
-  AuthAppsAppIdRouteRoute: AuthAppsAppIdRouteRouteWithChildren,
-  AuthFlowFlowIdRoute: AuthFlowFlowIdRoute,
-  AuthAppsIndexRoute: AuthAppsIndexRoute,
+  AuthExecutorRouteRoute: AuthExecutorRouteRouteWithChildren,
+  AuthTriggerRouteRoute: AuthTriggerRouteRouteWithChildren,
+  AuthPersonalPersonalIdRouteRoute:
+    AuthPersonalPersonalIdRouteRouteWithChildren,
+  AuthProjectProjectIdRouteRoute: AuthProjectProjectIdRouteRouteWithChildren,
+  AuthWorkflowWorkflowIdRoute: AuthWorkflowWorkflowIdRoute,
+  AuthProjectIndexRoute: AuthProjectIndexRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

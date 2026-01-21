@@ -11,16 +11,17 @@ declare namespace _Permission {
     project_create: "all";
     project_delete: "all";
     project_assignUsers: ProjectAssignUserScope;
-    flow_list: "all";
-    flow_view: FlowViewScope;
-    flow_edit: "all";
-    flow_create: "all";
-    flow_delete: "all";
+    workflow_list: "all";
+    workflow_view: FlowViewScope;
+    workflow_edit: "all";
+    workflow_create: "all";
+    workflow_delete: "all";
     node_list: "all";
     node_view: "all";
     node_edit: ResourceOwnerScope;
     node_create: "all";
     node_delete: ResourceOwnerScope;
+    personal_view: ResourceOwnerScope;
   }
 
   type SystemRole = "Admin" | "Member" | "Guest";

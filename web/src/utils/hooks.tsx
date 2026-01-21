@@ -53,7 +53,7 @@ export function useFolderRoute(
   query: { [key: string]: any },
   setQuery: (query: { [key: string]: any }) => void,
   resetQuery: () => { [key: string]: any },
-  listSummary: App.ISummary | undefined,
+  listSummary: _Resource.IQuerySummary | undefined,
 ) {
   const breadcrumbCache = useRef<{ [path: string]: { query: { [key: string]: any } } }>({});
 
@@ -96,9 +96,9 @@ export function useFolderRoute(
 }
 
 export interface IPermissionsContext {
-  auth: App.IAuthUser;
-  permissions: App.IPermissions;
-  getPermissionsInApp: (appId: string) => App.IPermissions;
+  auth: _App.IAuthUser;
+  permissions: _Permission.IPermissions;
+  getPermissionsInProject: (appId: string) => _Permission.IPermissions;
 }
 
 export const PermissionsContext = createContext<IPermissionsContext>({} as any);
@@ -107,12 +107,22 @@ export function usePermissions(): IPermissionsContext {
   return useContext(PermissionsContext);
 }
 
-export interface IFlowAppDataContext {
-  appData: FlowApp.IApp;
+export interface IProjectContext {
+  project: _Project.IProject;
 }
 
-export const FlowAppDataContext = createContext<IFlowAppDataContext>({} as any);
+export const ProjectContext = createContext<IProjectContext>({} as any);
 
-export function useFlowAppData(): IFlowAppDataContext {
-  return useContext(FlowAppDataContext);
+export function useProject(): IProjectContext {
+  return useContext(ProjectContext);
+}
+
+export interface IPersonalContext {
+  personal: _Personal.IPersonal;
+}
+
+export const PersonalContext = createContext<IPersonalContext>({} as any);
+
+export function usePersonal(): IPersonalContext {
+  return useContext(PersonalContext);
 }

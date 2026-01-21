@@ -4,6 +4,7 @@ declare namespace _App {
     username: string;
     nickname: string;
     roles: _Permission.SystemRole[];
+    directory: string;
   }
 
   interface IProfileUser extends IAuthUser {
@@ -23,6 +24,10 @@ declare namespace _App {
   }
 
   type Runtime = "server" | "browser";
-  type Scope = "personal" | "public" | "platform";
+  type Scope = "personal" | "project" | "platform";
   type Repository = "remote" | "local";
+
+  interface FavoriteList {
+    node: string[];
+  }
 }
