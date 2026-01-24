@@ -4,7 +4,6 @@ declare namespace _App {
     username: string;
     nickname: string;
     roles: _Permission.SystemRole[];
-    directory: string;
   }
 
   interface IProfileUser extends IAuthUser {
@@ -14,20 +13,27 @@ declare namespace _App {
   interface AuthLogin {
     username: string;
     password: string;
-    redirect: string;
+    redirect?: string;
   }
 
-  interface IDirectory extends _Resource.IItem {
-    name: string;
-    type: "directory";
-    desc: string;
+  interface FavoriteList {
+    node: string[];
   }
 
   type Runtime = "server" | "browser";
   type Scope = "personal" | "project" | "platform";
-  type Repository = "remote" | "local";
+  type EntryType = "directory" | "workflow" | "node";
 
-  interface FavoriteList {
-    node: string[];
+  interface BaseEntry extends _Resource.IItem {
+    type: EntryType;
+    name: string;
+    desc: string;
+    parent: string;
+    path: string;
+  }
+
+  interface IDirectory extends BaseEntry {
+    type: "directory";
+    children: BaseEntry[];
   }
 }

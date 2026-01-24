@@ -2,15 +2,19 @@ import { getLocale } from "@baseflow/react";
 import { StringSelect } from "@baseflow/widgets";
 import { Link, useMatchRoute, useRouter } from "@tanstack/react-router";
 import { Button, Dropdown } from "antd";
-import { HatGlasses, LayoutGrid, ListPlus, LogOut, MousePointerClick, NotepadText, Settings2, UserRoundPen, Wifi } from "lucide-react";
+import { LayoutGrid, LogOut, UserRoundPen, Wifi } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
-import { LOCALE_KEY, MY_PERSONAL_ID } from "@/const";
+import { LOCALE_KEY } from "@/const";
 import { useAppStore } from "@/modules/app/store";
 import styles from "./index.module.scss";
+
+const ActiveProps = {
+  className: "on",
+};
 
 const Header: FC = () => {
   const locale = getLocale();
@@ -18,7 +22,7 @@ const Header: FC = () => {
   const [auth, logout] = useAppStore(useShallow(({ auth, logout }) => [auth, logout]));
   const matchRoute = useMatchRoute();
   // const isGraph = matchRoute({ to: "/flow/$flowId" });
-  const isPersonal = matchRoute({ to: "/personal/$personalId", fuzzy: true });
+  // const isPersonal = matchRoute({ to: "/personal/$personalId", fuzzy: true });
 
   const userMenu: any = useMemo(() => {
     return {
@@ -52,37 +56,22 @@ const Header: FC = () => {
     };
   }, [auth, logout]);
 
-  // const params = matchRoute({
-  //   to: '/dashboard',
-  // });
-  // console.log(pathname);
-
   return (
     <div className={styles.Header}>
       <Logo className={`${styles.Header}__logo`} />
       <div className="main">
         <nav className={`${styles.Header}__nav`}>
-          <Link to="/personal/$personalId/workflow" params={{ personalId: MY_PERSONAL_ID }} className={isPersonal ? "on" : ""}>
+          <Link disabled={!auth.id} to="/personal/$personalId" params={{ personalId: auth.username }} activeProps={ActiveProps}>
             <UserRoundPen size={14} strokeWidth={2.5} />
             <span>个人空间</span>
           </Link>
-          <Link
-            to="/project"
-            activeProps={{
-              className: "on",
-            }}
-          >
+          <Link disabled={!auth.id} to="/project" activeProps={ActiveProps}>
             <LayoutGrid size={14} strokeWidth={2.5} />
             <span>项目空间</span>
           </Link>
-          <Link
-            to="/actuators"
-            activeProps={{
-              className: "on",
-            }}
-          >
+          <Link disabled={!auth.id} to="/platform/workflow" activeProps={ActiveProps}>
             <Wifi size={14} strokeWidth={2.5} />
-            <span>开放空间</span>
+            <span>公共空间</span>
           </Link>
           {/* <Link
             to="/triggers"

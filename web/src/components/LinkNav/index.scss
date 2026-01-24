@@ -2,7 +2,7 @@
   > a {
     display: flex;
     gap: 10px;
-    padding: 12px 15px 12px 20px;
+    padding: 12px 15px;
     margin-bottom: 2px;
     border-radius: var(--bf-rd-btn);
 
@@ -14,6 +14,15 @@
   > .on {
     color: var(--bf-primary);
     background-color: var(--bf-bg-active) !important;
+  }
+
+  small {
+    margin-left: 2px;
+  }
+
+  em {
+    font-style: normal;
+    color: var(--bf-tx-lesser);
   }
 
   &.small {

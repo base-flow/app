@@ -1,5 +1,4 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { MY_PERSONAL_ID } from "@/const";
 import { useAppStore } from "@/modules/app/store";
 
 export const Route = createFileRoute("/")({
@@ -13,7 +12,7 @@ export const Route = createFileRoute("/")({
         },
       });
     } else {
-      throw redirect({ to: "/personal/$personalId/workflow", params: { personalId: MY_PERSONAL_ID } });
+      throw redirect({ to: "/personal/$personalId", params: { personalId: curAuth.username } });
     }
   },
 });

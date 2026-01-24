@@ -14,52 +14,53 @@ const NodeMenu: FC<NodeMenuProps> = ({ type }) => {
   const { permissions } = usePermissions();
 
   const nodeItems = useMemo(() => {
-    const list: LinkProps[] =
-      type === "actuator"
-        ? [
-            {
-              to: "/actuators",
-              search: { runtime: "server" },
-              children: (
-                <>
-                  <Server size={13} style={{ marginTop: 1 }} />
-                  <span>服务器运行</span>
-                </>
-              ),
-            },
-            {
-              to: "/actuators",
-              search: { runtime: "browser" },
-              children: (
-                <>
-                  <Chromium size={14} />
-                  <span>浏览器运行</span>
-                </>
-              ),
-            },
-          ]
-        : [
-            {
-              to: "/triggers",
-              search: { runtime: "server" },
-              children: (
-                <>
-                  <Server size={13} style={{ marginTop: 1 }} />
-                  <span>服务器运行</span>
-                </>
-              ),
-            },
-            {
-              to: "/triggers",
-              search: { runtime: "browser" },
-              children: (
-                <>
-                  <Chromium size={14} />
-                  <span>浏览器运行</span>
-                </>
-              ),
-            },
-          ];
+    const list: any[] = [];
+    // const list: LinkProps[] =
+    //   type === "actuator"
+    //     ? [
+    //         {
+    //           to: "/actuators",
+    //           search: { runtime: "server" },
+    //           children: (
+    //             <>
+    //               <Server size={13} style={{ marginTop: 1 }} />
+    //               <span>服务器运行</span>
+    //             </>
+    //           ),
+    //         },
+    //         {
+    //           to: "/actuators",
+    //           search: { runtime: "browser" },
+    //           children: (
+    //             <>
+    //               <Chromium size={14} />
+    //               <span>浏览器运行</span>
+    //             </>
+    //           ),
+    //         },
+    //       ]
+    //     : [
+    //         {
+    //           to: "/triggers",
+    //           search: { runtime: "server" },
+    //           children: (
+    //             <>
+    //               <Server size={13} style={{ marginTop: 1 }} />
+    //               <span>服务器运行</span>
+    //             </>
+    //           ),
+    //         },
+    //         {
+    //           to: "/triggers",
+    //           search: { runtime: "browser" },
+    //           children: (
+    //             <>
+    //               <Chromium size={14} />
+    //               <span>浏览器运行</span>
+    //             </>
+    //           ),
+    //         },
+    //       ];
     return list;
   }, [type]);
 

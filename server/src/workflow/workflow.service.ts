@@ -4,6 +4,20 @@ import { FlagSrc } from "@/utils";
 // eslint-disable-next-line ts/no-require-imports
 const mockjs = require("mockjs");
 
+const dirList: _App.IDirectory[] = mockjs
+  .mock({
+    "list|50": [
+      {
+        "id|+1": 1,
+        type: "directory",
+        name: "@ctitle(10, 20)",
+        desc: "@csentence(20, 60)",
+        createBy: "1",
+      },
+    ],
+  })
+  .list.map((item: any) => ({ ...item, id: `d${item.id}` }));
+
 const list: _Workflow.IWorkflow[] = mockjs
   .mock({
     "list|50": [

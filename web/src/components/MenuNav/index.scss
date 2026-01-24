@@ -1,0 +1,54 @@
+.comp-MenuNav {
+  .item {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 2px;
+    border-radius: var(--bf-rd-btn);
+
+    &:hover {
+      background-color: var(--bf-bg-filled2);
+    }
+
+    &.on {
+      color: var(--bf-primary);
+      background-color: var(--bf-bg-active) !important;
+    }
+  }
+
+  small {
+    margin-left: 2px;
+  }
+
+  em {
+    font-style: normal;
+    color: var(--bf-tx-lesser);
+  }
+
+  .expand {
+    border-radius: var(--bf-rd-btn);
+
+    &:hover {
+      background: #fff;
+    }
+  }
+
+  .children {
+    display: none;
+
+    > .item {
+      padding-left: 35px;
+    }
+  }
+
+  .opened {
+    > .children {
+      display: block;
+    }
+
+    .expand {
+      transform: rotate(90deg);
+    }
+  }
+}

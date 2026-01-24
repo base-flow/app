@@ -21,7 +21,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   myFavorites: { node: {} },
   login: async (args: _App.AuthLogin) => {
     const { token } = await AppAPI.login(args);
-    logined(token, args.redirect);
+    logined(token, args.username, args.redirect);
   },
   logout: async () => {
     await AppAPI.logout();

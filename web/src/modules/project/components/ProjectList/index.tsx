@@ -100,7 +100,7 @@ const Component: FC<ProjectListProps> = (props) => {
         <div>
           {permissions.project_create && (
             <Button color="primary" variant="text" icon={<SquarePlus size={14} />} onClick={onCreate}>
-              创建应用
+              创建项目
             </Button>
           )}
         </div>

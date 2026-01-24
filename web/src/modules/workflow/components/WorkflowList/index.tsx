@@ -8,8 +8,6 @@ import type { FC } from "react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
-import PersonalHead from "@/modules/personal/components/PersonalHead";
-import ProjectHead from "@/modules/project/components/ProjectHead";
 import { useEvent } from "@/utils/hooks";
 import { debounce } from "@/utils/tools";
 import { WorkflowAPI } from "../../api";
@@ -238,7 +236,7 @@ const Component: FC<WorkflowListProps> = (props) => {
   if (workflowQuery.isError) {
     return (
       <div className={`${styles.WorkflowList} g-page min-wrap`}>
-        <div className="hd">{scope === "personal" ? <PersonalHead /> : <ProjectHead />}</div>
+        <div className="hd">{scope === "personal" ? <div /> : <div />}</div>
         <div className="bd">
           <Result status="warning" title={workflowQuery.error?.message || "错误"} />
         </div>
@@ -249,7 +247,7 @@ const Component: FC<WorkflowListProps> = (props) => {
   if (!workflowList) {
     return (
       <div className={`${styles.WorkflowList} g-page min-wrap`}>
-        <div className="hd">{scope === "personal" ? <PersonalHead /> : <ProjectHead />}</div>
+        <div className="hd">{scope === "personal" ? <div /> : <div />}</div>
         <div className="bd">
           <Skeleton active />
         </div>
@@ -261,7 +259,7 @@ const Component: FC<WorkflowListProps> = (props) => {
     <div className={`${styles.WorkflowList} g-page min-wrap`}>
       <LoadingMask show={workflowQuery.isFetching || workflowAlter.isPending || workflowDeleter.isPending} />
       <div className="hd">
-        {scope === "personal" ? <PersonalHead /> : <ProjectHead />}
+        {scope === "personal" ? <div /> : <div />}
         {!selectedRows.length ? (
           <Space>
             <SearchInput value={query.keyword} onChange={onSearch} />

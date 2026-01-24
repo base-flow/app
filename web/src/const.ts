@@ -12,8 +12,10 @@ export const API_PROXY: { "/i18n/": string; "/api/": string } = (window.API_PROX
 export const AUTH_TOKEN_KEY = "_baseflow_auth_token_key_";
 export const PAGE_SIZE_OPTIONS = ["20", "50", "100"];
 export const LOCALE_KEY = "_baseflow_locale_key_";
-export const MY_PERSONAL_ID = "~";
-export const DEFAULT_HOME = `/personal/${MY_PERSONAL_ID}/workflow`;
+
+export function HomePage(username: string): string {
+  return `/personal/${username}`;
+}
 
 export const DomIds = {
   Button_CreateNode: "_Button_CreateNode_",

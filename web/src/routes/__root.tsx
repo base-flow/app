@@ -108,6 +108,7 @@ function RootComponent() {
             colorText: "var(--bf-tx-body)",
             colorFillTertiary: "var(--bf-bg-filled2)",
             colorBorder: "var(--bf-bd-input)",
+            colorLinkHover: "var(--bf-second)",
           },
           components: {
             Pagination: { itemBg: "transparent" },

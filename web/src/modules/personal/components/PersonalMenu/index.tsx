@@ -1,62 +1,169 @@
 import type { LinkProps } from "@tanstack/react-router";
-import { FileSpreadsheet, Settings2, TextAlignJustify } from "lucide-react";
+import { Link, useLocation, useMatchRoute, useNavigate } from "@tanstack/react-router";
+import { FolderOpen, FolderOutput, Settings2, Star, TextAlignJustify, Trash2 } from "lucide-react";
 import type { FC } from "react";
-import { memo, useCallback, useMemo, useState } from "react";
-import LinkNav from "@/components/LinkNav";
-import { usePersonal } from "@/utils/hooks";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import IconEntity from "@/components/IconEntity";
+import IconNetwork from "@/components/IconNetwork";
+import IconShare from "@/components/IconShare";
+import IconStar from "@/components/IconStar";
+import IconTrash from "@/components/IconTrash";
+import type { MenuItem } from "@/components/MenuNav";
+import MenuNav from "@/components/MenuNav";
+import { useEvent, usePersonal } from "@/utils/hooks";
 
-const Component: FC<{ personalId: string }> = ({ personalId }) => {
+const Component: FC = () => {
   const { personal } = usePersonal();
+  const navigate = useNavigate();
+  const matchRoute = useMatchRoute();
+  const [openedKey, setOpenedKey] = useState<string | undefined>();
+  const [selectedKey, setSelectedKey] = useState<string | undefined>();
 
-  const flowItems = useMemo(() => {
+  const mathData = (() => {
+    if (matchRoute({ to: "/personal/$personalId/workflow" })) {
+      return ["home", "home/workflow"];
+    } else if (matchRoute({ to: "/personal/$personalId/node" })) {
+      return ["home", "home/node"];
+    } else if (matchRoute({ to: "/personal/$personalId" })) {
+      return ["home", "home"];
+    } else return [];
+  })();
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
+  useMemo(() => {
+    setOpenedKey(mathData[0]);
+    setSelectedKey(mathData[1]);
+  }, [mathData.join(",")]);
+
+  const onSelect = useEvent((key: string) => {
+    switch (key) {
+      case "home":
+        navigate({ to: "/personal/$personalId", params: { personalId: personal.id } });
+        break;
+      case "home/workflow":
+        navigate({ to: "/personal/$personalId/workflow", params: { personalId: personal.id } });
+        break;
+      case "home/node":
+        navigate({ to: "/personal/$personalId/node", params: { personalId: personal.id } });
+        break;
+    }
+  });
+
+  const menuItems = useMemo(() => {
     if (!personal) {
       return [];
     }
-    const list: LinkProps[] = [
+    const list: MenuItem[] = [
       {
-        to: "/personal/$personalId/workflow",
-        params: { personalId },
-        search: { runtime: undefined },
-        // activeOptions: {
-        //   exact: true,
-        // },
-        children: (
+        key: "home",
+        label: (
           <>
-            <TextAlignJustify size={14} strokeWidth={2} />
-            <span>
-              流程管理
-              <small>
-                (<em>{personal.totalWorkflows}</em>)
-              </small>
-            </span>
+            <IconEntity type="directory" />
+            <span>我的文档</span>
+          </>
+        ),
+        children: [
+          {
+            key: "home/workflow",
+            label: (
+              <>
+                <IconEntity type="workflow" />
+                <span>
+                  流程
+                  <small>
+                    (<em>{personal.totalWorkflows}</em>)
+                  </small>
+                </span>
+              </>
+            ),
+          },
+          {
+            key: "home/node",
+            label: (
+              <>
+                <IconEntity type="node" />
+                <span>
+                  节点
+                  <small>
+                    (<em>{personal.totalWorkflows}</em>)
+                  </small>
+                </span>
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        key: "shared",
+        label: (
+          <>
+            <IconNetwork size={13} />
+            <span>我的共享</span>
+          </>
+        ),
+        children: [
+          {
+            key: "shared/workflow",
+            label: (
+              <>
+                <TextAlignJustify size={13} />
+                <span>
+                  流程
+                  <small>
+                    (<em>{personal.totalWorkflows}</em>)
+                  </small>
+                </span>
+              </>
+            ),
+          },
+          {
+            key: "shared/node",
+            label: (
+              <>
+                <Settings2 size={13} />
+                <span>
+                  节点
+                  <small>
+                    (<em>{personal.totalWorkflows}</em>)
+                  </small>
+                </span>
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        key: "favs",
+        label: (
+          <>
+            <IconShare size={13} />
+            <span>我的分享</span>
           </>
         ),
       },
       {
-        to: "/personal/$personalId/node",
-        params: { personalId },
-        search: { runtime: undefined },
-        children: (
+        key: "favs",
+        label: (
           <>
-            <Settings2 size={14} strokeWidth={2} />
-            <span>
-              节点管理
-              <small>
-                (<em>{personal.totalNodes}</em>)
-              </small>
-            </span>
+            <IconStar size={13} />
+            <span>我的收藏</span>
+          </>
+        ),
+      },
+      {
+        key: "trash",
+        label: (
+          <>
+            <IconTrash size={13} />
+            <span>回收站</span>
           </>
         ),
       },
     ];
     return list;
-  }, [personalId, personal]);
+  }, [personal]);
 
-  return (
-    <div className="g-nav">
-      <LinkNav links={flowItems} />
-    </div>
-  );
+  return <MenuNav items={menuItems} selectedKey={selectedKey} openedKey={openedKey} onOpen={setOpenedKey} onSelect={onSelect} />;
 };
 
 export default memo(Component);

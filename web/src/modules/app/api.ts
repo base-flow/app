@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 
-export const GuestUser: _App.IAuthUser = { id: "", username: "", nickname: "", roles: ["Guest"] };
+export const GuestUser: _App.IAuthUser = { id: "", username: "guest", nickname: "guest", roles: ["Guest"] };
 
 export const AppAPI = {
   login(args: _App.AuthLogin): Promise<{ token: string }> {

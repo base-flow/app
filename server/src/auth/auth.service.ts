@@ -12,7 +12,6 @@ const Users: _App.IProfileUser[] = [
     nickname: "小布丁",
     password: "123456",
     roles: ["Admin"],
-    directory: "aaa",
     age: 20,
   },
   {
@@ -21,7 +20,6 @@ const Users: _App.IProfileUser[] = [
     nickname: "多啦啊嘛",
     password: "123456",
     roles: ["Member"],
-    directory: "bbb",
     age: 21,
   },
 ];
@@ -48,7 +46,7 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException("用户名或密码错误");
     }
-    const payload: TokenPayload = { sub: user.id, username: user.username, nickname: user.nickname, roles: user.roles, directory: user.directory };
+    const payload: TokenPayload = { sub: user.id, username: user.username, nickname: user.nickname, roles: user.roles };
     const token = await this.jwtService.signAsync(payload);
     const tokenHash = createHash("md5").update(token).digest("hex");
     this.cacheService.set(tokenHash, Date.now(), TokenExpiredSecond);

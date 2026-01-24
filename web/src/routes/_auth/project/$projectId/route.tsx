@@ -6,7 +6,9 @@ import { useShallow } from "zustand/react/shallow";
 import LoadingMask from "@/components/LoadingMask";
 import { useAppStore } from "@/modules/app/store";
 import { ProjectAPI } from "@/modules/project/api";
+import ProjectFlag from "@/modules/project/components/ProjectFlag";
 import ProjectMenu from "@/modules/project/components/ProjectMenu";
+import ProjectSettings from "@/modules/project/components/ProjectSettings";
 import { PermissionsContext, ProjectContext } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/project/$projectId")({
@@ -48,7 +50,11 @@ function RouteComponent() {
     <PermissionsContext.Provider value={{ auth, permissions, getPermissionsInProject: getPermissions }}>
       <ProjectContext value={{ project }}>
         <aside>
-          <ProjectMenu />
+          <div>
+            <ProjectFlag />
+            <ProjectMenu />
+          </div>
+          <ProjectSettings />
         </aside>
         <main className="g-col-paper">
           <LoadingMask show={projectQuery.isFetching} />

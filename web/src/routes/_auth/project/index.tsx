@@ -9,6 +9,7 @@ import { PermissionsContext } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/project/")({
   validateSearch: z.object({
+    path: z.string().optional(),
     keyword: z.string().optional(),
     sorterField: z.string().optional(),
     sorterOrder: z.enum(["ascend", "descend"]).optional(),

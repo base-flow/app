@@ -10,6 +10,7 @@ import { CacheModule } from "./cache/cache.module";
 import type { JwtConfig } from "./config/jwt.config";
 import jwtConfig from "./config/jwt.config";
 import redisConfig from "./config/redis.config";
+import { EntityModule } from "./entity/entity.module";
 import { AuthGuard } from "./guards/auth.guard";
 import { NodeModule } from "./node/node.module";
 import { PersonalModule } from "./personal/personal.module";
@@ -40,6 +41,7 @@ import { WorkflowModule } from "./workflow/workflow.module";
     AuthModule,
     UserModule,
     ProjectModule,
+    EntityModule,
     WorkflowModule,
     NodeModule,
     PersonalModule,

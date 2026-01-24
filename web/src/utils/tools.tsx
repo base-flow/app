@@ -1,15 +1,11 @@
 import type { ReactNode } from "react";
-import { API_PROXY, AUTH_TOKEN_KEY, DEFAULT_HOME, LoginPage } from "../const";
+import { API_PROXY, AUTH_TOKEN_KEY, HomePage, LoginPage } from "../const";
 import { router } from "../router";
 
 export const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
 export function getAuthToken(): string {
   return localStorage.getItem(AUTH_TOKEN_KEY) || "";
-}
-
-export function getUserRedirect(redirect?: string): string {
-  return !redirect || redirect === "/" ? DEFAULT_HOME : redirect;
 }
 
 export function isEmptyObject(obj: any): boolean {
@@ -32,9 +28,9 @@ export function debounce<T extends (...rest: any[]) => any>(callbak: T, delay = 
   }) as any;
 }
 
-export function logined(token: string, redirect: string): void {
+export function logined(token: string, username: string, redirect?: string): void {
   localStorage.setItem(AUTH_TOKEN_KEY, token);
-  location.href = redirect;
+  location.href = !redirect || redirect === "/" ? HomePage(username) : redirect;
 }
 
 export function logouted(): void {

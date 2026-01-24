@@ -64,7 +64,7 @@ const AppEdit: FC<Props> = ({ item, setItem, currentPath }) => {
             <FlagSelector />
           </FormItem>
           <FormItem label="节点描述" name="desc" rules={[{ required: true }]}>
-            <Input.TextArea variant="filled" rows={5} placeholder="请输入应用描述" showCount maxLength={100} />
+            <Input.TextArea variant="filled" rows={5} placeholder="请输入项目描述" showCount maxLength={100} />
           </FormItem>
           <div className="g-form-footer">
             <Button onClick={onCloseEdit}>取消</Button>

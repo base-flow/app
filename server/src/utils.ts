@@ -86,3 +86,12 @@ export const FlagSrc = {
     return FlagSrc.encode({ emoji: emoji[0], bgColor: FlagSrc.list.bgColor[getRandomInt(0, FlagSrc.list.bgColor.length - 1)], native: emoji[1] });
   },
 };
+
+export function randomInt(min: number, max: number, includeMax: boolean = true): number {
+  if (min > max) {
+    [min, max] = [max, min];
+  }
+
+  const range = includeMax ? max - min + 1 : max - min;
+  return Math.floor(Math.random() * range) + min;
+}

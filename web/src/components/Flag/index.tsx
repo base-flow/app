@@ -12,14 +12,20 @@ interface Props {
   className?: string;
   src: string;
   onClick?: (src: string) => void;
+  title?: string;
 }
 
-const Component: FC<Props> = ({ className, src, onClick }) => {
+const Component: FC<Props> = ({ className, src, onClick, title }) => {
   const { icon, emoji, bgColor } = useMemo(() => FlagSrc.decode(src), [src]);
   const clickHandler = useEvent(() => onClick?.(src));
   return (
-    <div className={`comp-Flag${className ? ` ${className}` : ""}`} style={bgColor ? { backgroundColor: bgColor } : undefined} onClick={clickHandler}>
-      {icon ? <img src={icon} alt="app" /> : <em-emoji shortcodes={emoji} size="1.6em"></em-emoji>}
+    <div
+      title={title}
+      className={`comp-Flag${className ? ` ${className}` : ""}`}
+      style={bgColor ? { backgroundColor: bgColor } : undefined}
+      onClick={clickHandler}
+    >
+      {icon ? <img src={icon} alt="project" /> : <em-emoji shortcodes={emoji} size="1.6em"></em-emoji>}
     </div>
   );
 };

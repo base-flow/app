@@ -1,4 +1,4 @@
-export default function App(props: { className?: string }): JSX.Element {
+export default function App(props: { className?: string }): React.JSX.Element {
   return (
     <span className={props.className}>
       <svg viewBox="247.938 180.961 27.367 7.15" width="3.8em" height="1em" xmlns="http://www.w3.org/2000/svg" fill="currentColor">

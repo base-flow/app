@@ -4,5 +4,6 @@ declare namespace _Personal {
     nickname: string;
     totalWorkflows: number;
     totalNodes: number;
+    dir: string;
   }
 }

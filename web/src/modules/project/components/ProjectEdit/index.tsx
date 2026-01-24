@@ -46,7 +46,7 @@ const Component: FC<Props> = ({ item, setItem }) => {
       queryClient.invalidateQueries({ queryKey: [ProjectAPI.listQueryKey] });
       queryClient.invalidateQueries({ queryKey: [ProjectAPI.itemQueryKey, id] });
       if (isCreate) {
-        router.navigate({ to: "/project/$projectId/flows", params: { projectId: id } });
+        //router.navigate({ to: "/project/$projectId/flows", params: { projectId: id } });
       }
     },
   });
@@ -60,13 +60,13 @@ const Component: FC<Props> = ({ item, setItem }) => {
             <Input />
           </FormItem>
           <FormItem label="名称&图标" name="name" rules={[{ required: true }]} style={{ width: "418px" }}>
-            <Input variant="filled" placeholder="请输入应用名称" />
+            <Input variant="filled" placeholder="请输入项目名称" />
           </FormItem>
           <FormItem name="logo" style={{ position: "absolute", top: "17px", right: "0px" }}>
             <FlagSelector />
           </FormItem>
-          <FormItem label="应用描述" name="desc" rules={[{ required: true }]}>
-            <Input.TextArea variant="filled" rows={5} placeholder="请输入应用描述" showCount maxLength={100} />
+          <FormItem label="项目描述" name="desc" rules={[{ required: true }]}>
+            <Input.TextArea variant="filled" rows={5} placeholder="请输入项目描述" showCount maxLength={100} />
           </FormItem>
           <div className="g-form-footer">
             <Button onClick={onCloseEdit}>取消</Button>

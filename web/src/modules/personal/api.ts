@@ -3,8 +3,8 @@ import request from "@/utils/request";
 
 export const PersonalAPI = {
   itemQueryKey: "PersonalItem",
-  getItem(id: string): Promise<_Personal.IPersonal> {
-    return request.get(`/api/personal/${id}`).then((res) => res.data);
+  getItem(username: string): Promise<_Personal.IPersonal> {
+    return request.get(`/api/personal/${username}`).then((res) => res.data);
   },
   queryItem(id: string) {
     return queryOptions({

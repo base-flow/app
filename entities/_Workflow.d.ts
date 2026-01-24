@@ -1,17 +1,13 @@
 declare namespace _Workflow {
-  interface Query extends _Resource.IQuery {
-    directory?: string;
+  interface IWorkflow extends _App.BaseEntry {
+    type: "workflow";
+    runtime: _App.Runtime;
+  }
+  interface Query extends _Entity.Query {
     runtime?: _App.Runtime;
   }
 
-  interface IWorkflow extends _Resource.IItem {
-    name: string;
-    type: "workflow";
-    directoryId: string;
-    desc: string;
-  }
-
-  type QueryResult = _Resource.IQueryResult<IWorkflow | _App.IDirectory, Query>;
+  type QueryResult = _Resource.IQueryResult<IWorkflow, Query>;
   type CreateResult = _Resource.ICreateResult;
   type UpdateResult = _Resource.IUpdateResult;
 }

@@ -155,7 +155,7 @@ export const baseflow = {
   noLogsTips: "未加载任何日志文件...",
   help: "帮助",
   uploadConfig: "保存配置到云端",
-  downloadConfig: "应用配置从云端",
+  downloadConfig: "项目配置从云端",
   graphErrorsPrompt: "节点中存在错误！",
   flowRequiresParams: "流程需要入参...",
   idCannotBeModify: "开始/结束/节点的ID不允许修改",
