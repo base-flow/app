@@ -8,6 +8,7 @@ import { useAppStore } from "@/modules/app/store";
 import { PersonalAPI } from "@/modules/personal/api";
 import PersonalFlag from "@/modules/personal/components/PersonalFlag";
 import PersonalMenu from "@/modules/personal/components/PersonalMenu";
+import PersonalSettings from "@/modules/personal/components/PersonalSettings";
 import { PermissionsContext, PersonalContext } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/personal/$personalId")({
@@ -53,7 +54,7 @@ function RouteComponent() {
             <PersonalFlag />
             <PersonalMenu />
           </div>
-          <div>config</div>
+          <PersonalSettings />
         </aside>
         <main className="g-col-paper">
           <LoadingMask show={personalQuery.isFetching} />

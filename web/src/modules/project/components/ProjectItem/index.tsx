@@ -16,7 +16,7 @@ interface Props {
 const Component: FC<Props> = ({ item, getPermissionsInProject, setCurEdit, onDelete, projectRole }) => {
   const permissions = getPermissionsInProject(item.id);
   return (
-    <Link className={`${styles.ProjectItem} g-card`} to="/project/$projectId/workflow" params={{ projectId: item.id }}>
+    <Link className={`${styles.ProjectItem} g-card`} to="/project/$projectId" params={{ projectId: item.id }}>
       <div className="head-icon">
         <Flag className="icon" src={item.logo} />
         <h4 className="title">{item.name}</h4>

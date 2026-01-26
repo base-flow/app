@@ -1,4 +1,10 @@
 declare namespace _App {
+  interface Config {
+    dirs: {
+      workflow: { [key in Runtime]: string } & { _: string };
+      node: { [key in Runtime]: string } & { _: string };
+    };
+  }
   interface IAuthUser {
     id: string;
     username: string;
@@ -21,19 +27,21 @@ declare namespace _App {
   }
 
   type Runtime = "server" | "browser";
-  type Scope = "personal" | "project" | "platform";
+  //type Scope = "personal" | "project" | "platform";
   type EntryType = "directory" | "workflow" | "node";
 
   interface BaseEntry extends _Resource.IItem {
     type: EntryType;
     name: string;
     desc: string;
-    parent: string;
-    path: string;
+    icon?: string;
+    parentId: string;
+    parentPath: string;
+    dir: string;
   }
 
   interface IDirectory extends BaseEntry {
     type: "directory";
-    children: BaseEntry[];
+    children: _Entity.IEntity[];
   }
 }

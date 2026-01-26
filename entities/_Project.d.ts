@@ -8,6 +8,7 @@ declare namespace _Project {
     totalItems: number;
     totalWorkflows: number;
     totalNodes: number;
+    dir: string;
   }
 
   type QueryResult = _Resource.IQueryResult<IProject, Query>;

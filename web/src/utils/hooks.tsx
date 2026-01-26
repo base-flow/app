@@ -55,11 +55,14 @@ export function useFolderRoute(
   resetQuery: () => { [key: string]: any },
   listSummary: _Resource.IQuerySummary | undefined,
 ) {
+  const pathData = (listSummary?.path || "")
+    .split("/")
+    .filter(Boolean)
+    .map((item) => item.split(" "));
   const breadcrumbCache = useRef<{ [path: string]: { query: { [key: string]: any } } }>({});
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   const currentPath = useMemo(() => {
-    const pathData = listSummary?.path || [];
     const currentPath = pathData.map((item) => item[0]).join(" ");
     const currentId = currentPath ? pathData[pathData.length - 1][0] : "/";
     const queryCache = breadcrumbCache.current;
@@ -88,11 +91,21 @@ export function useFolderRoute(
     if (!currentPath) {
       return null;
     }
-    const items: { title: string; path?: string }[] = listSummary!.path!.map(([id, title]) => ({ path: id, title }));
+    const items: { title: string; path?: string }[] = pathData.map(([id, title]) => ({ path: id, title }));
     return <Pathcrumb items={items} onRoute={onBreadcrumbRoute} />;
   }, [currentPath]);
 
   return breadcrumb;
+}
+
+export interface IConfigContext {
+  config: _App.Config;
+}
+
+export const ConfigContext = createContext<IConfigContext>({} as any);
+
+export function useConfig(): IConfigContext {
+  return useContext(ConfigContext);
 }
 
 export interface IPermissionsContext {

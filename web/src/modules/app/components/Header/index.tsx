@@ -2,7 +2,7 @@ import { getLocale } from "@baseflow/react";
 import { StringSelect } from "@baseflow/widgets";
 import { Link, useMatchRoute, useRouter } from "@tanstack/react-router";
 import { Button, Dropdown } from "antd";
-import { LayoutGrid, LogOut, UserRoundPen, Wifi } from "lucide-react";
+import { LayoutGrid, LogOut, Share2, UserRoundPen, Wifi } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -72,6 +72,10 @@ const Header: FC = () => {
           <Link disabled={!auth.id} to="/platform/workflow" activeProps={ActiveProps}>
             <Wifi size={14} strokeWidth={2.5} />
             <span>公共空间</span>
+          </Link>
+          <Link disabled={!auth.id} to="/shared" activeProps={ActiveProps}>
+            <Share2 size={14} strokeWidth={2.5} />
+            <span>分享空间</span>
           </Link>
           {/* <Link
             to="/triggers"

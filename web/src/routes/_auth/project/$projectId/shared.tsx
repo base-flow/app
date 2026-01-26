@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import EntityCardList from "@/modules/entity/components/EntityCardList";
-import { useConfig } from "@/utils/hooks";
+import EntityList from "@/modules/entity/components/EntityList";
+import { useProject } from "@/utils/hooks";
 
-export const Route = createFileRoute("/_auth/platform/node")({
+export const Route = createFileRoute("/_auth/project/$projectId/shared")({
   component: RouteComponent,
   validateSearch: z.object({
     page: z.number().optional(),
@@ -14,6 +14,6 @@ export const Route = createFileRoute("/_auth/platform/node")({
 
 function RouteComponent() {
   const search = Route.useSearch();
-  const { config } = useConfig();
-  return <EntityCardList title="节点" query={{ ...search, dir: search.dir || config.dirs.node._ }} />;
+  const { project } = useProject();
+  return <EntityList title="项目共享" query={{ ...search, dir: search.dir || project.dir }} />;
 }

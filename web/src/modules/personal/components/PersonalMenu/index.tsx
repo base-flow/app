@@ -24,9 +24,13 @@ const Component: FC = () => {
       return ["home", "home/workflow"];
     } else if (matchRoute({ to: "/personal/$personalId/node" })) {
       return ["home", "home/node"];
+    } else if (matchRoute({ to: "/personal/$personalId/shared" })) {
+      return [openedKey, "home/shared"];
     } else if (matchRoute({ to: "/personal/$personalId" })) {
       return ["home", "home"];
-    } else return [];
+    } else {
+      return [];
+    }
   })();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
@@ -38,13 +42,16 @@ const Component: FC = () => {
   const onSelect = useEvent((key: string) => {
     switch (key) {
       case "home":
-        navigate({ to: "/personal/$personalId", params: { personalId: personal.id } });
+        navigate({ to: "/personal/$personalId", params: { personalId: personal.username } });
         break;
       case "home/workflow":
-        navigate({ to: "/personal/$personalId/workflow", params: { personalId: personal.id } });
+        navigate({ to: "/personal/$personalId/workflow", params: { personalId: personal.username } });
         break;
       case "home/node":
-        navigate({ to: "/personal/$personalId/node", params: { personalId: personal.id } });
+        navigate({ to: "/personal/$personalId/node", params: { personalId: personal.username } });
+        break;
+      case "home/shared":
+        navigate({ to: "/personal/$personalId/shared", params: { personalId: personal.username } });
         break;
     }
   });
@@ -94,59 +101,20 @@ const Component: FC = () => {
         ],
       },
       {
-        key: "shared",
+        key: "home/shared",
         label: (
           <>
             <IconNetwork size={13} />
             <span>我的共享</span>
           </>
         ),
-        children: [
-          {
-            key: "shared/workflow",
-            label: (
-              <>
-                <TextAlignJustify size={13} />
-                <span>
-                  流程
-                  <small>
-                    (<em>{personal.totalWorkflows}</em>)
-                  </small>
-                </span>
-              </>
-            ),
-          },
-          {
-            key: "shared/node",
-            label: (
-              <>
-                <Settings2 size={13} />
-                <span>
-                  节点
-                  <small>
-                    (<em>{personal.totalWorkflows}</em>)
-                  </small>
-                </span>
-              </>
-            ),
-          },
-        ],
       },
       {
-        key: "favs",
+        key: "share",
         label: (
           <>
             <IconShare size={13} />
             <span>我的分享</span>
-          </>
-        ),
-      },
-      {
-        key: "favs",
-        label: (
-          <>
-            <IconStar size={13} />
-            <span>我的收藏</span>
           </>
         ),
       },

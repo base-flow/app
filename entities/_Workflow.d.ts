@@ -2,6 +2,7 @@ declare namespace _Workflow {
   interface IWorkflow extends _App.BaseEntry {
     type: "workflow";
     runtime: _App.Runtime;
+    likes: number;
   }
   interface Query extends _Entity.Query {
     runtime?: _App.Runtime;

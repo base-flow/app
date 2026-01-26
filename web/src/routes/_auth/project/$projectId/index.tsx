@@ -1,19 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import EntityList from "@/modules/entity/components/EntityList";
-import { usePersonal } from "@/utils/hooks";
+import { useProject } from "@/utils/hooks";
 
-export const Route = createFileRoute("/_auth/personal/$personalId/node")({
+export const Route = createFileRoute("/_auth/project/$projectId/")({
+  component: RouteComponent,
   validateSearch: z.object({
     page: z.number().optional(),
     keyword: z.string().optional(),
     dir: z.string().optional(),
+    type: z.enum(["workflow", "node", "all"]).optional(),
   }),
-  component: RouteComponent,
 });
 
 function RouteComponent() {
   const search = Route.useSearch();
-  const { personal } = usePersonal();
-  return <EntityList title="节点" query={{ ...search, type: "node", dir: search.dir || personal.dir }} />;
+  const { project } = useProject();
+  return <EntityList title="项目文档" query={{ ...search, dir: search.dir || project.dir }} />;
 }

@@ -1,9 +1,19 @@
 .comp-Pathcrumb {
+  padding-left: 5px;
+
   .anticon {
     pointer-events: none;
   }
 
   .refresh {
-    color: var(--bf-tx-lesser) !important;
+    color: var(--bf-tx-body) !important;
+  }
+
+  .current {
+    font-weight: bold;
+  }
+
+  a {
+    color: var(--bf-tx-summary) !important;
   }
 }

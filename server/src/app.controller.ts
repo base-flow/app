@@ -1,12 +1,23 @@
 import { Controller, Get } from "@nestjs/common";
-import { AppService } from "./app.service";
-
+import { sleep } from "@/utils";
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get("config")
+  async getConfig(): Promise<_App.Config> {
+    await sleep(1000);
+    return Promise.resolve({
+      dirs: {
+        workflow: {
+          _: "_workflow",
+          server: "",
+          browser: "",
+        },
+        node: {
+          _: "_node",
+          server: "",
+          browser: "",
+        },
+      },
+    });
   }
 }

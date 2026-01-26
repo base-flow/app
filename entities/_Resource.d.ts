@@ -19,7 +19,7 @@ declare namespace _Resource {
     total: number;
     page: number;
     pageSize: number;
-    path?: [string, string][];
+    path?: string;
   }
 
   interface IQueryResult<T extends IItem, Q extends IQuery = IQuery, S extends IQuerySummary = IQuerySummary> {

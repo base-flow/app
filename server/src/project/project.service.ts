@@ -19,7 +19,7 @@ const list: _Project.IProject[] = mockjs
       },
     ],
   })
-  .list.map((item: any) => ({ ...item, id: `${item.id}`, logo: FlagSrc.create() }));
+  .list.map((item: any) => ({ ...item, id: `${item.id}`, dir: "$deepseek", logo: FlagSrc.create() }));
 
 const memberList: _Project.IMember[] = mockjs
   .mock({

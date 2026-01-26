@@ -5,7 +5,7 @@ import { useAppStore } from "@/modules/app/store";
 import PlatformMenu from "@/modules/platform/components/PlatformMenu";
 import { ConfigContext, PermissionsContext } from "@/utils/hooks";
 
-export const Route = createFileRoute("/_auth/platform")({
+export const Route = createFileRoute("/_auth/platform/workflow")({
   component: RouteComponent,
 });
 

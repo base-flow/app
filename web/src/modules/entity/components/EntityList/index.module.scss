@@ -1,24 +1,29 @@
 :global {
   :local(.EntityList) {
     > .hd {
-      align-items: flex-end;
-      padding: 25px;
+      flex-wrap: wrap;
+      height: 90px;
+      padding: 25px 25px 0;
+      overflow: hidden;
+
+      > .home {
+        font-size: 15px;
+        font-weight: bold;
+        color: var(--bf-tx-lesser);
+      }
+
+      > .line {
+        width: 100%;
+        padding-top: 10px;
+      }
     }
 
     .ant-pagination {
       margin: 30px 0 0 !important;
     }
 
-    .comp-Collect {
-      margin-left: 5px;
-    }
-
     &:global(__item) {
       padding-left: 18px;
-
-      &.folder {
-        background-color: var(--bf-bg-filled2);
-      }
 
       > .g-icon {
         position: absolute;

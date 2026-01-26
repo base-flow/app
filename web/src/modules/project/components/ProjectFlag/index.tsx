@@ -8,7 +8,9 @@ const Component: FC = () => {
 
   return (
     <div className="g-flag">
-      <Flag className="icon" src={project.logo} title={project.name} />
+      <div className="icon">
+        <Flag size={45} src={project.logo} title={project.name} />
+      </div>
       <div className="title" title={project.name}>
         {project.name}
       </div>

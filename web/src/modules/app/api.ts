@@ -9,6 +9,9 @@ export const AppAPI = {
   logout(): Promise<void> {
     return Promise.resolve();
   },
+  getConfig(): Promise<_App.Config> {
+    return request.get("/api/config").then((res) => res.data);
+  },
   getAuth(): Promise<_App.IAuthUser> {
     return request
       .get("/api/auth", { headers: { Quiet: 1 } })

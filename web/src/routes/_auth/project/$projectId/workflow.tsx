@@ -1,18 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import WorkflowList from "@/modules/workflow/components/WorkflowList";
+import EntityList from "@/modules/entity/components/EntityList";
+import { useProject } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/project/$projectId/workflow")({
   validateSearch: z.object({
     page: z.number().optional(),
     keyword: z.string().optional(),
-    collected: z.boolean().optional(),
+    dir: z.string().optional(),
   }),
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const params = Route.useParams();
   const search = Route.useSearch();
-  return <WorkflowList scope="project" query={{ ...search, ...params }} />;
+  const { project } = useProject();
+  return <EntityList title="流程" query={{ ...search, type: "workflow", dir: search.dir || project.dir }} />;
 }

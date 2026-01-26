@@ -10,18 +10,17 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import IconEntity from "@/components/IconEntity";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
-import { useEvent } from "@/utils/hooks";
+import { useEvent, useFolderRoute } from "@/utils/hooks";
 import { debounce } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import styles from "./index.module.scss";
 
 interface EntityListProps {
   query: _Entity.Query;
-  scope: _App.Scope;
+  title: string;
 }
 
 const Component: FC<EntityListProps> = (props) => {
-  const { scope } = props;
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState(props.query);
   const entityQuery = useQuery(EntityAPI.queryList(query));
@@ -35,6 +34,12 @@ const Component: FC<EntityListProps> = (props) => {
   useMemo(() => {
     setQuery(props.query);
   }, [props.query]);
+
+  const resetQuery = useEvent(() => {
+    return { ...query, keyword: undefined, page: undefined, sorterField: undefined, sorterOrder: undefined };
+  });
+
+  const breadcrumb = useFolderRoute(query, setQuery, resetQuery, entityQuerySummary);
 
   const [tableScroll, setTableScroll] = useState({ y: 0 });
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -125,11 +130,11 @@ const Component: FC<EntityListProps> = (props) => {
           <div className={classnames(`${styles.EntityList}__item`)}>
             <IconEntity type={row.type} />
             {row.type === "directory" ? (
-              <Link className="dir" to="/workflow/$workflowId" params={{ workflowId: row.id }}>
+              <Link className="dir" to="." search={{ dir: row.dir }}>
                 {name}
               </Link>
             ) : row.type === "workflow" ? (
-              <Link to="/workflow/$workflowId" params={{ workflowId: row.id }}>
+              <Link to="/workflow/$workflowId" params={{ workflowId: row.id }} search={{ dir: 1 }}>
                 {name}
               </Link>
             ) : (
@@ -224,7 +229,10 @@ const Component: FC<EntityListProps> = (props) => {
   const onTableChange = useEvent((pagination: { current?: number; pageSize?: number }, filters: any, sorter: any) => {
     console.log(pagination, filters);
     if (pagination.current) {
-      router.navigate({ to: "/", search: { ...query, appId: undefined, page: pagination.current } });
+      router.navigate({
+        to: ".",
+        search: { ...query, type: undefined, page: pagination.current },
+      });
     }
   });
 
@@ -237,19 +245,46 @@ const Component: FC<EntityListProps> = (props) => {
   );
 
   useEffect(() => {
-    setTableScroll({ y: (scrollerRef.current?.scrollHeight || 0) - 135 });
-    const onResize = debounce(() => setTableScroll({ y: (scrollerRef.current?.scrollHeight || 0) - 135 }), 300);
+    console.log(scrollerRef.current?.offsetHeight);
+    setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 135 });
+    const onResize = debounce(() => {
+      console.log(scrollerRef.current?.offsetHeight);
+      setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 135 });
+    }, 300);
     window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("resize", onResize);
     };
   }, []);
 
+  const header = (
+    <div className="hd">
+      {breadcrumb || <div className="home">{props.title}</div>}
+      <Space>
+        <SearchInput value={query.keyword} onChange={onSearch} />
+      </Space>
+      <div className="line">
+        {!selectedRows.length ? (
+          <Button icon={<Plus size={14} strokeWidth={2.5} className="anticon" />} type="primary">
+            新建流程
+          </Button>
+        ) : (
+          <Dropdown menu={batchMenu}>
+            <Button loading={entityDeleter.isPending} icon={<ChevronDown size={13} className="anticon" />} iconPlacement="end">
+              批量操作
+            </Button>
+          </Dropdown>
+        )}
+      </div>
+      {/* {scope === "personal" ? <div /> : <div />} */}
+    </div>
+  );
+
   if (entityQuery.isError) {
     return (
-      <div className={`${styles.entityList} g-page min-wrap`}>
-        <div className="hd">{scope === "personal" ? <div /> : <div />}</div>
-        <div className="bd">
+      <div className={`${styles.EntityList} g-page min-wrap`}>
+        {header}
+        <div className="bd" ref={scrollerRef}>
           <Result status="warning" title={entityQuery.error?.message || "错误"} />
         </div>
       </div>
@@ -258,9 +293,9 @@ const Component: FC<EntityListProps> = (props) => {
 
   if (!entityList) {
     return (
-      <div className={`${styles.entityList} g-page min-wrap`}>
-        <div className="hd">{scope === "personal" ? <div /> : <div />}</div>
-        <div className="bd">
+      <div className={`${styles.EntityList} g-page min-wrap`}>
+        {header}
+        <div className="bd" ref={scrollerRef}>
           <Skeleton active />
         </div>
       </div>
@@ -270,23 +305,7 @@ const Component: FC<EntityListProps> = (props) => {
   return (
     <div className={`${styles.EntityList} g-page min-wrap`}>
       <LoadingMask show={entityQuery.isFetching || entityAlter.isPending || entityDeleter.isPending} />
-      <div className="hd">
-        {scope === "personal" ? <div /> : <div />}
-        {!selectedRows.length ? (
-          <Space>
-            <SearchInput value={query.keyword} onChange={onSearch} />
-            <Button icon={<Plus size={14} strokeWidth={2.5} className="anticon" />} type="primary">
-              新建流程
-            </Button>
-          </Space>
-        ) : (
-          <Dropdown menu={batchMenu}>
-            <Button loading={entityDeleter.isPending} icon={<ChevronDown size={13} className="anticon" />} iconPlacement="end">
-              批量操作
-            </Button>
-          </Dropdown>
-        )}
-      </div>
+      {header}
       <div className="bd" ref={scrollerRef}>
         <Table<any>
           rowKey="id"

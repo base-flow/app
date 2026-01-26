@@ -8,11 +8,13 @@ export const Route = createFileRoute("/_auth/personal/$personalId/")({
   validateSearch: z.object({
     page: z.number().optional(),
     keyword: z.string().optional(),
+    dir: z.string().optional(),
+    type: z.enum(["workflow", "node", "all"]).optional(),
   }),
 });
 
 function RouteComponent() {
   const search = Route.useSearch();
   const { personal } = usePersonal();
-  return <EntityList scope="personal" query={{ ...search, dir: personal.dir }} />;
+  return <EntityList title="我的文档" query={{ ...search, dir: search.dir || personal.dir }} />;
 }

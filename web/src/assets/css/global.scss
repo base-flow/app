@@ -79,7 +79,8 @@ a {
       border-top: 1px solid var(--bf-bd-input);
 
       > .loading {
-        margin: 10px 30px;
+        box-sizing: border-box;
+        padding: 10px 30px;
       }
     }
 
@@ -91,7 +92,6 @@ a {
       flex-direction: column;
       justify-content: space-between;
       width: 240px;
-      padding: 15px;
     }
 
     // col2-right
@@ -112,6 +112,7 @@ a {
 }
 
 .g-col-side {
+  padding-top: 5px;
   border-top: 1px solid var(--bf-bd-input);
 
   // border-right: 1px solid var(--bf-bd-input);
@@ -134,8 +135,8 @@ a {
   > .hd {
     display: flex;
     flex: none;
+    place-content: flex-start space-between;
     align-items: center;
-    justify-content: space-between;
     padding: 20px 30px;
 
     > .space {
@@ -169,33 +170,59 @@ a {
 }
 
 .g-settings {
+  padding: 0 15px 20px 10px;
+
   > .title {
-    display: flex;
-    align-items: center;
-    padding: 5px;
-    margin-bottom: 8px;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
     font-size: 11px;
     border-bottom: 1px dashed var(--bf-bd-input);
   }
 }
 
 .g-flag {
-  padding-bottom: 15px;
-  margin-bottom: 5px;
+  position: relative;
+  padding-bottom: 20px;
+  margin: 15px 15px 0 10px;
   text-align: center;
-  border-bottom: 1px dashed var(--bf-bd-input);
+
+  // padding: 15px;
+  // background: linear-gradient(0deg, var(--bf-bg-filled2) 0%, #fff0 100%);
+  // border-radius: var(--bf-rd-card);
+
+  border-bottom: 1px solid var(--bf-bd-input);
+
+  &::after {
+    position: absolute;
+    bottom: -3px;
+    width: 5px;
+    height: 5px;
+    overflow: hidden;
+    content: "";
+    background: var(--bf-bd-input);
+    border-radius: 10px;
+  }
 
   > .icon {
+    display: inline-block;
     width: 45px;
     height: 45px;
+    overflow: hidden;
+    border: 3px solid #fff;
+    border-radius: var(--bf-rd-btn);
+
+    // border: 1px solid var(--bf-bg-filled2);
+    box-shadow: 0 0 80px 10px #fff;
+
+    &.avatar {
+      border-radius: 50px;
+    }
   }
 
   > .title {
-    padding: 15px 0 8px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    padding: 10px 5px 8px;
     font-weight: 500;
-    white-space: nowrap;
+    line-height: 1.6;
   }
 
   > .info {
@@ -203,19 +230,20 @@ a {
     color: var(--bf-tx-lesser);
   }
 
-  // > .config {
-
-  // }
-}
-
-.g-menu {
-  background-color: transparent;
-  border-inline-end: none !important;
-
-  .ant-menu-sub {
-    background-color: transparent !important;
+  small {
+    font-size: 11px;
+    font-weight: normal;
   }
 }
+
+// .g-menu {
+//   background-color: transparent;
+//   border-inline-end: none !important;
+
+//   .ant-menu-sub {
+//     background-color: transparent !important;
+//   }
+// }
 
 .g-icon {
   position: relative;

@@ -9,7 +9,9 @@ function itemRender(item: any) {
   if (item.path === undefined) {
     return (
       <>
-        <span style={{ marginRight: "3px" }}>{item.title}</span>
+        <span className="current" style={{ marginRight: "3px" }}>
+          {item.title}
+        </span>
         <a className="refresh" data-id="">
           <RefreshCcw className="anticon" size={11} strokeWidth={2.5} />
         </a>

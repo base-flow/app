@@ -4,6 +4,7 @@ import { AppAPI, GuestUser } from "./api";
 
 export interface AppState {
   auth: _App.IAuthUser;
+  config?: _App.Config;
   systemRoleConfg?: _Permission.SystemRoleConfg;
   projectRoleConfg?: _Permission.ProjectRoleConfg;
   myProjectRoles: _Permission.MyProjectRoles;
@@ -35,7 +36,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         location.reload();
         throw new Error("Refresh...");
       } else {
-        const [{ systemRoleConfg, projectRoleConfg, myProjectRoles }, favoriteList] = await Promise.all([
+        const [config, { systemRoleConfg, projectRoleConfg, myProjectRoles }, favoriteList] = await Promise.all([
+          AppAPI.getConfig(),
           AppAPI.getPermissions(),
           AppAPI.getFavorites(),
         ]);
@@ -52,7 +54,7 @@ export const useAppStore = create<AppState>((set, get) => ({
             {} as { [id: string]: boolean },
           ),
         };
-        set((state) => ({ ...state, auth: curAuth, systemRoleConfg, projectRoleConfg, myProjectRoles, systemPermissions, myFavorites }));
+        set((state) => ({ ...state, auth: curAuth, config, systemRoleConfg, projectRoleConfg, myProjectRoles, systemPermissions, myFavorites }));
       }
     }
   },

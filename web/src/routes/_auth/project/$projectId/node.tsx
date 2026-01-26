@@ -1,9 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
+import EntityList from "@/modules/entity/components/EntityList";
+import { useProject } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/project/$projectId/node")({
+  validateSearch: z.object({
+    page: z.number().optional(),
+    keyword: z.string().optional(),
+    dir: z.string().optional(),
+  }),
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return <div>Hello "/_auth/project/$projectId/node"!</div>;
+  const search = Route.useSearch();
+  const { project } = useProject();
+  return <EntityList title="节点" query={{ ...search, type: "node", dir: search.dir || project.dir }} />;
 }

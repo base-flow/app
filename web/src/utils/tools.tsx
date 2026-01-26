@@ -65,3 +65,6 @@ export function messageWrap(message: string): ReactNode {
 export function isDirectory(item: { type: string }): item is _App.IDirectory {
   return item.type === "directory";
 }
+export function isWorkflow(item: { type: string }): item is _Workflow.IWorkflow {
+  return item.type === "workflow";
+}

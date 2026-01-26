@@ -5,7 +5,6 @@ declare namespace _Node {
     type: "node";
     runtime: _App.Runtime;
     nodeType: NodeType;
-    icon: string;
     content: string;
     package: string;
     version: string;

@@ -356,7 +356,7 @@ export class NodeService {
     //   }
     // }
     const { page = 1, pageSize = 10 } = query;
-    return { query, list: result.slice((page - 1) * pageSize, page * pageSize), summary: { total: result.length, page, pageSize, path: [] } };
+    return { query, list: result.slice((page - 1) * pageSize, page * pageSize), summary: { total: result.length, page, pageSize, path: "" } };
   }
 
   async createItem(userId: string, data: _Node.INode): Promise<_Node.CreateResult> {

@@ -15,11 +15,9 @@ import styles from "./index.module.scss";
 
 interface WorkflowListProps {
   query: _Workflow.Query;
-  scope: _App.Scope;
 }
 
 const Component: FC<WorkflowListProps> = (props) => {
-  const { scope } = props;
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState(props.query);
   const workflowQuery = useQuery(WorkflowAPI.queryList(query));

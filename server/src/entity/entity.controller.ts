@@ -1,21 +1,42 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request } from "@nestjs/common";
 import { sleep } from "@/utils";
-import { EntityList } from "./data";
-
-console.log(EntityList);
+import { EntityList, EntityMap, PlatformEntityList, PlatformEntityMap } from "./data";
 
 @Controller("entity")
 export class EntityController {
   @Get()
   async getList(@Request() { query }: { query: _Entity.Query }): Promise<_Entity.QueryResult> {
     await sleep(1000);
-    const list: _Entity.IEntity[] = EntityList;
+    let list: _Entity.IEntity[] = [];
+    let path: string = "";
+    const dir = query.dir || "";
+    if (dir.startsWith("~") || dir.startsWith("$")) {
+      list = EntityList;
+      path = "";
+    } else if (dir.startsWith("_workflow")) {
+      list = PlatformEntityList.workflow;
+      path = "";
+    } else if (dir.startsWith("_node")) {
+      list = PlatformEntityList.node;
+      path = "";
+    } else {
+      const folder: _App.IDirectory = EntityMap[dir] as any;
+      if (folder) {
+        list = folder.children;
+        path = `${folder.parentPath}/${folder.id} ${folder.name}`;
+      }
+    }
+    if (query.type) {
+      list = Object.keys(EntityMap)
+        .map((id) => EntityMap[id])
+        .filter((item) => item.type === query.type);
+    }
     const { page = 1 } = query;
     const pageSize = 20;
     return {
       query,
       list: list.slice((page - 1) * pageSize, page * pageSize).map((item) => ({ ...item, children: undefined })) as any[],
-      summary: { total: list.length, page, pageSize },
+      summary: { total: list.length, page, pageSize, path },
     };
   }
 
