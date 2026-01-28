@@ -12,7 +12,12 @@ declare namespace _Entity {
     type?: "workflow" | "node" | "all";
   }
 
-  type QueryResult = _Resource.IQueryResult<IEntity, Query>;
+  interface QuerySummary extends _Resource.IQuerySummary {
+    path: string;
+    spaceType: _App.EntrySpace;
+    spaceId: string;
+  }
+  type QueryResult = _Resource.IQueryResult<IEntity, Query, QuerySummary>;
 
   type CreateResult = _Resource.ICreateResult;
   type UpdateResult = _Resource.IUpdateResult;

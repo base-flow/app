@@ -9,7 +9,7 @@ export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Get()
-  async getList(@Request() { user, query }: { user: _App.IAuthUser; query: BaseQueryDto }): Promise<_Project.QueryResult> {
+  async getList(@Request() { user, query }: { user: _App.AuthUser; query: BaseQueryDto }): Promise<_Project.QueryResult> {
     await sleep(1000);
     const permissions = getPermissions(user);
     if (!permissions.project_list) {
@@ -25,7 +25,7 @@ export class ProjectController {
   }
 
   @Post()
-  async createItem(@Request() { user, body }: { user: _App.IAuthUser; body: _Project.IProject }): Promise<_Project.CreateResult> {
+  async createItem(@Request() { user, body }: { user: _App.AuthUser; body: _Project.IProject }): Promise<_Project.CreateResult> {
     await sleep(1000);
     const permissions = getPermissions(user);
     if (!permissions.project_create) {
@@ -36,7 +36,7 @@ export class ProjectController {
 
   @Put(":id")
   async updateItem(
-    @Request() { user, body, params }: { user: _App.IAuthUser; body: _Project.IProject; params: { id: string } },
+    @Request() { user, body, params }: { user: _App.AuthUser; body: _Project.IProject; params: { id: string } },
   ): Promise<_Project.UpdateResult> {
     await sleep(1000);
     return this.projectService.updateItem(user.id, params.id, body);
@@ -55,20 +55,20 @@ export class ProjectController {
 
   @Post(":id/member")
   async createMember(
-    @Request() { user, body, params }: { user: _App.IAuthUser; body: Partial<_Project.IMember>; params: { id: string } },
+    @Request() { user, body, params }: { user: _App.AuthUser; body: Partial<_Project.IMember>; params: { id: string } },
   ): Promise<_Project.IMember> {
     return this.projectService.createMember(params.id, body);
   }
 
   @Put(":id/member")
   async updateMember(
-    @Request() { user, body, params }: { user: _App.IAuthUser; body: Partial<_Project.IMember>; params: { id: string } },
+    @Request() { user, body, params }: { user: _App.AuthUser; body: Partial<_Project.IMember>; params: { id: string } },
   ): Promise<void> {
     return this.projectService.updateMember(params.id, body);
   }
 
   @Delete(":id/member")
-  async deleteMemberItem(@Request() { user, query, params }: { user: _App.IAuthUser; query: { id: string }; params: { id: string } }): Promise<void> {
+  async deleteMemberItem(@Request() { user, query, params }: { user: _App.AuthUser; query: { id: string }; params: { id: string } }): Promise<void> {
     return this.projectService.deleteMemberItem(params.id, query.id);
   }
 }

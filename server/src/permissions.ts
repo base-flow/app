@@ -74,7 +74,7 @@ export const MyProjectRoles: _Permission.MyProjectRoles = {
   "3": "Owner",
   "5": "Admin",
 };
-export function getPermissions(user: _App.IAuthUser): _Permission.IPermissions {
+export function getPermissions(user: _App.AuthUser): _Permission.IPermissions {
   const systemPermissions = user.roles.reduce((obj, role) => {
     Object.assign(obj, SystemRoleConfg[role]);
     return obj;

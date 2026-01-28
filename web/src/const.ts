@@ -13,8 +13,8 @@ export const AUTH_TOKEN_KEY = "_baseflow_auth_token_key_";
 export const PAGE_SIZE_OPTIONS = ["20", "50", "100"];
 export const LOCALE_KEY = "_baseflow_locale_key_";
 
-export function HomePage(username: string): string {
-  return `/personal/${username}`;
+export function HomePage(userid: string): string {
+  return `/personal/${userid}`;
 }
 
 export const DomIds = {

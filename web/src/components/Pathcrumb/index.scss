@@ -1,16 +1,27 @@
 .comp-Pathcrumb {
-  padding-left: 5px;
+  padding-left: 2px;
+
+  > .home {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding-left: 2px;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--bf-tx-summary);
+  }
 
   .anticon {
     pointer-events: none;
   }
 
   .refresh {
-    color: var(--bf-tx-body) !important;
+    color: var(--bf-primary) !important;
   }
 
   .current {
-    font-weight: bold;
+    font-weight: 500;
+    color: var(--bf-primary);
   }
 
   a {

@@ -1,42 +1,34 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request } from "@nestjs/common";
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Request } from "@nestjs/common";
+import { EntityList, EntityMap } from "@/data";
 import { sleep } from "@/utils";
-import { EntityList, EntityMap, PlatformEntityList, PlatformEntityMap } from "./data";
 
 @Controller("entity")
 export class EntityController {
   @Get()
   async getList(@Request() { query }: { query: _Entity.Query }): Promise<_Entity.QueryResult> {
     await sleep(1000);
-    let list: _Entity.IEntity[] = [];
-    let path: string = "";
-    const dir = query.dir || "";
-    if (dir.startsWith("~") || dir.startsWith("$")) {
-      list = EntityList;
-      path = "";
-    } else if (dir.startsWith("_workflow")) {
-      list = PlatformEntityList.workflow;
-      path = "";
-    } else if (dir.startsWith("_node")) {
-      list = PlatformEntityList.node;
-      path = "";
-    } else {
-      const folder: _App.IDirectory = EntityMap[dir] as any;
-      if (folder) {
-        list = folder.children;
-        path = `${folder.parentPath}/${folder.id} ${folder.name}`;
-      }
+    const folder = EntityMap[query.dir || ""] as _App.IDirectory;
+    if (!folder) {
+      throw new NotFoundException();
     }
+    const { spaceType, spaceId } = folder;
+    let path = folder.path;
+    let list = folder.children!;
     if (query.type) {
+      path = "";
       list = Object.keys(EntityMap)
-        .map((id) => EntityMap[id])
-        .filter((item) => item.type === query.type);
+        .filter((id) => {
+          const item = EntityMap[id];
+          return item.type === query.type && item.path.includes(`/${query.dir} `);
+        })
+        .map((id) => EntityMap[id]);
     }
     const { page = 1 } = query;
     const pageSize = 20;
     return {
       query,
       list: list.slice((page - 1) * pageSize, page * pageSize).map((item) => ({ ...item, children: undefined })) as any[],
-      summary: { total: list.length, page, pageSize, path },
+      summary: { total: list.length, page, pageSize, path, spaceType, spaceId },
     };
   }
 
@@ -46,13 +38,13 @@ export class EntityController {
   // }
 
   // @Post()
-  // async createItem(@Request() { user, body }: { user: _App.IAuthUser; body: _Entity.IEntity }): Promise<_Entity.CreateResult> {
+  // async createItem(@Request() { user, body }: { user: _App.AuthUser; body: _Entity.IEntity }): Promise<_Entity.CreateResult> {
   //   //return this.workflowService.createItem(user.id, body);
   // }
 
   // @Put(":id")
   // async updateItem(
-  //   @Request() { user, body, params }: { user: _App.IAuthUser; body: _Entity.IEntity; params: { id: string } },
+  //   @Request() { user, body, params }: { user: _App.AuthUser; body: _Entity.IEntity; params: { id: string } },
   // ): Promise<_Entity.UpdateResult> {
   //   //return this.workflowService.updateItem(user.id, params.id, body);
   // }

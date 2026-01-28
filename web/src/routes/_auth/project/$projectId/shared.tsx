@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import EntityList from "@/modules/entity/components/EntityList";
+import EntityList from "@/modules/entity/views/EntityList";
 import { useProject } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/project/$projectId/shared")({
@@ -15,5 +15,5 @@ export const Route = createFileRoute("/_auth/project/$projectId/shared")({
 function RouteComponent() {
   const search = Route.useSearch();
   const { project } = useProject();
-  return <EntityList title="项目共享" query={{ ...search, dir: search.dir || project.dir }} />;
+  return <EntityList title="项目分享" query={{ ...search, dir: search.dir || project.dir }} />;
 }

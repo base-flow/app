@@ -7,8 +7,8 @@ import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Button, ConfigProvider, Modal, Segmented, Spin, Switch } from "antd";
 import { useState } from "react";
-import Header from "@/modules/app/components/Header";
 import { useAppStore } from "@/modules/app/store";
+import Header from "@/modules/app/views/Header";
 import { messageWrap } from "@/utils/tools";
 
 export const Route = createRootRouteWithContext<{

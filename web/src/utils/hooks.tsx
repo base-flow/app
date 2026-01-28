@@ -50,14 +50,16 @@ export function useInfiniteList(fetchNextPage: () => void): [RefObject<HTMLDivEl
 }
 
 export function useFolderRoute(
+  title: string,
   query: { [key: string]: any },
   setQuery: (query: { [key: string]: any }) => void,
   resetQuery: () => { [key: string]: any },
-  listSummary: _Resource.IQuerySummary | undefined,
+  listSummary: _Entity.QuerySummary | undefined,
 ) {
   const pathData = (listSummary?.path || "")
     .split("/")
     .filter(Boolean)
+    .slice(1)
     .map((item) => item.split(" "));
   const breadcrumbCache = useRef<{ [path: string]: { query: { [key: string]: any } } }>({});
 
@@ -80,7 +82,7 @@ export function useFolderRoute(
   const onBreadcrumbRoute = useEvent((path: string) => {
     if (path) {
       const queryCache = breadcrumbCache.current[path] || {};
-      setQuery({ ...queryCache.query, parent: path === "/" ? undefined : path });
+      setQuery({ ...queryCache.query, dir: path === "/" ? undefined : path });
     } else {
       setQuery(resetQuery());
     }
@@ -88,11 +90,8 @@ export function useFolderRoute(
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   const breadcrumb = useMemo(() => {
-    if (!currentPath) {
-      return null;
-    }
-    const items: { title: string; path?: string }[] = pathData.map(([id, title]) => ({ path: id, title }));
-    return <Pathcrumb items={items} onRoute={onBreadcrumbRoute} />;
+    const items: { title: string; path?: string }[] = currentPath ? pathData.map(([id, title]) => ({ path: id, title })) : [];
+    return <Pathcrumb title={title} items={items} onRoute={onBreadcrumbRoute} />;
   }, [currentPath]);
 
   return breadcrumb;
@@ -109,7 +108,7 @@ export function useConfig(): IConfigContext {
 }
 
 export interface IPermissionsContext {
-  auth: _App.IAuthUser;
+  auth: _App.AuthUser;
   permissions: _Permission.IPermissions;
   getPermissionsInProject: (appId: string) => _Permission.IPermissions;
 }

@@ -18,13 +18,13 @@ export class WorkflowController {
   }
 
   @Post()
-  async createItem(@Request() { user, body }: { user: _App.IAuthUser; body: _Workflow.IWorkflow }): Promise<_Workflow.CreateResult> {
+  async createItem(@Request() { user, body }: { user: _App.AuthUser; body: _Workflow.IWorkflow }): Promise<_Workflow.CreateResult> {
     return this.workflowService.createItem(user.id, body);
   }
 
   @Put(":id")
   async updateItem(
-    @Request() { user, body, params }: { user: _App.IAuthUser; body: _Workflow.IWorkflow; params: { id: string } },
+    @Request() { user, body, params }: { user: _App.AuthUser; body: _Workflow.IWorkflow; params: { id: string } },
   ): Promise<_Workflow.UpdateResult> {
     return this.workflowService.updateItem(user.id, params.id, body);
   }

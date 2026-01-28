@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { z } from "zod";
 import { useShallow } from "zustand/react/shallow";
 import { useAppStore } from "@/modules/app/store";
-import ProjectList from "@/modules/project/components/ProjectList";
+import ProjectList from "@/modules/project/views/ProjectList";
 import { PermissionsContext } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/project/")({

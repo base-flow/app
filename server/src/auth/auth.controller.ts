@@ -8,18 +8,18 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get()
-  async getUser(@Request() req: { user: _App.IAuthUser }): Promise<_App.IAuthUser> {
+  async getUser(@Request() req: { user: _App.AuthUser }): Promise<_App.AuthUser> {
     return req.user;
   }
 
   @Public()
   @Put()
-  async login(@Body() body: _App.AuthLogin): Promise<_App.IProfileUser & { token: string }> {
+  async login(@Body() body: _App.AuthLogin): Promise<_App.AuthUser & { token: string }> {
     return this.authService.login(body);
   }
 
   @Get("permissions")
-  async getPermissions(@Request() req: { user: _App.IAuthUser }): Promise<_Permission.QueryPermissionsResult> {
+  async getPermissions(@Request() req: { user: _App.AuthUser }): Promise<_Permission.QueryPermissionsResult> {
     return {
       systemRoleConfg: SystemRoleConfg,
       projectRoleConfg: ProjectRoleConfg,

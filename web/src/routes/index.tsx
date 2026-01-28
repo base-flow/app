@@ -1,4 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { HomePage } from "@/const";
 import { useAppStore } from "@/modules/app/store";
 
 export const Route = createFileRoute("/")({
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/")({
         },
       });
     } else {
-      throw redirect({ to: "/personal/$personalId", params: { personalId: curAuth.username } });
+      throw redirect({ to: HomePage(curAuth.id) });
     }
   },
 });

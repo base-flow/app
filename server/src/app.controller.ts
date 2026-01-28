@@ -1,5 +1,7 @@
 import { Controller, Get } from "@nestjs/common";
+import { EntityList } from "@/data";
 import { sleep } from "@/utils";
+
 @Controller()
 export class AppController {
   @Get("config")
@@ -8,14 +10,12 @@ export class AppController {
     return Promise.resolve({
       dirs: {
         workflow: {
-          _: "_workflow",
-          server: "",
-          browser: "",
+          server: EntityList.find((item) => item.name === "workflow-server")!.id,
+          browser: EntityList.find((item) => item.name === "workflow-browser")!.id,
         },
         node: {
-          _: "_node",
-          server: "",
-          browser: "",
+          server: EntityList.find((item) => item.name === "node-server")!.id,
+          browser: EntityList.find((item) => item.name === "node-browser")!.id,
         },
       },
     });

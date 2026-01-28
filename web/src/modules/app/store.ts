@@ -3,7 +3,7 @@ import { logined, logouted } from "@/utils/tools";
 import { AppAPI, GuestUser } from "./api";
 
 export interface AppState {
-  auth: _App.IAuthUser;
+  auth: _App.AuthUser;
   config?: _App.Config;
   systemRoleConfg?: _Permission.SystemRoleConfg;
   projectRoleConfg?: _Permission.ProjectRoleConfg;
@@ -21,8 +21,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   myProjectRoles: {},
   myFavorites: { node: {} },
   login: async (args: _App.AuthLogin) => {
-    const { token } = await AppAPI.login(args);
-    logined(token, args.username, args.redirect);
+    const { token, ...auth } = await AppAPI.login(args);
+    logined(token, auth, args.redirect);
   },
   logout: async () => {
     await AppAPI.logout();

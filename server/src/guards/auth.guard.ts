@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
     if (isPublic) {
       return true;
     }
-    const request: Request & { user: _App.IAuthUser } = context.switchToHttp().getRequest();
+    const request: Request & { user: _App.AuthUser } = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       console.log("Token解析失败!token", new Date());
@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate {
       const { sub, username, nickname, roles }: TokenPayload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get("JWT_SECRET"),
       });
-      const user: _App.IAuthUser = { id: sub, username, nickname, roles: roles as _Permission.SystemRole[] };
+      const user: _App.AuthUser = { id: sub, username, nickname, roles: roles as _Permission.SystemRole[] };
       request.user = user;
       const now = Date.now();
       const dt = (now - Number(tokenUpdateTime)) / 1000;

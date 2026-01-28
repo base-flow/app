@@ -14,7 +14,7 @@ export class RolesGuard implements CanActivate {
       return true; // 没有声明权限的路由默认允许访问
     }
 
-    const request: { user: _App.IAuthUser } = context.switchToHttp().getRequest();
+    const request: { user: _App.AuthUser } = context.switchToHttp().getRequest();
     const user = request.user;
 
     // 假设 user.roles 是数组，比如 ['admin']

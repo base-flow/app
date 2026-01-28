@@ -6,9 +6,8 @@ import { useShallow } from "zustand/react/shallow";
 import LoadingMask from "@/components/LoadingMask";
 import { useAppStore } from "@/modules/app/store";
 import { PersonalAPI } from "@/modules/personal/api";
-import PersonalFlag from "@/modules/personal/components/PersonalFlag";
-import PersonalMenu from "@/modules/personal/components/PersonalMenu";
-import PersonalSettings from "@/modules/personal/components/PersonalSettings";
+import PersonalFlag from "@/modules/personal/views/PersonalFlag";
+import PersonalMenu from "@/modules/personal/views/PersonalMenu";
 import { PermissionsContext, PersonalContext } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/personal/$personalId")({
@@ -38,7 +37,7 @@ function RouteComponent() {
     );
   }
 
-  if (!(permissions.personal_view === "all" || (permissions.personal_view === "owner" && personal.createBy === auth.id))) {
+  if (!(permissions.personal_view === "all" || (permissions.personal_view === "owner" && personal.id === auth.id))) {
     return (
       <section>
         <Result status="403" subTitle="您没有访问权限..." />
@@ -54,7 +53,6 @@ function RouteComponent() {
             <PersonalFlag />
             <PersonalMenu />
           </div>
-          <PersonalSettings />
         </aside>
         <main className="g-col-paper">
           <LoadingMask show={personalQuery.isFetching} />

@@ -28,9 +28,9 @@ export function debounce<T extends (...rest: any[]) => any>(callbak: T, delay = 
   }) as any;
 }
 
-export function logined(token: string, username: string, redirect?: string): void {
+export function logined(token: string, auth: _App.AuthUser, redirect?: string): void {
   localStorage.setItem(AUTH_TOKEN_KEY, token);
-  location.href = !redirect || redirect === "/" ? HomePage(username) : redirect;
+  location.href = !redirect || redirect === "/" ? HomePage(auth.id) : redirect;
 }
 
 export function logouted(): void {

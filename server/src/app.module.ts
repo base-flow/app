@@ -12,7 +12,6 @@ import jwtConfig from "./config/jwt.config";
 import redisConfig from "./config/redis.config";
 import { EntityModule } from "./entity/entity.module";
 import { AuthGuard } from "./guards/auth.guard";
-import { NodeModule } from "./node/node.module";
 import { PersonalModule } from "./personal/personal.module";
 import { ProjectModule } from "./project/project.module";
 import { UserModule } from "./user/user.module";
@@ -43,7 +42,6 @@ import { WorkflowModule } from "./workflow/workflow.module";
     ProjectModule,
     EntityModule,
     WorkflowModule,
-    NodeModule,
     PersonalModule,
     CacheModule,
   ],
