@@ -44,7 +44,7 @@ export const PersonalsMap: { [id: string]: _Personal.IPersonal } = Personals.red
 const Projects: _Project.IProject[] = Mock.mock({
   "list|50": [
     {
-      "id|+3": 1,
+      "id|+1": 3,
       name: "@ctitle(10, 20)",
       logo: "emoji://#fef7c3@:smile:@😀",
       desc: "@csentence(20, 60)",
@@ -60,7 +60,7 @@ const Projects: _Project.IProject[] = Mock.mock({
 
 Projects.unshift(
   {
-    id: `${uid++}`,
+    id: "1",
     name: "deepseek",
     desc: Random.csentence(20, 60),
     logo: FlagSrc.create(),
@@ -71,7 +71,7 @@ Projects.unshift(
     totalNodes: 5,
   },
   {
-    id: `${uid++}`,
+    id: "2",
     name: "google",
     desc: Random.csentence(20, 60),
     logo: FlagSrc.create(),
@@ -82,6 +82,11 @@ Projects.unshift(
     totalNodes: 5,
   },
 );
+
+export const ProjectsMap: { [id: string]: _Project.IProject } = Projects.reduce((obj, cur) => {
+  obj[cur.id] = cur;
+  return obj;
+}, {} as any);
 
 export const EntityMap: { [id: string]: _Entity.IEntity } = {};
 

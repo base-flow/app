@@ -8,20 +8,21 @@
     padding-left: 2px;
     font-size: 14px;
     font-weight: bold;
-    color: var(--bf-tx-summary);
   }
 
   .anticon {
     pointer-events: none;
   }
 
-  .refresh {
-    color: var(--bf-primary) !important;
-  }
+  // .refresh {
+  // }
 
   .current {
-    font-weight: 500;
-    color: var(--bf-primary);
+    font-weight: bold;
+
+    &.root {
+      font-size: 14px;
+    }
   }
 
   a {

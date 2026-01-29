@@ -15,5 +15,5 @@ export const Route = createFileRoute("/_auth/project/$projectId/node")({
 function RouteComponent() {
   const search = Route.useSearch();
   const { project } = useProject();
-  return <EntityList title="节点" query={{ ...search, type: "node", dir: search.dir || project.dir }} />;
+  return <EntityList title="项目文档" query={{ ...search, type: "node", dir: search.dir || project.dir }} />;
 }

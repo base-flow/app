@@ -15,5 +15,5 @@ export const Route = createFileRoute("/_auth/project/$projectId/workflow")({
 function RouteComponent() {
   const search = Route.useSearch();
   const { project } = useProject();
-  return <EntityList title="流程" query={{ ...search, type: "workflow", dir: search.dir || project.dir }} />;
+  return <EntityList title="项目文档" query={{ ...search, type: "workflow", dir: search.dir || project.dir }} />;
 }

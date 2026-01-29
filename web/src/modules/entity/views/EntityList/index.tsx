@@ -1,13 +1,14 @@
 import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import type { TablePaginationConfig, TableProps } from "antd";
 import { Button, Dropdown, type MenuProps, Result, Skeleton, Space, Table, Tooltip } from "antd";
 import classnames from "classnames";
-import { ChevronDown, Delete, FolderSymlink, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, Delete, FolderSymlink, FolderTree, Plus, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import IconEntity from "@/components/IconEntity";
+import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import { useEvent, useFolderRoute } from "@/utils/hooks";
@@ -21,6 +22,9 @@ interface EntityListProps {
 }
 
 const Component: FC<EntityListProps> = (props) => {
+  const location = useLocation();
+  const listType = location.pathname.endsWith("/workflow") ? "workflow" : location.pathname.endsWith("/node") ? "node" : "";
+  const listPath = location.pathname.replace(/\/(workflow|node)$/, "");
   const scrollerRef = useRef<HTMLDivElement>(null);
   const queryState = useState(props.query);
   const query = queryState[0];
@@ -36,8 +40,53 @@ const Component: FC<EntityListProps> = (props) => {
     queryState[1](props.query);
   }, [props.query, queryState[1]]);
 
-  const setQuery = useEvent((query: _Entity.Query) => {
-    navigate({ to: ".", search: { ...query, type: undefined } });
+  const listTypeLinks = useMemo(() => {
+    return [
+      {
+        key: "all",
+        to: listPath,
+        search: { ...query, type: undefined, page: undefined },
+        className: listType === "" ? "on" : undefined,
+        label: (
+          <>
+            <FolderTree size={12} />
+            <span>全部</span>
+          </>
+        ),
+      },
+      {
+        key: "workflow",
+        to: `${listPath}/workflow`,
+        search: { ...query, type: undefined, page: undefined },
+        className: listType === "workflow" ? "on" : undefined,
+        label: (
+          <>
+            <IconEntity size={12} type="workflow" />
+            <span>流程</span>
+          </>
+        ),
+      },
+      {
+        key: "node",
+        to: `${listPath}/node`,
+        search: { ...query, type: undefined, page: undefined },
+        className: listType === "node" ? "on" : undefined,
+        label: (
+          <>
+            <IconEntity size={12} type="node" />
+            <span>节点</span>
+          </>
+        ),
+      },
+    ];
+  }, [listType, listPath, query]);
+
+  const setQuery = useEvent((query: _Entity.Query, path?: string) => {
+    navigate({ to: path || ".", search: { ...query, type: undefined } });
+  });
+
+  const setBreadcrumbQuery = useEvent((query: _Entity.Query) => {
+    setQuery(query, listPath);
   });
 
   const onSort = useEvent((sorter: { sorterField?: string; sorterOrder?: "ascend" | "descend" }) => {
@@ -63,7 +112,7 @@ const Component: FC<EntityListProps> = (props) => {
     setQuery({ dir, keyword });
   });
 
-  const breadcrumb = useFolderRoute(props.title, query, setQuery, resetQuery, entityQuerySummary);
+  const breadcrumb = useFolderRoute(props.title, query, setBreadcrumbQuery, resetQuery, entityQuerySummary);
 
   const [tableScroll, setTableScroll] = useState({ y: 0 });
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -181,8 +230,19 @@ const Component: FC<EntityListProps> = (props) => {
                   {name}
                 </Link>
                 {query.type ? (
-                  <Tooltip placement="topLeft" title={`aaa`}>
-                    <FolderSymlink className="dir anticon" type="directory" size={13} />
+                  <Tooltip
+                    placement="bottom"
+                    title={row.path
+                      .replace(/\/.+? /g, "/")
+                      .replace(/^\/.+?\//, "/")
+                      .replace(/\/[^/]+?$/, "")}
+                  >
+                    <FolderSymlink
+                      className="dir anticon"
+                      type="directory"
+                      size={13}
+                      onClick={() => navigate({ to: "..", search: { dir: row.parentId } })}
+                    />
                   </Tooltip>
                 ) : null}
               </>
@@ -294,11 +354,13 @@ const Component: FC<EntityListProps> = (props) => {
 
   const header = (
     <div className="hd">
-      {breadcrumb}
-      <Space>
-        <SearchInput value={query.keyword} onChange={onSearch} placeholder="当前目录下搜索..." />
-      </Space>
-      <div className="line">
+      <div className="row">
+        {breadcrumb}
+        <Space>
+          <SearchInput value={query.keyword} onChange={onSearch} placeholder="当前目录下搜索..." />
+        </Space>
+      </div>
+      <div className="row">
         {!selectedRows.length ? (
           <Button icon={<Plus size={14} strokeWidth={2.5} className="anticon" />} type="primary">
             新建流程
@@ -310,8 +372,8 @@ const Component: FC<EntityListProps> = (props) => {
             </Button>
           </Dropdown>
         )}
+        <LinkTab links={listTypeLinks} />
       </div>
-      {/* {scope === "personal" ? <div /> : <div />} */}
     </div>
   );
 

@@ -58,6 +58,13 @@ export function arrayInsertSeparator(arr: any[], separator: any): any[] {
     return result;
   }, []);
 }
+
+// function arrayInsertSeparator(arr: any[], separator: any): any[] {
+//     return arr.flatMap((item, index) =>
+//         index < arr.length - 1 ? [item, separator] : [item]
+//     );
+// }
+
 export function messageWrap(message: string): ReactNode {
   const arr = message.split("\n");
   return arr.length > 1 ? arr.map((line) => <div key={line}>{line}</div>) : message;

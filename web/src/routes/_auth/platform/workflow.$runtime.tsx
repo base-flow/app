@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import EntityCardList from "@/modules/entity/components/EntityCardList";
+import EntityCardList from "@/modules/entity/views/EntityCardList";
 import { useConfig } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/platform/workflow/$runtime")({

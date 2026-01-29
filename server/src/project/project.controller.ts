@@ -1,4 +1,5 @@
 import { Controller, Delete, ForbiddenException, Get, Param, Post, Put, Query, Request } from "@nestjs/common";
+import { ProjectsMap } from "@/data";
 import { BaseQueryDto } from "@/dto";
 import { getPermissions } from "@/permissions";
 import { sleep } from "@/utils";
@@ -21,7 +22,7 @@ export class ProjectController {
   @Get(":id")
   async getItem(@Param() param: { id: string }): Promise<_Project.IProject> {
     await sleep(1000);
-    return this.projectService.findOne(param.id);
+    return ProjectsMap[param.id];
   }
 
   @Post()

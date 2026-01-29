@@ -2,7 +2,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useAppStore } from "@/modules/app/store";
-import PlatformMenu from "@/modules/platform/components/PlatformMenu";
+import PlatformMenu from "@/modules/platform/views/PlatformMenu";
 import { ConfigContext, PermissionsContext } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/platform")({

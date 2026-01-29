@@ -50,39 +50,48 @@ export function useInfiniteList(fetchNextPage: () => void): [RefObject<HTMLDivEl
 }
 
 export function useFolderRoute(
-  title: string,
+  rootName: string,
   query: { [key: string]: any },
   setQuery: (query: { [key: string]: any }) => void,
   resetQuery: () => { [key: string]: any },
   listSummary: _Entity.QuerySummary | undefined,
 ) {
-  const pathData = (listSummary?.path || "")
-    .split("/")
-    .filter(Boolean)
-    .slice(1)
-    .map((item) => item.split(" "));
   const breadcrumbCache = useRef<{ [path: string]: { query: { [key: string]: any } } }>({});
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
-  const currentPath = useMemo(() => {
-    const currentPath = pathData.map((item) => item[0]).join(" ");
-    const currentId = currentPath ? pathData[pathData.length - 1][0] : "/";
+  const { pathString, pathData } = useMemo(() => {
+    const summaryPath = listSummary?.path;
+    const pathData = summaryPath
+      ? summaryPath
+          .split("/")
+          .filter(Boolean)
+          .map((item) => item.split(" "))
+      : [];
+    if (pathData[0]) {
+      pathData[0] = ["/", rootName];
+    }
+    const pathString = pathData.map((item) => item[0]).join(" ");
+    const currentId = pathString ? pathData[pathData.length - 1][0] : "";
     const queryCache = breadcrumbCache.current;
-    breadcrumbCache.current = [["/", "/"], ...pathData].reduce(
+    breadcrumbCache.current = pathData.reduce(
       (obj, cur) => {
         obj[cur[0]] = queryCache[cur[0]];
         return obj;
       },
       {} as { [path: string]: { query: { [key: string]: any } } },
     );
-    breadcrumbCache.current[currentId] = { query };
-    return currentPath;
+    if (currentId) {
+      breadcrumbCache.current[currentId] = { query };
+    }
+    return { pathString, pathData };
   }, [listSummary]);
 
-  const onBreadcrumbRoute = useEvent((path: string) => {
+  const onBreadcrumbRoute = useEvent((path: string, isRoot: boolean) => {
     if (path) {
       const queryCache = breadcrumbCache.current[path] || {};
-      setQuery({ ...queryCache.query, dir: path === "/" ? undefined : path });
+      setQuery({ ...resetQuery(), ...queryCache.query, dir: isRoot ? undefined : path });
+    } else if (isRoot) {
+      setQuery({ ...resetQuery(), dir: undefined });
     } else {
       setQuery(resetQuery());
     }
@@ -90,9 +99,9 @@ export function useFolderRoute(
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   const breadcrumb = useMemo(() => {
-    const items: { title: string; path?: string }[] = currentPath ? pathData.map(([id, title]) => ({ path: id, title })) : [];
-    return <Pathcrumb title={title} items={items} onRoute={onBreadcrumbRoute} />;
-  }, [currentPath]);
+    const items = pathString ? pathData.map(([id, title]) => ({ path: id, title })) : [];
+    return <Pathcrumb items={items} onRoute={onBreadcrumbRoute} />;
+  }, [pathString]);
 
   return breadcrumb;
 }

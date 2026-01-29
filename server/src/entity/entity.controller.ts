@@ -12,10 +12,9 @@ export class EntityController {
       throw new NotFoundException();
     }
     const { spaceType, spaceId } = folder;
-    let path = folder.path;
+    const path = folder.path;
     let list = folder.children!;
     if (query.type) {
-      path = "";
       list = Object.keys(EntityMap)
         .filter((id) => {
           const item = EntityMap[id];
