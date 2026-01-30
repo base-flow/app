@@ -7,8 +7,8 @@ import { useEvent } from "@/utils/hooks";
 import "./index.scss";
 
 function itemRender(item: { title: string; path: string; current?: boolean }) {
-  if (item.current && item.title) {
-    return (
+  if (item.current) {
+    return item.title ? (
       <>
         <span className={classnames("current", { root: item.path === "/" })} style={{ marginRight: "3px" }}>
           {item.title}
@@ -17,7 +17,7 @@ function itemRender(item: { title: string; path: string; current?: boolean }) {
           <RefreshCcw className="anticon" size={11} strokeWidth={2.5} />
         </a>
       </>
-    );
+    ) : null;
   } else {
     return (
       <a data-id={item.path} className={classnames({ root: item.path === "/" })}>
@@ -50,11 +50,7 @@ const Component: FC<Props> = ({ items, onRoute }) => {
   });
 
   if (!items.length) {
-    return (
-      <div className="comp-Pathcrumb" onClick={onClick}>
-        ...
-      </div>
-    );
+    return <div className="comp-Pathcrumb" onClick={onClick}></div>;
   }
   return (
     <div className="comp-Pathcrumb" onClick={onClick}>

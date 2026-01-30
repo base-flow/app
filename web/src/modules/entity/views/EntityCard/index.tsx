@@ -28,7 +28,7 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, setCurEdit,
       <div className={classnames(styles.EntityCard, "g-card folder")} onClick={() => onItemClick(item)}>
         <Collect absolute id={item.id} value={undefined} onChange={onCollect} />
         <div className="head-icon">
-          <IconFolder className="icon" size={32} style={{ color: "var(--bf-primary)", marginTop: "-1px" }} />
+          <IconFolder className="icon" size={30} />
           <h4 className="title">{item.name}</h4>
           <div className="info g-dot">
             <span>xxx</span>

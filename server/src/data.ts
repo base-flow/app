@@ -90,7 +90,14 @@ export const ProjectsMap: { [id: string]: _Project.IProject } = Projects.reduce(
 
 export const EntityMap: { [id: string]: _Entity.IEntity } = {};
 
-function createEntities(parentId: string, parentPath: string, space: { id: string; type: _App.EntrySpace }, level: number, children: string[] = []) {
+function createEntities(
+  parentId: string,
+  parentPath: string,
+  space: { id: string; type: _App.EntrySpace },
+  level: number,
+  singleType?: "workflow" | "node",
+  children: string[] = [],
+) {
   const dirs: _Entity.IEntity[] = new Array(3).fill("").map(() => {
     const name = children.shift();
     const item: _App.IDirectory = {
@@ -107,12 +114,12 @@ function createEntities(parentId: string, parentPath: string, space: { id: strin
     item.path = `${parentPath}/${item.id} ${item.name}`;
     EntityMap[item.id] = item;
     if (level > 0) {
-      item.children = createEntities(item.id, item.path, space, level - 1);
+      item.children = createEntities(item.id, item.path, space, level - 1, singleType);
     }
     return item;
   });
   const items: _Entity.IEntity[] = new Array(20).fill("").map(() => {
-    const int = randomInt(1, 2);
+    const int = singleType === "workflow" ? 2 : singleType === "node" ? 1 : randomInt(1, 2);
     if (int === 2) {
       const item: _Workflow.IWorkflow = {
         id: `${uid++}`,
@@ -169,7 +176,14 @@ function createDir(space: { type: _App.EntrySpace; id: string }, name: string, c
   };
   item.path = `/${item.id} ${item.name}`;
   EntityMap[item.id] = item;
-  item.children = createEntities(item.id, `/${item.id} ${item.name}`, space, 2, children);
+  item.children = createEntities(
+    item.id,
+    `/${item.id} ${item.name}`,
+    space,
+    2,
+    name.startsWith("workflow-") ? "workflow" : name.startsWith("node-") ? "node" : undefined,
+    children,
+  );
   return item;
 }
 

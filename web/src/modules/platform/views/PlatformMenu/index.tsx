@@ -1,6 +1,6 @@
 import type { LinkProps } from "@tanstack/react-router";
 import { Link, useLocation, useMatchRoute, useNavigate } from "@tanstack/react-router";
-import { FolderOpen, FolderOutput, Server, Settings2, Star, TextAlignJustify } from "lucide-react";
+import { Settings2, TextAlignJustify } from "lucide-react";
 import type { FC } from "react";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import IconEntity from "@/components/IconEntity";
@@ -11,6 +11,7 @@ import IconStar from "@/components/IconStar";
 import type { MenuItem } from "@/components/MenuNav";
 import MenuNav from "@/components/MenuNav";
 import { useConfig, useEvent, usePermissions } from "@/utils/hooks";
+import styles from "./index.module.scss";
 
 const Component: FC = () => {
   const { auth } = usePermissions();
@@ -65,8 +66,10 @@ const Component: FC = () => {
         key: "workflow",
         label: (
           <>
-            <IconEntity type="workflow" />
-            <span>流程列表</span>
+            <span className={`${styles.PlatformMenu}__menuIcon`}>
+              <TextAlignJustify strokeWidth={2.5} size={10} />
+            </span>
+            <span>流程</span>
           </>
         ),
         children: [
@@ -104,8 +107,10 @@ const Component: FC = () => {
         key: "node",
         label: (
           <>
-            <IconEntity type="node" />
-            <span>节点列表</span>
+            <span className={`${styles.PlatformMenu}__menuIcon`}>
+              <Settings2 strokeWidth={2.5} size={10} />
+            </span>
+            <span>节点</span>
           </>
         ),
         children: [

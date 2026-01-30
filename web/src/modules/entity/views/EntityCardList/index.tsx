@@ -1,14 +1,16 @@
 import { BaseWidgets } from "@baseflow/react";
+import { StringSelect } from "@baseflow/widgets";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { TablePaginationConfig, TableProps } from "antd";
 import { Button, Dropdown, type MenuProps, Pagination, Result, Segmented, Skeleton, Space, Table } from "antd";
 import classnames from "classnames";
-import { ChevronDown, Delete, Folder, FolderClosed, Plus, TextAlignJustify, Trash2 } from "lucide-react";
+import { FolderTree, List, Plus, TextAlignJustify } from "lucide-react";
 import type { FC } from "react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FieldSorter, { type SortField } from "@/components/FieldSorter";
 import IconEntity from "@/components/IconEntity";
+import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import SkeletonCardList from "@/components/SkeletonCardList";
@@ -18,6 +20,8 @@ import { EntityAPI } from "../../api";
 import EntityCard from "../EntityCard";
 import styles from "./index.module.scss";
 
+type ListType = "dir" | "file";
+
 const StoreOptions: { label: string; value: string }[] = [
   { label: "开放平台", value: "remote" },
   { label: "当前系统", value: "local" },
@@ -25,9 +29,18 @@ const StoreOptions: { label: string; value: string }[] = [
 
 const SorterOptions: SortField[] = ["collect", "createDate", "likes"];
 
+const ListTypeOptions: { label: any; value: ListType }[] = [
+  { label: <FolderTree className="anticon" size={14} />, value: "dir" },
+  { label: <List className="anticon" size={14} />, value: "file" },
+];
+
+// const ListTypeOptions: { label: any; value: string }[] = [
+//   { label: "目录", value: "dir" },
+//   { label: "文件", value: "file" },
+// ];
+
 interface EntityCardListProps {
   query: _Entity.Query;
-  title: string;
 }
 
 const Component: FC<EntityCardListProps> = (props) => {
@@ -39,6 +52,7 @@ const Component: FC<EntityCardListProps> = (props) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const dir = query.dir || "";
+  const listType: ListType = query.type === "workflow" || query.type === "node" ? "file" : "dir";
   const entityList = entityQuery.data?.list;
   const entityQuerySummary = entityQuery.data?.summary;
   const [curEdit, setCurEdit] = useState<Partial<_Entity.IEntity>>();
@@ -49,6 +63,18 @@ const Component: FC<EntityCardListProps> = (props) => {
 
   const setQuery = useEvent((query: _Entity.Query) => {
     navigate({ to: ".", search: query });
+  });
+
+  const setBreadcrumbQuery = useEvent((query: _Entity.Query) => {
+    setQuery({ ...query, type: undefined });
+  });
+
+  const onListTypeChange = useEvent((listType: ListType) => {
+    if (listType === "file") {
+      setQuery({ ...query, page: undefined, type: "workflow" });
+    } else {
+      setQuery({ ...query, page: undefined, type: undefined });
+    }
   });
 
   const onStoreChange = useEvent((store?: "remote" | "local") => {
@@ -77,7 +103,7 @@ const Component: FC<EntityCardListProps> = (props) => {
     }
   });
 
-  const breadcrumb = useFolderRoute("", query, setQuery, resetQuery, entityQuerySummary);
+  const breadcrumb = useFolderRoute("流程-服务器运行", query, setBreadcrumbQuery, resetQuery, entityQuerySummary);
 
   const entityAlter = useMutation({
     mutationFn: EntityAPI.updateItem,
@@ -143,6 +169,7 @@ const Component: FC<EntityCardListProps> = (props) => {
       </div>
       <div className="space">
         <SearchInput variant="filled" onChange={onSearch} value={query.keyword} placeholder="当前目录下搜索..." />
+        <Segmented value={listType} options={ListTypeOptions} onChange={onListTypeChange} />
         <div>
           <span style={{ marginRight: 2 }}>排序：</span>
           <FieldSorter options={SorterOptions} value={query} onChange={onSort} />

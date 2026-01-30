@@ -16,5 +16,5 @@ function RouteComponent() {
   const { runtime } = Route.useParams();
   const search = Route.useSearch();
   const { config } = useConfig();
-  return <EntityCardList title="流程" query={{ ...search, dir: search.dir || config.dirs.workflow[runtime as _App.Runtime] }} />;
+  return <EntityCardList query={{ ...search, dir: search.dir || config.dirs.workflow[runtime as _App.Runtime] }} />;
 }

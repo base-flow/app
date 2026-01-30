@@ -340,10 +340,8 @@ const Component: FC<EntityListProps> = (props) => {
   );
 
   useEffect(() => {
-    console.log(scrollerRef.current?.offsetHeight);
     setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 135 });
     const onResize = debounce(() => {
-      console.log(scrollerRef.current?.offsetHeight);
       setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 135 });
     }, 300);
     window.addEventListener("resize", onResize);
