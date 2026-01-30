@@ -1,3 +1,4 @@
+import type { LinkProps } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import classnames from "classnames";
 import type { FC, ReactNode } from "react";
@@ -5,13 +6,11 @@ import { memo } from "react";
 import { arrayInsertSeparator } from "@/utils/tools";
 import "./index.scss";
 
-export type LinkItem = {
+export interface LinkItem extends LinkProps {
   key: string;
-  label: ReactNode;
-  to?: string;
-  search?: { [key: string]: any };
+  children: ReactNode;
   className?: string;
-};
+}
 
 export interface LinkTabProps {
   className?: string;
@@ -28,11 +27,11 @@ const Component: FC<LinkTabProps> = ({ className, links, onClick }) => {
           <span key={index} />
         ) : item.to ? (
           <Link key={item.key} to={item.to} search={item.search} className={item.className}>
-            {item.label}
+            {item.children}
           </Link>
         ) : (
           <a key={item.key} className={item.className} onClick={() => onClick?.(item)}>
-            {item.label}
+            {item.children}
           </a>
         ),
       )}

@@ -1,7 +1,8 @@
 import type { RefObject } from "react";
-import { createContext, useContext, useEffect, useMemo, useRef } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import Pathcrumb from "@/components/Pathcrumb";
+import { deepEqual } from "@/utils/tools";
 
 // biome-ignore lint/complexity/noBannedTypes: <>
 export function useEvent<F extends Function>(fn: F): F {
@@ -49,20 +50,30 @@ export function useInfiniteList(fetchNextPage: () => void): [RefObject<HTMLDivEl
   return [scrollerRef, loaderRef];
 }
 
-export function useFolderRoute(
+export function useFolderRoute<Q extends { [key: string]: any } = { [key: string]: any }>(
   rootName: string,
-  query: { [key: string]: any },
-  setQuery: (query: { [key: string]: any }) => void,
-  resetQuery: () => { [key: string]: any },
-  listSummary: _Entity.QuerySummary | undefined,
+  query: Q,
+  listPath: string | undefined,
+  setQuery: (query: Q) => void,
+  resetQueryExceptDir: () => Q,
 ) {
-  const breadcrumbCache = useRef<{ [path: string]: { query: { [key: string]: any } } }>({});
+  const history = useRef<Q[]>([]);
+  let historyLength = history.current.length;
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
+  useMemo(() => {
+    const arr = history.current;
+    const lastItem = arr[arr.length - 1];
+    if (!deepEqual(lastItem, query)) {
+      arr.push(query);
+      historyLength = arr.length;
+    }
+  }, [query]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   const { pathString, pathData } = useMemo(() => {
-    const summaryPath = listSummary?.path;
-    const pathData = summaryPath
-      ? summaryPath
+    const pathData = listPath
+      ? listPath
           .split("/")
           .filter(Boolean)
           .map((item) => item.split(" "))
@@ -71,37 +82,43 @@ export function useFolderRoute(
       pathData[0] = ["/", rootName];
     }
     const pathString = pathData.map((item) => item[0]).join(" ");
-    const currentId = pathString ? pathData[pathData.length - 1][0] : "";
-    const queryCache = breadcrumbCache.current;
-    breadcrumbCache.current = pathData.reduce(
-      (obj, cur) => {
-        obj[cur[0]] = queryCache[cur[0]];
-        return obj;
-      },
-      {} as { [path: string]: { query: { [key: string]: any } } },
-    );
-    if (currentId) {
-      breadcrumbCache.current[currentId] = { query };
+    if (pathData.length === 1) {
+      history.current = [query];
+      historyLength = history.current.length;
     }
     return { pathString, pathData };
-  }, [listSummary]);
+  }, [listPath]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
+  useMemo(() => {
+    if (pathData[0]) {
+      pathData[0][1] = rootName;
+    }
+  }, [rootName]);
 
   const onBreadcrumbRoute = useEvent((path: string, isRoot: boolean) => {
     if (path) {
-      const queryCache = breadcrumbCache.current[path] || {};
-      setQuery({ ...resetQuery(), ...queryCache.query, dir: isRoot ? undefined : path });
+      setQuery({ ...resetQueryExceptDir(), dir: isRoot ? undefined : path });
     } else if (isRoot) {
-      setQuery({ ...resetQuery(), dir: undefined });
+      setQuery({ ...resetQueryExceptDir(), dir: undefined });
     } else {
-      setQuery(resetQuery());
+      setQuery(resetQueryExceptDir());
+    }
+  });
+
+  const onBack = useEvent(() => {
+    history.current.pop();
+    const item = history.current.pop();
+    if (item) {
+      setQuery(item);
     }
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   const breadcrumb = useMemo(() => {
     const items = pathString ? pathData.map(([id, title]) => ({ path: id, title })) : [];
-    return <Pathcrumb items={items} onRoute={onBreadcrumbRoute} />;
-  }, [pathString]);
+    return <Pathcrumb items={items} showBack={historyLength > 1} onRoute={onBreadcrumbRoute} onBack={onBack} />;
+  }, [pathString, historyLength, rootName]);
 
   return breadcrumb;
 }

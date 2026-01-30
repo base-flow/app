@@ -26,7 +26,9 @@ export class EntityController {
     const pageSize = 20;
     return {
       query,
-      list: list.slice((page - 1) * pageSize, page * pageSize).map((item) => ({ ...item, children: undefined })) as any[],
+      list: list.slice((page - 1) * pageSize, page * pageSize).map((item) => {
+        return { ...item, children: undefined, path: query.type ? item.path : "" };
+      }),
       summary: { total: list.length, page, pageSize, path, spaceType, spaceId },
     };
   }

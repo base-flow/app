@@ -1,13 +1,14 @@
 import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import type { TablePaginationConfig, TableProps } from "antd";
-import { Button, Dropdown, type MenuProps, Result, Skeleton, Space, Table, Tooltip } from "antd";
+import { Link, useNavigate } from "@tanstack/react-router";
+import type { MenuProps, TablePaginationConfig, TableProps } from "antd";
+import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
 import classnames from "classnames";
 import { ChevronDown, Delete, FolderSymlink, FolderTree, Plus, Trash2 } from "lucide-react";
 import type { FC } from "react";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import IconEntity from "@/components/IconEntity";
+import type { LinkItem } from "@/components/LinkTab";
 import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
@@ -22,9 +23,6 @@ interface EntityListProps {
 }
 
 const Component: FC<EntityListProps> = (props) => {
-  const location = useLocation();
-  const listType = location.pathname.endsWith("/workflow") ? "workflow" : location.pathname.endsWith("/node") ? "node" : "";
-  const listPath = location.pathname.replace(/\/(workflow|node)$/, "");
   const scrollerRef = useRef<HTMLDivElement>(null);
   const queryState = useState(props.query);
   const query = queryState[0];
@@ -33,7 +31,8 @@ const Component: FC<EntityListProps> = (props) => {
   const navigate = useNavigate();
   const dir = query.dir || "";
   const entityList = entityQuery.data?.list;
-  const entityQuerySummary = entityQuery.data?.summary;
+  const entityListQuery = entityQuery.data?.query || query;
+  const entityListSummary = entityQuery.data?.summary;
   const [curEdit, setCurEdit] = useState<Partial<_Entity.IEntity>>();
 
   useMemo(() => {
@@ -41,25 +40,25 @@ const Component: FC<EntityListProps> = (props) => {
   }, [props.query, queryState[1]]);
 
   const listTypeLinks = useMemo(() => {
-    return [
+    const items: LinkItem[] = [
       {
         key: "all",
-        to: listPath,
+        to: ".",
         search: { ...query, type: undefined, page: undefined },
-        className: listType === "" ? "on" : undefined,
-        label: (
+        className: !query.type ? "on" : undefined,
+        children: (
           <>
             <FolderTree size={12} />
-            <span>全部</span>
+            <span>目录</span>
           </>
         ),
       },
       {
         key: "workflow",
-        to: `${listPath}/workflow`,
-        search: { ...query, type: undefined, page: undefined },
-        className: listType === "workflow" ? "on" : undefined,
-        label: (
+        to: ".",
+        search: { ...query, type: "workflow", page: undefined },
+        className: query.type === "workflow" ? "on" : undefined,
+        children: (
           <>
             <IconEntity size={12} type="workflow" />
             <span>流程</span>
@@ -68,10 +67,10 @@ const Component: FC<EntityListProps> = (props) => {
       },
       {
         key: "node",
-        to: `${listPath}/node`,
-        search: { ...query, type: undefined, page: undefined },
-        className: listType === "node" ? "on" : undefined,
-        label: (
+        to: ".",
+        search: { ...query, type: "node", page: undefined },
+        className: query.type === "node" ? "on" : undefined,
+        children: (
           <>
             <IconEntity size={12} type="node" />
             <span>节点</span>
@@ -79,14 +78,11 @@ const Component: FC<EntityListProps> = (props) => {
         ),
       },
     ];
-  }, [listType, listPath, query]);
+    return items;
+  }, [query]);
 
-  const setQuery = useEvent((query: _Entity.Query, path?: string) => {
-    navigate({ to: path || ".", search: { ...query, type: undefined } });
-  });
-
-  const setBreadcrumbQuery = useEvent((query: _Entity.Query) => {
-    setQuery(query, listPath);
+  const setQuery = useEvent((query: _Entity.Query) => {
+    navigate({ to: ".", search: query });
   });
 
   const onSort = useEvent((sorter: { sorterField?: string; sorterOrder?: "ascend" | "descend" }) => {
@@ -104,15 +100,15 @@ const Component: FC<EntityListProps> = (props) => {
     }
   });
 
-  const resetQuery = useEvent(() => {
-    return { ...query, keyword: undefined, page: undefined, sorterField: undefined, sorterOrder: undefined };
-  });
-
   const onSearch = useEvent((keyword?: string) => {
     setQuery({ dir, keyword });
   });
 
-  const breadcrumb = useFolderRoute(props.title, query, setBreadcrumbQuery, resetQuery, entityQuerySummary);
+  const resetQueryExceptDir = useEvent(() => {
+    return { dir };
+  });
+
+  const breadcrumb = useFolderRoute(props.title, entityListQuery, entityListSummary?.path, setQuery, resetQueryExceptDir);
 
   const [tableScroll, setTableScroll] = useState({ y: 0 });
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -203,50 +199,27 @@ const Component: FC<EntityListProps> = (props) => {
                 {name}
               </Link>
             ) : row.type === "workflow" ? (
-              <>
-                <Link to="/workflow/$workflowId" params={{ workflowId: row.id }} search={{ dir: 1 }}>
-                  {name}
-                </Link>
-                {query.type ? (
-                  <Tooltip
-                    placement="bottom"
-                    title={row.path
-                      .replace(/\/.+? /g, "/")
-                      .replace(/^\/.+?\//, "/")
-                      .replace(/\/[^/]+?$/, "")}
-                  >
-                    <FolderSymlink
-                      className="dir anticon"
-                      type="directory"
-                      size={13}
-                      onClick={() => navigate({ to: "..", search: { dir: row.parentId } })}
-                    />
-                  </Tooltip>
-                ) : null}
-              </>
+              <Link to="/workflow/$workflowId" params={{ workflowId: row.id }} search={{ dir: 1 }}>
+                {name}
+              </Link>
             ) : (
-              <>
-                <Link to="/node/$nodeId" params={{ nodeId: row.id }}>
-                  {name}
-                </Link>
-                {query.type ? (
-                  <Tooltip
-                    placement="bottom"
-                    title={row.path
-                      .replace(/\/.+? /g, "/")
-                      .replace(/^\/.+?\//, "/")
-                      .replace(/\/[^/]+?$/, "")}
-                  >
-                    <FolderSymlink
-                      className="dir anticon"
-                      type="directory"
-                      size={13}
-                      onClick={() => navigate({ to: "..", search: { dir: row.parentId } })}
-                    />
-                  </Tooltip>
-                ) : null}
-              </>
+              <Link to="/node/$nodeId" params={{ nodeId: row.id }}>
+                {name}
+              </Link>
             )}
+            {row.path ? (
+              <Tooltip
+                placement="bottom"
+                title={
+                  row.path
+                    .replace(/\/.+? /g, "/")
+                    .replace(/^\/.+?\//, "/")
+                    .replace(/\/[^/]+?$/, "") || "/"
+                }
+              >
+                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
+              </Tooltip>
+            ) : null}
           </div>
         ),
       },
@@ -315,7 +288,7 @@ const Component: FC<EntityListProps> = (props) => {
         },
       },
     ];
-  }, [query, onDelete, navigate]);
+  }, [query, setQuery, onDelete]);
 
   const pagination: TablePaginationConfig = useMemo(
     () => ({
@@ -324,11 +297,11 @@ const Component: FC<EntityListProps> = (props) => {
       placement: ["bottomCenter"],
       showQuickJumper: false,
       showSizeChanger: false,
-      current: entityQuerySummary?.page,
-      pageSize: entityQuerySummary?.pageSize,
-      total: entityQuerySummary?.total,
+      current: entityListSummary?.page,
+      pageSize: entityListSummary?.pageSize,
+      total: entityListSummary?.total,
     }),
-    [entityQuerySummary],
+    [entityListSummary],
   );
 
   const rowSelection: TableProps<any>["rowSelection"] = useMemo(

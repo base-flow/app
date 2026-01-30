@@ -7,9 +7,9 @@ declare namespace _Entity {
 
   interface Query extends _Resource.IQuery {
     dir?: string;
-    //如果指定了类型，查找子孙，否则仅查找当前目录
-    //all必须在keyword存在时生效
-    type?: "workflow" | "node" | "all";
+    //当keyword不存在时：如果指定了类型，列表子孙，否则仅列表当前目录
+    //当keyword存在时：搜索子孙
+    type?: "workflow" | "node";
   }
 
   interface QuerySummary extends _Resource.IQuerySummary {

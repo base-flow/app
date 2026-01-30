@@ -1,8 +1,7 @@
-import type { LinkProps } from "@tanstack/react-router";
-import { Link, useLocation, useMatchRoute, useNavigate, useSearch } from "@tanstack/react-router";
-import { ExternalLink, FolderOutput, Settings2, Star, TextAlignJustify, Trash2 } from "lucide-react";
+import { useMatchRoute, useNavigate } from "@tanstack/react-router";
+import { ExternalLink } from "lucide-react";
 import type { FC } from "react";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import IconEntity from "@/components/IconEntity";
 import IconNetwork from "@/components/IconNetwork";
 import IconShare from "@/components/IconShare";
@@ -20,16 +19,12 @@ const Component: FC = () => {
   const [selectedKey, setSelectedKey] = useState<string | undefined>();
 
   const mathData = (() => {
-    if (matchRoute({ to: "/personal/$personalId/workflow" })) {
-      return ["home", "home/workflow"];
-    } else if (matchRoute({ to: "/personal/$personalId/node" })) {
-      return ["home", "home/node"];
-    } else if (matchRoute({ to: "/personal/$personalId/shared" })) {
+    if (matchRoute({ to: "/personal/$personalId/shared" })) {
       return [openedKey, "shared"];
     } else if (matchRoute({ to: "/personal/$personalId/favorite" })) {
       return [openedKey, "favorite"];
     } else if (matchRoute({ to: "/personal/$personalId" })) {
-      return ["home", "home"];
+      return [openedKey, "home"];
     } else {
       return [];
     }
@@ -46,13 +41,7 @@ const Component: FC = () => {
       case "home":
         navigate({ to: "/personal/$personalId", params: { personalId: personal.id } });
         break;
-      case "home/workflow":
-        navigate({ to: "/personal/$personalId/workflow", params: { personalId: personal.id } });
-        break;
-      case "home/node":
-        navigate({ to: "/personal/$personalId/node", params: { personalId: personal.id } });
-        break;
-      case "home/public":
+      case "public":
         navigate({ to: "/personal/$personalId", params: { personalId: personal.id }, search: { dir: personal.publicDir } });
         break;
       case "shared":
@@ -77,39 +66,9 @@ const Component: FC = () => {
             <span>我的文档</span>
           </>
         ),
-        children: [
-          {
-            key: "home/workflow",
-            label: (
-              <>
-                <IconEntity type="workflow" />
-                <span>
-                  流程
-                  <small>
-                    (<em>{personal.totalWorkflows}</em>)
-                  </small>
-                </span>
-              </>
-            ),
-          },
-          {
-            key: "home/node",
-            label: (
-              <>
-                <IconEntity type="node" />
-                <span>
-                  节点
-                  <small>
-                    (<em>{personal.totalNodes}</em>)
-                  </small>
-                </span>
-              </>
-            ),
-          },
-        ],
       },
       {
-        key: "home/public",
+        key: "public",
         label: (
           <>
             <IconNetwork size={13} />

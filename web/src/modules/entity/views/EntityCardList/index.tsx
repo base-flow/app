@@ -5,9 +5,10 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import type { TablePaginationConfig, TableProps } from "antd";
 import { Button, Dropdown, type MenuProps, Pagination, Result, Segmented, Skeleton, Space, Table } from "antd";
 import classnames from "classnames";
-import { FolderTree, List, Plus, TextAlignJustify } from "lucide-react";
+import { FolderTree, List } from "lucide-react";
 import type { FC } from "react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Lang from "@/assets/Lang";
 import FieldSorter, { type SortField } from "@/components/FieldSorter";
 import IconEntity from "@/components/IconEntity";
 import LinkTab from "@/components/LinkTab";
@@ -41,6 +42,8 @@ const ListTypeOptions: { label: any; value: ListType }[] = [
 
 interface EntityCardListProps {
   query: _Entity.Query;
+  entity: "workflow" | "node";
+  runtime: _App.Runtime;
 }
 
 const Component: FC<EntityCardListProps> = (props) => {
@@ -52,9 +55,11 @@ const Component: FC<EntityCardListProps> = (props) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const dir = query.dir || "";
-  const listType: ListType = query.type === "workflow" || query.type === "node" ? "file" : "dir";
+  const listType: ListType = query.type ? "file" : "dir";
+  const entityType = props.entity;
   const entityList = entityQuery.data?.list;
-  const entityQuerySummary = entityQuery.data?.summary;
+  const entityListQuery = entityQuery.data?.query || query;
+  const entityListSummary = entityQuery.data?.summary;
   const [curEdit, setCurEdit] = useState<Partial<_Entity.IEntity>>();
 
   useMemo(() => {
@@ -65,13 +70,9 @@ const Component: FC<EntityCardListProps> = (props) => {
     navigate({ to: ".", search: query });
   });
 
-  const setBreadcrumbQuery = useEvent((query: _Entity.Query) => {
-    setQuery({ ...query, type: undefined });
-  });
-
   const onListTypeChange = useEvent((listType: ListType) => {
     if (listType === "file") {
-      setQuery({ ...query, page: undefined, type: "workflow" });
+      setQuery({ ...query, page: undefined, type: entityType });
     } else {
       setQuery({ ...query, page: undefined, type: undefined });
     }
@@ -89,10 +90,6 @@ const Component: FC<EntityCardListProps> = (props) => {
     setQuery({ ...query, page });
   });
 
-  const resetQuery = useEvent(() => {
-    return { ...query, keyword: undefined, page: undefined, sorterField: undefined, sorterOrder: undefined };
-  });
-
   const onSearch = useEvent((keyword?: string) => {
     setQuery({ dir: query.dir, keyword });
   });
@@ -103,7 +100,17 @@ const Component: FC<EntityCardListProps> = (props) => {
     }
   });
 
-  const breadcrumb = useFolderRoute("流程-服务器运行", query, setBreadcrumbQuery, resetQuery, entityQuerySummary);
+  const resetQueryExceptDir = useEvent(() => {
+    return { dir };
+  });
+
+  const breadcrumb = useFolderRoute(
+    Lang.entityDirName[`${entityType}.${props.runtime}`],
+    entityListQuery,
+    entityListSummary?.path,
+    setQuery,
+    resetQueryExceptDir,
+  );
 
   const entityAlter = useMutation({
     mutationFn: EntityAPI.updateItem,
@@ -189,7 +196,7 @@ const Component: FC<EntityCardListProps> = (props) => {
     );
   }
 
-  if (!entityList || !entityQuerySummary) {
+  if (!entityList || !entityListSummary) {
     return (
       <section className={`${styles.EntityCardList} g-page`}>
         {header}
@@ -226,9 +233,9 @@ const Component: FC<EntityCardListProps> = (props) => {
           align="center"
           hideOnSinglePage
           showSizeChanger={false}
-          current={entityQuerySummary.page}
-          pageSize={entityQuerySummary.pageSize}
-          total={entityQuerySummary.total}
+          current={entityListSummary.page}
+          pageSize={entityListSummary.pageSize}
+          total={entityListSummary.total}
           onChange={onPageChange}
         />
       </div>

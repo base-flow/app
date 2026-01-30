@@ -65,6 +65,41 @@ export function arrayInsertSeparator(arr: any[], separator: any): any[] {
 //     );
 // }
 
+export function deepEqual(a: any, b: any) {
+  // 1. 引用或基本类型完全相等
+  if (a === b) return true;
+  // 2. 处理 null
+  if (a === null || b === null) return a === b;
+  // 3. 类型不同
+  if (typeof a !== typeof b) return false;
+  // 4. 非对象（number/string/boolean）
+  if (typeof a !== "object") return false;
+  // 5. Array 处理
+  const isArrayA = Array.isArray(a);
+  const isArrayB = Array.isArray(b);
+  if (isArrayA !== isArrayB) return false;
+  if (isArrayA) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (!deepEqual(a[i], b[i])) return false;
+    }
+    return true;
+  }
+  // 6. Object 处理
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (const key of keysA) {
+    if (!Object.prototype.hasOwnProperty.call(b, key)) {
+      return false;
+    }
+    if (!deepEqual(a[key], b[key])) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function messageWrap(message: string): ReactNode {
   const arr = message.split("\n");
   return arr.length > 1 ? arr.map((line) => <div key={line}>{line}</div>) : message;

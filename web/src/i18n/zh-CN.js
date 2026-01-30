@@ -177,3 +177,5 @@ export const baseflow = {
   inputSchemaChanged: "流程入参定义发生了变动，请确认各触发器节点映射数据！",
   returnSchemaChanged: "流程返回定义发生了变动，请确认各返回节点返回数据！",
 };
+
+export const app = {};

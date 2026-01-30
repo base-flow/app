@@ -1,5 +1,6 @@
+import { Tooltip } from "antd";
 import classnames from "classnames";
-import { ExternalLink, SquarePen, Trash2 } from "lucide-react";
+import { ExternalLink, FolderSymlink, SquarePen, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo } from "react";
 import Collect from "@/components/Collect";
@@ -26,6 +27,21 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, setCurEdit,
   if (isDirectory(item)) {
     return (
       <div className={classnames(styles.EntityCard, "g-card folder")} onClick={() => onItemClick(item)}>
+        {item.path ? (
+          <Tooltip
+            placement="bottom"
+            title={
+              item.path
+                .replace(/\/.+? /g, "/")
+                .replace(/^\/.+?\//, "/")
+                .replace(/\/[^/]+?$/, "") || "/"
+            }
+          >
+            <span className="path">
+              <FolderSymlink size={12} strokeWidth={2.5} />
+            </span>
+          </Tooltip>
+        ) : null}
         <Collect absolute id={item.id} value={undefined} onChange={onCollect} />
         <div className="head-icon">
           <IconFolder className="icon" size={30} />
@@ -77,6 +93,21 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, setCurEdit,
   } else if (isWorkflow(item)) {
     return (
       <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}>
+        {item.path ? (
+          <Tooltip
+            placement="bottom"
+            title={
+              item.path
+                .replace(/\/.+? /g, "/")
+                .replace(/^\/.+?\//, "/")
+                .replace(/\/[^/]+?$/, "") || "/"
+            }
+          >
+            <span className="path">
+              <FolderSymlink size={12} strokeWidth={2.5} />
+            </span>
+          </Tooltip>
+        ) : null}
         <Collect absolute id={item.id} value={undefined} onChange={onCollect} />
         <div className="head-icon">
           <img className="icon" alt="node" src={item.icon || DefaultIcon} />
@@ -133,6 +164,21 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, setCurEdit,
   } else {
     return (
       <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}>
+        {item.path ? (
+          <Tooltip
+            placement="bottom"
+            title={
+              item.path
+                .replace(/\/.+? /g, "/")
+                .replace(/^\/.+?\//, "/")
+                .replace(/\/[^/]+?$/, "") || "/"
+            }
+          >
+            <span className="path">
+              <FolderSymlink size={12} strokeWidth={2.5} />
+            </span>
+          </Tooltip>
+        ) : null}
         <Collect absolute id={item.id} value={undefined} onChange={onCollect} />
         <div className="head-icon">
           <img className="icon" alt="node" src={item.icon || DefaultIcon} />

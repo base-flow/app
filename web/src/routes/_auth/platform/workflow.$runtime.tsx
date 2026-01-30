@@ -13,8 +13,8 @@ export const Route = createFileRoute("/_auth/platform/workflow/$runtime")({
 });
 
 function RouteComponent() {
-  const { runtime } = Route.useParams();
+  const runtime = Route.useParams().runtime as _App.Runtime;
   const search = Route.useSearch();
   const { config } = useConfig();
-  return <EntityCardList query={{ ...search, dir: search.dir || config.dirs.workflow[runtime as _App.Runtime] }} />;
+  return <EntityCardList entity="workflow" runtime={runtime} query={{ ...search, dir: search.dir || config.dirs.workflow[runtime] }} />;
 }

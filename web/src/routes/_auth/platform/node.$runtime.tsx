@@ -13,8 +13,8 @@ export const Route = createFileRoute("/_auth/platform/node/$runtime")({
 });
 
 function RouteComponent() {
-  const { runtime } = Route.useParams();
+  const runtime = Route.useParams().runtime as _App.Runtime;
   const search = Route.useSearch();
   const { config } = useConfig();
-  return <EntityCardList query={{ ...search, dir: search.dir || config.dirs.node[runtime as _App.Runtime] }} />;
+  return <EntityCardList entity="node" runtime={runtime} query={{ ...search, dir: search.dir || config.dirs.node[runtime] }} />;
 }

@@ -1,12 +1,10 @@
-import type { LinkProps } from "@tanstack/react-router";
-import { Link, useLocation, useMatchRoute, useNavigate } from "@tanstack/react-router";
+import { useMatchRoute, useNavigate } from "@tanstack/react-router";
 import { ExternalLink } from "lucide-react";
 import type { FC } from "react";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import IconEntity from "@/components/IconEntity";
 import IconNetwork from "@/components/IconNetwork";
 import IconShare from "@/components/IconShare";
-import IconStar from "@/components/IconStar";
 import IconTrash from "@/components/IconTrash";
 import type { MenuItem } from "@/components/MenuNav";
 import MenuNav from "@/components/MenuNav";
@@ -20,14 +18,10 @@ const Component: FC = () => {
   const [selectedKey, setSelectedKey] = useState<string | undefined>();
 
   const mathData = (() => {
-    if (matchRoute({ to: "/project/$projectId/workflow" })) {
-      return ["home", "home/workflow"];
-    } else if (matchRoute({ to: "/project/$projectId/node" })) {
-      return ["home", "home/node"];
-    } else if (matchRoute({ to: "/project/$projectId/shared" })) {
+    if (matchRoute({ to: "/project/$projectId/shared" })) {
       return [openedKey, "shared"];
     } else if (matchRoute({ to: "/project/$projectId" })) {
-      return ["home", "home"];
+      return [openedKey, "home"];
     } else {
       return [];
     }
@@ -44,13 +38,7 @@ const Component: FC = () => {
       case "home":
         navigate({ to: "/project/$projectId", params: { projectId: project.id } });
         break;
-      case "home/workflow":
-        navigate({ to: "/project/$projectId/workflow", params: { projectId: project.id } });
-        break;
-      case "home/node":
-        navigate({ to: "/project/$projectId/node", params: { projectId: project.id } });
-        break;
-      case "home/public":
+      case "public":
         navigate({ to: "/project/$projectId", params: { projectId: project.id }, search: { dir: project.publicDir } });
         break;
       case "shared":
@@ -72,39 +60,9 @@ const Component: FC = () => {
             <span>项目文档</span>
           </>
         ),
-        children: [
-          {
-            key: "home/workflow",
-            label: (
-              <>
-                <IconEntity type="workflow" />
-                <span>
-                  流程
-                  <small>
-                    (<em>{project.totalWorkflows}</em>)
-                  </small>
-                </span>
-              </>
-            ),
-          },
-          {
-            key: "home/node",
-            label: (
-              <>
-                <IconEntity type="node" />
-                <span>
-                  节点
-                  <small>
-                    (<em>{project.totalWorkflows}</em>)
-                  </small>
-                </span>
-              </>
-            ),
-          },
-        ],
       },
       {
-        key: "home/public",
+        key: "public",
         label: (
           <>
             <IconNetwork size={13} />

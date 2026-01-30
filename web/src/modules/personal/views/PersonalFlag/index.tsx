@@ -1,7 +1,6 @@
-import { Avatar } from "antd";
 import type { FC } from "react";
-import { memo, useState } from "react";
-import { useEvent, usePermissions, usePersonal } from "@/utils/hooks";
+import { memo } from "react";
+import { usePersonal } from "@/utils/hooks";
 
 const Component: FC = () => {
   const { personal } = usePersonal();

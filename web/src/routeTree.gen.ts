@@ -24,14 +24,10 @@ import { Route as AuthProjectProjectIdRouteRouteImport } from './routes/_auth/pr
 import { Route as AuthPersonalPersonalIdRouteRouteImport } from './routes/_auth/personal/$personalId/route'
 import { Route as AuthProjectProjectIdIndexRouteImport } from './routes/_auth/project/$projectId/index'
 import { Route as AuthPersonalPersonalIdIndexRouteImport } from './routes/_auth/personal/$personalId/index'
-import { Route as AuthProjectProjectIdWorkflowRouteImport } from './routes/_auth/project/$projectId/workflow'
 import { Route as AuthProjectProjectIdSharedRouteImport } from './routes/_auth/project/$projectId/shared'
-import { Route as AuthProjectProjectIdNodeRouteImport } from './routes/_auth/project/$projectId/node'
 import { Route as AuthPlatformWorkflowRuntimeRouteImport } from './routes/_auth/platform/workflow.$runtime'
 import { Route as AuthPlatformNodeRuntimeRouteImport } from './routes/_auth/platform/node.$runtime'
-import { Route as AuthPersonalPersonalIdWorkflowRouteImport } from './routes/_auth/personal/$personalId/workflow'
 import { Route as AuthPersonalPersonalIdSharedRouteImport } from './routes/_auth/personal/$personalId/shared'
-import { Route as AuthPersonalPersonalIdNodeRouteImport } from './routes/_auth/personal/$personalId/node'
 import { Route as AuthPersonalPersonalIdFavoriteRouteImport } from './routes/_auth/personal/$personalId/favorite'
 
 const LoginRoute = LoginRouteImport.update({
@@ -112,22 +108,10 @@ const AuthPersonalPersonalIdIndexRoute =
     path: '/',
     getParentRoute: () => AuthPersonalPersonalIdRouteRoute,
   } as any)
-const AuthProjectProjectIdWorkflowRoute =
-  AuthProjectProjectIdWorkflowRouteImport.update({
-    id: '/workflow',
-    path: '/workflow',
-    getParentRoute: () => AuthProjectProjectIdRouteRoute,
-  } as any)
 const AuthProjectProjectIdSharedRoute =
   AuthProjectProjectIdSharedRouteImport.update({
     id: '/shared',
     path: '/shared',
-    getParentRoute: () => AuthProjectProjectIdRouteRoute,
-  } as any)
-const AuthProjectProjectIdNodeRoute =
-  AuthProjectProjectIdNodeRouteImport.update({
-    id: '/node',
-    path: '/node',
     getParentRoute: () => AuthProjectProjectIdRouteRoute,
   } as any)
 const AuthPlatformWorkflowRuntimeRoute =
@@ -141,22 +125,10 @@ const AuthPlatformNodeRuntimeRoute = AuthPlatformNodeRuntimeRouteImport.update({
   path: '/node/$runtime',
   getParentRoute: () => AuthPlatformRouteRoute,
 } as any)
-const AuthPersonalPersonalIdWorkflowRoute =
-  AuthPersonalPersonalIdWorkflowRouteImport.update({
-    id: '/workflow',
-    path: '/workflow',
-    getParentRoute: () => AuthPersonalPersonalIdRouteRoute,
-  } as any)
 const AuthPersonalPersonalIdSharedRoute =
   AuthPersonalPersonalIdSharedRouteImport.update({
     id: '/shared',
     path: '/shared',
-    getParentRoute: () => AuthPersonalPersonalIdRouteRoute,
-  } as any)
-const AuthPersonalPersonalIdNodeRoute =
-  AuthPersonalPersonalIdNodeRouteImport.update({
-    id: '/node',
-    path: '/node',
     getParentRoute: () => AuthPersonalPersonalIdRouteRoute,
   } as any)
 const AuthPersonalPersonalIdFavoriteRoute =
@@ -180,14 +152,10 @@ export interface FileRoutesByFullPath {
   '/shared': typeof AuthSharedIndexRoute
   '/trigger/': typeof AuthTriggerIndexRoute
   '/personal/$personalId/favorite': typeof AuthPersonalPersonalIdFavoriteRoute
-  '/personal/$personalId/node': typeof AuthPersonalPersonalIdNodeRoute
   '/personal/$personalId/shared': typeof AuthPersonalPersonalIdSharedRoute
-  '/personal/$personalId/workflow': typeof AuthPersonalPersonalIdWorkflowRoute
   '/platform/node/$runtime': typeof AuthPlatformNodeRuntimeRoute
   '/platform/workflow/$runtime': typeof AuthPlatformWorkflowRuntimeRoute
-  '/project/$projectId/node': typeof AuthProjectProjectIdNodeRoute
   '/project/$projectId/shared': typeof AuthProjectProjectIdSharedRoute
-  '/project/$projectId/workflow': typeof AuthProjectProjectIdWorkflowRoute
   '/personal/$personalId/': typeof AuthPersonalPersonalIdIndexRoute
   '/project/$projectId/': typeof AuthProjectProjectIdIndexRoute
 }
@@ -201,14 +169,10 @@ export interface FileRoutesByTo {
   '/shared': typeof AuthSharedIndexRoute
   '/trigger': typeof AuthTriggerIndexRoute
   '/personal/$personalId/favorite': typeof AuthPersonalPersonalIdFavoriteRoute
-  '/personal/$personalId/node': typeof AuthPersonalPersonalIdNodeRoute
   '/personal/$personalId/shared': typeof AuthPersonalPersonalIdSharedRoute
-  '/personal/$personalId/workflow': typeof AuthPersonalPersonalIdWorkflowRoute
   '/platform/node/$runtime': typeof AuthPlatformNodeRuntimeRoute
   '/platform/workflow/$runtime': typeof AuthPlatformWorkflowRuntimeRoute
-  '/project/$projectId/node': typeof AuthProjectProjectIdNodeRoute
   '/project/$projectId/shared': typeof AuthProjectProjectIdSharedRoute
-  '/project/$projectId/workflow': typeof AuthProjectProjectIdWorkflowRoute
   '/personal/$personalId': typeof AuthPersonalPersonalIdIndexRoute
   '/project/$projectId': typeof AuthProjectProjectIdIndexRoute
 }
@@ -228,14 +192,10 @@ export interface FileRoutesById {
   '/_auth/shared/': typeof AuthSharedIndexRoute
   '/_auth/trigger/': typeof AuthTriggerIndexRoute
   '/_auth/personal/$personalId/favorite': typeof AuthPersonalPersonalIdFavoriteRoute
-  '/_auth/personal/$personalId/node': typeof AuthPersonalPersonalIdNodeRoute
   '/_auth/personal/$personalId/shared': typeof AuthPersonalPersonalIdSharedRoute
-  '/_auth/personal/$personalId/workflow': typeof AuthPersonalPersonalIdWorkflowRoute
   '/_auth/platform/node/$runtime': typeof AuthPlatformNodeRuntimeRoute
   '/_auth/platform/workflow/$runtime': typeof AuthPlatformWorkflowRuntimeRoute
-  '/_auth/project/$projectId/node': typeof AuthProjectProjectIdNodeRoute
   '/_auth/project/$projectId/shared': typeof AuthProjectProjectIdSharedRoute
-  '/_auth/project/$projectId/workflow': typeof AuthProjectProjectIdWorkflowRoute
   '/_auth/personal/$personalId/': typeof AuthPersonalPersonalIdIndexRoute
   '/_auth/project/$projectId/': typeof AuthProjectProjectIdIndexRoute
 }
@@ -255,14 +215,10 @@ export interface FileRouteTypes {
     | '/shared'
     | '/trigger/'
     | '/personal/$personalId/favorite'
-    | '/personal/$personalId/node'
     | '/personal/$personalId/shared'
-    | '/personal/$personalId/workflow'
     | '/platform/node/$runtime'
     | '/platform/workflow/$runtime'
-    | '/project/$projectId/node'
     | '/project/$projectId/shared'
-    | '/project/$projectId/workflow'
     | '/personal/$personalId/'
     | '/project/$projectId/'
   fileRoutesByTo: FileRoutesByTo
@@ -276,14 +232,10 @@ export interface FileRouteTypes {
     | '/shared'
     | '/trigger'
     | '/personal/$personalId/favorite'
-    | '/personal/$personalId/node'
     | '/personal/$personalId/shared'
-    | '/personal/$personalId/workflow'
     | '/platform/node/$runtime'
     | '/platform/workflow/$runtime'
-    | '/project/$projectId/node'
     | '/project/$projectId/shared'
-    | '/project/$projectId/workflow'
     | '/personal/$personalId'
     | '/project/$projectId'
   id:
@@ -302,14 +254,10 @@ export interface FileRouteTypes {
     | '/_auth/shared/'
     | '/_auth/trigger/'
     | '/_auth/personal/$personalId/favorite'
-    | '/_auth/personal/$personalId/node'
     | '/_auth/personal/$personalId/shared'
-    | '/_auth/personal/$personalId/workflow'
     | '/_auth/platform/node/$runtime'
     | '/_auth/platform/workflow/$runtime'
-    | '/_auth/project/$projectId/node'
     | '/_auth/project/$projectId/shared'
-    | '/_auth/project/$projectId/workflow'
     | '/_auth/personal/$personalId/'
     | '/_auth/project/$projectId/'
   fileRoutesById: FileRoutesById
@@ -427,25 +375,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthPersonalPersonalIdIndexRouteImport
       parentRoute: typeof AuthPersonalPersonalIdRouteRoute
     }
-    '/_auth/project/$projectId/workflow': {
-      id: '/_auth/project/$projectId/workflow'
-      path: '/workflow'
-      fullPath: '/project/$projectId/workflow'
-      preLoaderRoute: typeof AuthProjectProjectIdWorkflowRouteImport
-      parentRoute: typeof AuthProjectProjectIdRouteRoute
-    }
     '/_auth/project/$projectId/shared': {
       id: '/_auth/project/$projectId/shared'
       path: '/shared'
       fullPath: '/project/$projectId/shared'
       preLoaderRoute: typeof AuthProjectProjectIdSharedRouteImport
-      parentRoute: typeof AuthProjectProjectIdRouteRoute
-    }
-    '/_auth/project/$projectId/node': {
-      id: '/_auth/project/$projectId/node'
-      path: '/node'
-      fullPath: '/project/$projectId/node'
-      preLoaderRoute: typeof AuthProjectProjectIdNodeRouteImport
       parentRoute: typeof AuthProjectProjectIdRouteRoute
     }
     '/_auth/platform/workflow/$runtime': {
@@ -462,25 +396,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthPlatformNodeRuntimeRouteImport
       parentRoute: typeof AuthPlatformRouteRoute
     }
-    '/_auth/personal/$personalId/workflow': {
-      id: '/_auth/personal/$personalId/workflow'
-      path: '/workflow'
-      fullPath: '/personal/$personalId/workflow'
-      preLoaderRoute: typeof AuthPersonalPersonalIdWorkflowRouteImport
-      parentRoute: typeof AuthPersonalPersonalIdRouteRoute
-    }
     '/_auth/personal/$personalId/shared': {
       id: '/_auth/personal/$personalId/shared'
       path: '/shared'
       fullPath: '/personal/$personalId/shared'
       preLoaderRoute: typeof AuthPersonalPersonalIdSharedRouteImport
-      parentRoute: typeof AuthPersonalPersonalIdRouteRoute
-    }
-    '/_auth/personal/$personalId/node': {
-      id: '/_auth/personal/$personalId/node'
-      path: '/node'
-      fullPath: '/personal/$personalId/node'
-      preLoaderRoute: typeof AuthPersonalPersonalIdNodeRouteImport
       parentRoute: typeof AuthPersonalPersonalIdRouteRoute
     }
     '/_auth/personal/$personalId/favorite': {
@@ -530,18 +450,14 @@ const AuthTriggerRouteRouteWithChildren =
 
 interface AuthPersonalPersonalIdRouteRouteChildren {
   AuthPersonalPersonalIdFavoriteRoute: typeof AuthPersonalPersonalIdFavoriteRoute
-  AuthPersonalPersonalIdNodeRoute: typeof AuthPersonalPersonalIdNodeRoute
   AuthPersonalPersonalIdSharedRoute: typeof AuthPersonalPersonalIdSharedRoute
-  AuthPersonalPersonalIdWorkflowRoute: typeof AuthPersonalPersonalIdWorkflowRoute
   AuthPersonalPersonalIdIndexRoute: typeof AuthPersonalPersonalIdIndexRoute
 }
 
 const AuthPersonalPersonalIdRouteRouteChildren: AuthPersonalPersonalIdRouteRouteChildren =
   {
     AuthPersonalPersonalIdFavoriteRoute: AuthPersonalPersonalIdFavoriteRoute,
-    AuthPersonalPersonalIdNodeRoute: AuthPersonalPersonalIdNodeRoute,
     AuthPersonalPersonalIdSharedRoute: AuthPersonalPersonalIdSharedRoute,
-    AuthPersonalPersonalIdWorkflowRoute: AuthPersonalPersonalIdWorkflowRoute,
     AuthPersonalPersonalIdIndexRoute: AuthPersonalPersonalIdIndexRoute,
   }
 
@@ -551,17 +467,13 @@ const AuthPersonalPersonalIdRouteRouteWithChildren =
   )
 
 interface AuthProjectProjectIdRouteRouteChildren {
-  AuthProjectProjectIdNodeRoute: typeof AuthProjectProjectIdNodeRoute
   AuthProjectProjectIdSharedRoute: typeof AuthProjectProjectIdSharedRoute
-  AuthProjectProjectIdWorkflowRoute: typeof AuthProjectProjectIdWorkflowRoute
   AuthProjectProjectIdIndexRoute: typeof AuthProjectProjectIdIndexRoute
 }
 
 const AuthProjectProjectIdRouteRouteChildren: AuthProjectProjectIdRouteRouteChildren =
   {
-    AuthProjectProjectIdNodeRoute: AuthProjectProjectIdNodeRoute,
     AuthProjectProjectIdSharedRoute: AuthProjectProjectIdSharedRoute,
-    AuthProjectProjectIdWorkflowRoute: AuthProjectProjectIdWorkflowRoute,
     AuthProjectProjectIdIndexRoute: AuthProjectProjectIdIndexRoute,
   }
 

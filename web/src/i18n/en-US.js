@@ -175,3 +175,5 @@ export const baseflow = {
   inputSchemaChanged: "Flow input schema has changed. Please verify the mapping data of all trigger nodes!",
   returnSchemaChanged: "Flow return schema has changed. Please verify the return data of all return nodes!",
 };
+
+export const app = {};

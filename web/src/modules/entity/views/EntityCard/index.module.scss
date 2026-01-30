@@ -2,6 +2,18 @@
   :local(.EntityCard) {
     height: 140px;
 
+    > .path {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      padding: 2px;
+      line-height: 0;
+      color: var(--bf-third);
+      cursor: pointer;
+      background: var(--bf-bg-active);
+      border-radius: 50px;
+    }
+
     &:global(__package) {
       padding-left: 12px;
       overflow: hidden;
