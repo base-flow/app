@@ -8,6 +8,7 @@ declare namespace _Project {
     totalItems: number;
     totalWorkflows: number;
     totalNodes: number;
+    totalPublics: number;
     dir: string;
     publicDir: string;
   }

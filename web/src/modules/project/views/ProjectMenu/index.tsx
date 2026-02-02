@@ -57,7 +57,10 @@ const Component: FC = () => {
         label: (
           <>
             <IconEntity type="directory" />
-            <span>项目文档</span>
+            <span>
+              项目文档
+              <small>({project.totalItems})</small>
+            </span>
           </>
         ),
       },
@@ -66,8 +69,10 @@ const Component: FC = () => {
         label: (
           <>
             <IconNetwork size={13} />
-            <span>项目共享</span>
-            <ExternalLink size={10} strokeWidth={2.5} />
+            <span>
+              项目共享
+              <small>({project.totalPublics})</small>
+            </span>
           </>
         ),
       },

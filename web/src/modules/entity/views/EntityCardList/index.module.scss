@@ -1,7 +1,9 @@
 :global {
   :local(.EntityCardList) {
     > .hd {
+      height: 32px;
       padding-left: 20px;
+      overflow: hidden;
     }
 
     > .bd {

@@ -18,34 +18,8 @@
       }
     }
 
-    .ant-pagination {
-      margin: 30px 0 0 !important;
-    }
-
     .comp-LinkTab {
       font-size: 12px;
-    }
-
-    &:global(__item) {
-      padding-left: 20px;
-
-      > .icon {
-        position: absolute;
-        margin-top: 4px;
-        margin-left: -20px;
-        color: var(--bf-tx-summary);
-      }
-
-      > .dir {
-        margin-left: 5px;
-        vertical-align: middle;
-        color: var(--bf-tx-lesser);
-        cursor: pointer;
-
-        &:hover {
-          color: var(--bf-primary);
-        }
-      }
     }
   }
 }

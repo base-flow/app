@@ -13,21 +13,37 @@ export class EntityController {
     }
     const { spaceType, spaceId } = folder;
     const path = folder.path;
+    let showPath = false;
     let list = folder.children!;
     if (query.type) {
+      showPath = true;
       list = Object.keys(EntityMap)
         .filter((id) => {
           const item = EntityMap[id];
-          return item.type === query.type && item.path.includes(`/${query.dir} `);
+          return (
+            item.parentId &&
+            item.type === query.type &&
+            item.path.includes(`/${query.dir} `) &&
+            (query.keyword ? item.name.includes(query.keyword) : true)
+          );
+        })
+        .map((id) => EntityMap[id]);
+    } else if (query.keyword) {
+      showPath = true;
+      list = Object.keys(EntityMap)
+        .filter((id) => {
+          const item = EntityMap[id];
+          return item.parentId && item.path.includes(`/${query.dir} `) && (query.keyword ? item.name.includes(query.keyword) : true);
         })
         .map((id) => EntityMap[id]);
     }
+
     const { page = 1 } = query;
     const pageSize = 20;
     return {
       query,
       list: list.slice((page - 1) * pageSize, page * pageSize).map((item) => {
-        return { ...item, children: undefined, path: query.type ? item.path : "" };
+        return { ...item, children: undefined, path: showPath ? item.path : "" };
       }),
       summary: { total: list.length, page, pageSize, path, spaceType, spaceId },
     };

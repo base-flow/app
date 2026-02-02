@@ -33,7 +33,6 @@ export class AuthService {
     const token = await this.jwtService.signAsync(payload);
     const tokenHash = createHash("md5").update(token).digest("hex");
     this.cacheService.set(tokenHash, Date.now(), TokenExpiredSecond);
-    console.log(user);
     return {
       ...user,
       token,

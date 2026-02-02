@@ -7,8 +7,8 @@ export class AppController {
   @Get("config")
   async getConfig(): Promise<_App.Config> {
     await sleep(1000);
-    console.log(EntityList.find((item) => item.name === "node-server"));
     return Promise.resolve({
+      favMax: 100,
       dirs: {
         workflow: {
           server: EntityList.find((item) => item.name === "workflow-server")!.id,

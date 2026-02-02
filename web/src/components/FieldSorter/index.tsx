@@ -1,17 +1,16 @@
 import { Button, Segmented } from "antd";
-import { ArrowDownWideNarrow, ArrowUpNarrowWide, FilePen, FilePlusCorner, Star, ThumbsUp } from "lucide-react";
+import { ArrowDownWideNarrow, ArrowUpNarrowWide, FilePen, FilePlusCorner, ThumbsUp } from "lucide-react";
 import type { FC, ReactNode } from "react";
 import { memo, useMemo } from "react";
 import "./index.scss";
 import { useEvent } from "@/utils/hooks";
 
-export type SortField = "createDate" | "updateDate" | "likes" | "collect";
+export type SortField = "createDate" | "updateDate" | "likes";
 
-const SortOptions: { [key in SortField]: { value: string; icon: ReactNode } } = {
-  createDate: { value: "createDate", icon: <FilePlusCorner className="anticon" size={14} /> },
-  updateDate: { value: "updateDate", icon: <FilePen className="anticon" size={14} /> },
-  likes: { value: "likes", icon: <ThumbsUp className="anticon" size={14} /> },
-  collect: { value: "collect", icon: <Star className="anticon" size={14} /> },
+const SortOptions: { [key in SortField]: { value: string; icon: ReactNode; tooltip: string } } = {
+  createDate: { value: "createDate", tooltip: "创建时间", icon: <FilePlusCorner className="anticon" size={14} /> },
+  updateDate: { value: "updateDate", tooltip: "更新时间", icon: <FilePen className="anticon" size={14} /> },
+  likes: { value: "likes", tooltip: "点赞数量", icon: <ThumbsUp className="anticon" size={14} /> },
 };
 
 export interface FieldSorterProps {
@@ -20,7 +19,7 @@ export interface FieldSorterProps {
   options?: SortField[];
 }
 
-const DefaultOptions: SortField[] = ["updateDate", "createDate", "collect"];
+const DefaultOptions: SortField[] = ["updateDate", "createDate"];
 const DefaultField = "createDate";
 const DefaultOrder = "descend";
 

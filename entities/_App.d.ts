@@ -1,5 +1,6 @@
 declare namespace _App {
   interface Config {
+    favMax: number;
     dirs: {
       workflow: { [key in Runtime]: string };
       node: { [key in Runtime]: string };
@@ -19,10 +20,6 @@ declare namespace _App {
     username: string;
     password: string;
     redirect?: string;
-  }
-
-  interface FavoriteList {
-    node: string[];
   }
 
   type Runtime = "server" | "browser";

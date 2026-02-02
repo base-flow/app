@@ -21,13 +21,13 @@ export const AppAPI = {
   getPermissions(): Promise<_Permission.QueryPermissionsResult> {
     return request.get("/api/auth/permissions").then((res) => res.data);
   },
-  getFavorites(): Promise<_App.FavoriteList> {
-    return Promise.resolve({ node: ["2", "3"] });
-  },
-  addToFavorites(type: "node", id: string): Promise<void> {
-    return Promise.resolve();
-  },
-  removeFromFavorites(type: "node", id: string): Promise<void> {
-    return Promise.resolve();
-  },
+  // getFavorites(query: _Favorite.Query): Promise<_Entity.IEntity[]> {
+  //   return request.get("/api/favorite", { params: query }).then((res) => res.data);
+  // },
+  // addToFavorites(type: "node", id: string): Promise<void> {
+  //   return Promise.resolve();
+  // },
+  // removeFromFavorites(type: "node", id: string): Promise<void> {
+  //   return Promise.resolve();
+  // },
 };

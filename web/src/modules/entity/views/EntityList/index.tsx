@@ -3,16 +3,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { MenuProps, TablePaginationConfig, TableProps } from "antd";
 import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
-import classnames from "classnames";
 import { ChevronDown, Delete, FolderSymlink, FolderTree, Plus, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
+import Collect from "@/components/Collect";
 import IconEntity from "@/components/IconEntity";
 import type { LinkItem } from "@/components/LinkTab";
 import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
-import { useEvent, useFolderRoute } from "@/utils/hooks";
+import { useEvent, useFolderRoute, useMyFavoriteIds, useTablePagination } from "@/utils/hooks";
 import { debounce } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import styles from "./index.module.scss";
@@ -24,6 +24,7 @@ interface EntityListProps {
 
 const Component: FC<EntityListProps> = (props) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const { favoriteMap, favoriteLoading, onFavoriteChange } = useMyFavoriteIds();
   const queryState = useState(props.query);
   const query = queryState[0];
   const entityQuery = useQuery(EntityAPI.queryList(query));
@@ -39,48 +40,6 @@ const Component: FC<EntityListProps> = (props) => {
     queryState[1](props.query);
   }, [props.query, queryState[1]]);
 
-  const listTypeLinks = useMemo(() => {
-    const items: LinkItem[] = [
-      {
-        key: "all",
-        to: ".",
-        search: { ...query, type: undefined, page: undefined },
-        className: !query.type ? "on" : undefined,
-        children: (
-          <>
-            <FolderTree size={12} />
-            <span>目录</span>
-          </>
-        ),
-      },
-      {
-        key: "workflow",
-        to: ".",
-        search: { ...query, type: "workflow", page: undefined },
-        className: query.type === "workflow" ? "on" : undefined,
-        children: (
-          <>
-            <IconEntity size={12} type="workflow" />
-            <span>流程</span>
-          </>
-        ),
-      },
-      {
-        key: "node",
-        to: ".",
-        search: { ...query, type: "node", page: undefined },
-        className: query.type === "node" ? "on" : undefined,
-        children: (
-          <>
-            <IconEntity size={12} type="node" />
-            <span>节点</span>
-          </>
-        ),
-      },
-    ];
-    return items;
-  }, [query]);
-
   const setQuery = useEvent((query: _Entity.Query) => {
     navigate({ to: ".", search: query });
   });
@@ -94,14 +53,13 @@ const Component: FC<EntityListProps> = (props) => {
   });
 
   const onTableChange = useEvent((pagination: { current?: number; pageSize?: number }, filters: any, sorter: any) => {
-    console.log(pagination, filters);
     if (pagination.current) {
       setQuery({ ...query, page: pagination.current });
     }
   });
 
   const onSearch = useEvent((keyword?: string) => {
-    setQuery({ dir, keyword });
+    setQuery({ dir, keyword, type: query.type });
   });
 
   const resetQueryExceptDir = useEvent(() => {
@@ -185,6 +143,7 @@ const Component: FC<EntityListProps> = (props) => {
     };
   }, [selectedRows]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   const columns = useMemo<TableProps<_Entity.IEntity>["columns"]>(() => {
     return [
       {
@@ -192,7 +151,7 @@ const Component: FC<EntityListProps> = (props) => {
         dataIndex: "name",
         key: "name",
         render: (name, row) => (
-          <div className={classnames(`${styles.EntityList}__item`)}>
+          <div className="g-entity-cell">
             <IconEntity className="icon" type={row.type} />
             {row.type === "directory" ? (
               <Link to="." search={{ dir: row.id }}>
@@ -220,6 +179,7 @@ const Component: FC<EntityListProps> = (props) => {
                 <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
               </Tooltip>
             ) : null}
+            <Collect id={row.id} value={favoriteMap[row.id]} onChange={onFavoriteChange} />
           </div>
         ),
       },
@@ -288,21 +248,9 @@ const Component: FC<EntityListProps> = (props) => {
         },
       },
     ];
-  }, [query, setQuery, onDelete]);
+  }, [query, favoriteMap]);
 
-  const pagination: TablePaginationConfig = useMemo(
-    () => ({
-      className: "g-pagination",
-      size: "default",
-      placement: ["bottomCenter"],
-      showQuickJumper: false,
-      showSizeChanger: false,
-      current: entityListSummary?.page,
-      pageSize: entityListSummary?.pageSize,
-      total: entityListSummary?.total,
-    }),
-    [entityListSummary],
-  );
+  const pagination: TablePaginationConfig = useTablePagination(entityListSummary);
 
   const rowSelection: TableProps<any>["rowSelection"] = useMemo(
     () => ({
@@ -313,9 +261,9 @@ const Component: FC<EntityListProps> = (props) => {
   );
 
   useEffect(() => {
-    setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 135 });
+    setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
     const onResize = debounce(() => {
-      setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 135 });
+      setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
     }, 300);
     window.addEventListener("resize", onResize);
     return () => {
@@ -323,35 +271,53 @@ const Component: FC<EntityListProps> = (props) => {
     };
   }, []);
 
-  const header = (
-    <div className="hd">
-      <div className="row">
-        {breadcrumb}
-        <Space>
-          <SearchInput value={query.keyword} onChange={onSearch} placeholder="当前目录下搜索..." />
-        </Space>
-      </div>
-      <div className="row">
-        {!selectedRows.length ? (
-          <Button icon={<Plus size={14} strokeWidth={2.5} className="anticon" />} type="primary">
-            新建流程
-          </Button>
-        ) : (
-          <Dropdown menu={batchMenu}>
-            <Button loading={entityDeleter.isPending} icon={<ChevronDown size={13} className="anticon" />} iconPlacement="end">
-              批量操作
-            </Button>
-          </Dropdown>
-        )}
-        <LinkTab links={listTypeLinks} />
-      </div>
-    </div>
-  );
+  const listTypeLinks = useMemo(() => {
+    const { dir, keyword } = query;
+    const items: LinkItem[] = [
+      {
+        key: "all",
+        to: ".",
+        search: { dir, keyword, type: undefined },
+        className: !query.type ? "on" : undefined,
+        children: (
+          <>
+            <FolderTree size={12} />
+            <span>目录</span>
+          </>
+        ),
+      },
+      {
+        key: "workflow",
+        to: ".",
+        search: { dir, keyword, type: "workflow" },
+        className: query.type === "workflow" ? "on" : undefined,
+        children: (
+          <>
+            <IconEntity size={12} type="workflow" />
+            <span>流程</span>
+          </>
+        ),
+      },
+      {
+        key: "node",
+        to: ".",
+        search: { dir, keyword, type: "node" },
+        className: query.type === "node" ? "on" : undefined,
+        children: (
+          <>
+            <IconEntity size={12} type="node" />
+            <span>节点</span>
+          </>
+        ),
+      },
+    ];
+    return <LinkTab links={items} />;
+  }, [query]);
 
   if (entityQuery.isError) {
     return (
       <div className={`${styles.EntityList} g-page min-wrap`}>
-        {header}
+        <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Result status="warning" title={entityQuery.error?.message || "错误"} />
         </div>
@@ -362,7 +328,7 @@ const Component: FC<EntityListProps> = (props) => {
   if (!entityList) {
     return (
       <div className={`${styles.EntityList} g-page min-wrap`}>
-        {header}
+        <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Skeleton active />
         </div>
@@ -372,8 +338,29 @@ const Component: FC<EntityListProps> = (props) => {
 
   return (
     <div className={`${styles.EntityList} g-page min-wrap`}>
-      <LoadingMask show={entityQuery.isFetching || entityAlter.isPending || entityDeleter.isPending} />
-      {header}
+      <LoadingMask show={entityQuery.isFetching || entityAlter.isPending || entityDeleter.isPending || favoriteLoading} />
+      <div className="hd">
+        <div className="row">
+          {breadcrumb}
+          <Space>
+            <SearchInput value={query.keyword} onChange={onSearch} placeholder="当前目录下搜索..." />
+          </Space>
+        </div>
+        <div className="row">
+          {!selectedRows.length ? (
+            <Button icon={<Plus size={14} strokeWidth={2.5} className="anticon" />} type="primary">
+              新建流程
+            </Button>
+          ) : (
+            <Dropdown menu={batchMenu}>
+              <Button loading={entityDeleter.isPending} icon={<ChevronDown size={13} className="anticon" />} iconPlacement="end">
+                批量操作
+              </Button>
+            </Dropdown>
+          )}
+          {listTypeLinks}
+        </div>
+      </div>
       <div className="bd" ref={scrollerRef}>
         <Table<any>
           rowKey="id"

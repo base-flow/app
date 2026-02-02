@@ -111,6 +111,9 @@ function RootComponent() {
             colorLinkHover: "var(--bf-second)",
           },
           components: {
+            Input: {
+              activeShadow: "0 0 5px 1px #1677ff2f;",
+            },
             Pagination: { itemBg: "transparent" },
             Table: {
               headerBg: "var(--bf-bg-tr)",

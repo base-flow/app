@@ -15,10 +15,10 @@ export interface LinkItem extends LinkProps {
 export interface LinkTabProps {
   className?: string;
   links: LinkItem[];
-  onClick?: (item: LinkItem) => void;
+  onTo?: (item: LinkItem) => void;
 }
 
-const Component: FC<LinkTabProps> = ({ className, links, onClick }) => {
+const Component: FC<LinkTabProps> = ({ className, links, onTo }) => {
   return (
     <div className={classnames("comp-LinkTab", className)}>
       {arrayInsertSeparator(links, null).map((item: LinkItem, index) =>
@@ -30,7 +30,7 @@ const Component: FC<LinkTabProps> = ({ className, links, onClick }) => {
             {item.children}
           </Link>
         ) : (
-          <a key={item.key} className={item.className} onClick={() => onClick?.(item)}>
+          <a key={item.key} className={item.className} onClick={() => onTo?.(item)}>
             {item.children}
           </a>
         ),

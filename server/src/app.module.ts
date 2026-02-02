@@ -11,6 +11,7 @@ import type { JwtConfig } from "./config/jwt.config";
 import jwtConfig from "./config/jwt.config";
 import redisConfig from "./config/redis.config";
 import { EntityModule } from "./entity/entity.module";
+import { FavoriteModule } from "./favorite/favorite.module";
 import { AuthGuard } from "./guards/auth.guard";
 import { PersonalModule } from "./personal/personal.module";
 import { ProjectModule } from "./project/project.module";
@@ -41,6 +42,7 @@ import { WorkflowModule } from "./workflow/workflow.module";
     UserModule,
     ProjectModule,
     EntityModule,
+    FavoriteModule,
     WorkflowModule,
     PersonalModule,
     CacheModule,

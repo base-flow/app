@@ -80,9 +80,7 @@ const Component: FC = () => {
                 <IconRuntime type="server" />
                 <span>
                   服务器运行
-                  <small>
-                    (<em>10</em>)
-                  </small>
+                  <small>(10)</small>
                 </span>
               </>
             ),
@@ -94,9 +92,7 @@ const Component: FC = () => {
                 <IconRuntime type="browser" />
                 <span>
                   浏览器运行
-                  <small>
-                    (<em>20</em>)
-                  </small>
+                  <small>(30)</small>
                 </span>
               </>
             ),

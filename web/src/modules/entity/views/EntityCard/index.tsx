@@ -17,13 +17,14 @@ interface EntityCardProps {
   item: _Entity.IEntity;
   permissions: _Permission.IPermissions;
   authId: string;
+  favoriteMap: { [id: string]: boolean };
   setCurEdit: (item: _Entity.IEntity) => void;
   onDelete: (id: string, name: string) => void;
-  onCollect: (id: string, collected: boolean) => void;
+  onFavoriteChange: (id: string, collected: boolean) => void;
   onItemClick: (item: _Entity.IEntity) => void;
 }
 
-const Component: FC<EntityCardProps> = ({ item, permissions, authId, setCurEdit, onDelete, onCollect, onItemClick }) => {
+const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap, setCurEdit, onDelete, onFavoriteChange, onItemClick }) => {
   if (isDirectory(item)) {
     return (
       <div className={classnames(styles.EntityCard, "g-card folder")} onClick={() => onItemClick(item)}>
@@ -42,7 +43,7 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, setCurEdit,
             </span>
           </Tooltip>
         ) : null}
-        <Collect absolute id={item.id} value={undefined} onChange={onCollect} />
+        <Collect absolute id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
         <div className="head-icon">
           <IconFolder className="icon" size={30} />
           <h4 className="title">{item.name}</h4>
@@ -108,7 +109,7 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, setCurEdit,
             </span>
           </Tooltip>
         ) : null}
-        <Collect absolute id={item.id} value={undefined} onChange={onCollect} />
+        <Collect absolute id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
         <div className="head-icon">
           <img className="icon" alt="node" src={item.icon || DefaultIcon} />
           <h4 className="title">{item.name}</h4>
@@ -179,7 +180,7 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, setCurEdit,
             </span>
           </Tooltip>
         ) : null}
-        <Collect absolute id={item.id} value={undefined} onChange={onCollect} />
+        <Collect absolute id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
         <div className="head-icon">
           <img className="icon" alt="node" src={item.icon || DefaultIcon} />
           <h4 className="title">{item.name}</h4>

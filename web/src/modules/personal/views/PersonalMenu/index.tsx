@@ -63,7 +63,10 @@ const Component: FC = () => {
         label: (
           <>
             <IconEntity type="directory" />
-            <span>我的文档</span>
+            <span>
+              我的文档
+              <small>({personal.totalItems})</small>
+            </span>
           </>
         ),
       },
@@ -72,8 +75,10 @@ const Component: FC = () => {
         label: (
           <>
             <IconNetwork size={13} />
-            <span>我的共享</span>
-            <ExternalLink size={10} strokeWidth={2.5} />
+            <span>
+              我的共享
+              <small>({personal.totalPublics})</small>
+            </span>
           </>
         ),
       },

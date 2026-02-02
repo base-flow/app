@@ -1,7 +1,10 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { TablePaginationConfig } from "antd";
 import type { RefObject } from "react";
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import Pathcrumb from "@/components/Pathcrumb";
+import { FavoriteAPI } from "@/modules/favorite/api";
 import { deepEqual } from "@/utils/tools";
 
 // biome-ignore lint/complexity/noBannedTypes: <>
@@ -121,6 +124,75 @@ export function useFolderRoute<Q extends { [key: string]: any } = { [key: string
   }, [pathString, historyLength, rootName]);
 
   return breadcrumb;
+}
+
+export const ShowTotal = (total: number) => `${total} Items`;
+
+export function useTablePagination(listSummary: _Resource.IQuerySummary | undefined): TablePaginationConfig {
+  const pagination: TablePaginationConfig = useMemo(
+    () => ({
+      className: "g-pagination",
+      size: "default",
+      placement: ["bottomCenter"],
+      showTotal: ShowTotal,
+      showQuickJumper: false,
+      showSizeChanger: false,
+      current: listSummary?.page,
+      pageSize: listSummary?.pageSize,
+      total: listSummary?.total,
+    }),
+    [listSummary],
+  );
+  return pagination;
+}
+
+export function useMyFavoriteIds() {
+  const queryClient = useQueryClient();
+  const favoriteQuery = useQuery(FavoriteAPI.queryIds());
+  const favoriteList = favoriteQuery.data;
+  const favoriteMap = useMemo(() => {
+    if (favoriteList) {
+      return favoriteList.reduce(
+        (obj, id) => {
+          obj[id] = true;
+          return obj;
+        },
+        {} as { [id: string]: boolean },
+      );
+    } else {
+      return {};
+    }
+  }, [favoriteList]);
+
+  const favoriteUpdater = useMutation({
+    mutationFn: FavoriteAPI.batchUpdate,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [FavoriteAPI.listQueryKey] });
+      queryClient.invalidateQueries({ queryKey: [FavoriteAPI.idsQueryKey] });
+    },
+  });
+
+  const onFavoriteChange = useEvent((id: string, fav: boolean) => favoriteUpdater.mutate({ ids: [id], fav }));
+  const onFavoriteRemove = useEvent((ids: string[]) => favoriteUpdater.mutate({ ids, fav: false }));
+  return { favoriteMap, favoriteLoading: favoriteQuery.isFetching, onFavoriteRemove, onFavoriteChange };
+}
+
+export function useMyFavoriteList(onChangeSuccess?: () => void) {
+  const queryClient = useQueryClient();
+  const favoriteQuery = useQuery(FavoriteAPI.queryList());
+
+  const favoriteUpdater = useMutation({
+    mutationFn: FavoriteAPI.batchUpdate,
+    onSuccess: () => {
+      onChangeSuccess?.();
+      queryClient.invalidateQueries({ queryKey: [FavoriteAPI.listQueryKey] });
+      queryClient.invalidateQueries({ queryKey: [FavoriteAPI.idsQueryKey] });
+    },
+  });
+
+  const onFavoriteChange = useEvent((id: string, fav: boolean) => favoriteUpdater.mutate({ ids: [id], fav }));
+  const onFavoriteRemove = useEvent((ids: string[]) => favoriteUpdater.mutate({ ids, fav: false }));
+  return { favoriteQuery, onFavoriteRemove, onFavoriteChange };
 }
 
 export interface IConfigContext {

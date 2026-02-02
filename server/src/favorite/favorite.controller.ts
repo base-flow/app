@@ -1,0 +1,58 @@
+import { Controller, Get, Put, Request } from "@nestjs/common";
+import { EntityMap, FavoriteList } from "@/data";
+import { sleep } from "@/utils";
+
+@Controller("favorite")
+export class FavoriteController {
+  @Get()
+  async getList(): Promise<_Entity.IEntity[]> {
+    await sleep(1000);
+    return Object.keys(FavoriteList).map((id) => ({ ...EntityMap[id], children: undefined }));
+  }
+  @Get("ids")
+  async getIds(): Promise<string[]> {
+    await sleep(1000);
+    return Object.keys(FavoriteList);
+  }
+
+  @Put()
+  async batchUpdate(@Request() { user, body }: { user: _App.AuthUser; body: { ids: string[]; fav: boolean } }): Promise<void> {
+    if (body.fav) {
+      body.ids.forEach((id) => {
+        FavoriteList[id] = true;
+      });
+    } else {
+      body.ids.forEach((id) => {
+        delete FavoriteList[id];
+      });
+    }
+  }
+
+  // @Get(":id")
+  // async getItem(@Param() param: { id: string }): Promise<_Entity.IEntity> {
+  //   //return this.workflowService.findOne(param.id);
+  // }
+
+  // @Post()
+  // async createItem(@Request() { user, body }: { user: _App.AuthUser; body: _Entity.IEntity }): Promise<_Entity.CreateResult> {
+  //   //return this.workflowService.createItem(user.id, body);
+  // }
+
+  // @Put(":id")
+  // async updateItem(
+  //   @Request() { user, body, params }: { user: _App.AuthUser; body: _Entity.IEntity; params: { id: string } },
+  // ): Promise<_Entity.UpdateResult> {
+  //   //return this.workflowService.updateItem(user.id, params.id, body);
+  // }
+
+  // @Delete(":id")
+  // async deleteItem(@Param() param: { id: string }): Promise<void> {
+  //   //return this.workflowService.deleteItem(param.id);
+  // }
+
+  // @Delete()
+  // async batchDelete(@Body() { ids }: { ids: string[] }): Promise<void> {
+  //   await sleep(1000);
+  //   // return this.workflowService.batchDelete(ids);
+  // }
+}

@@ -16,6 +16,7 @@ interface Window {
     baseflow: any;
     app: any;
   };
+  BASE_PATH?: string;
   API_PROXY?: string;
 }
 

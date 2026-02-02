@@ -100,6 +100,33 @@ export function deepEqual(a: any, b: any) {
   return true;
 }
 
+export function sortList<T extends { [key: string]: any }>(list: T[], sortField: string, sortOrder: "ascend" | "descend"): T[] {
+  const factor = sortOrder === "ascend" ? 1 : -1;
+
+  return [...list].sort((a, b) => {
+    const v1: any = a[sortField];
+    const v2: any = b[sortField];
+
+    if (v1 == null && v2 == null) return 0;
+    if (v1 == null) return -1 * factor;
+    if (v2 == null) return 1 * factor;
+
+    if (typeof v1 === "number" && typeof v2 === "number") {
+      return (v1 - v2) * factor;
+    }
+
+    if (typeof v1 === "string" && typeof v2 === "string") {
+      return v1.localeCompare(v2) * factor;
+    }
+
+    if (v1 instanceof Date && v2 instanceof Date) {
+      return (v1.getTime() - v2.getTime()) * factor;
+    }
+
+    return String(v1).localeCompare(String(v2)) * factor;
+  });
+}
+
 export function messageWrap(message: string): ReactNode {
   const arr = message.split("\n");
   return arr.length > 1 ? arr.map((line) => <div key={line}>{line}</div>) : message;
@@ -109,4 +136,12 @@ export function isDirectory(item: { type: string }): item is _App.IDirectory {
 }
 export function isWorkflow(item: { type: string }): item is _Workflow.IWorkflow {
   return item.type === "workflow";
+}
+export function openEntity(entity: _Entity.IEntity, parentDir?: boolean, windowKey?: string): void {
+  const { id, type, spaceType, spaceId, parentId } = entity;
+  if (parentDir || type === "directory") {
+    window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}?dir="${parentDir ? parentId : id}"`, windowKey);
+  } else {
+    //window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}?dir="${id}"`, windowKey);
+  }
 }

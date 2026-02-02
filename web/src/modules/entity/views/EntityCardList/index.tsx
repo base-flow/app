@@ -15,8 +15,7 @@ import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import SkeletonCardList from "@/components/SkeletonCardList";
-import { useEvent, useFolderRoute, usePermissions } from "@/utils/hooks";
-import { debounce } from "@/utils/tools";
+import { ShowTotal, useEvent, useFolderRoute, useMyFavoriteIds, usePermissions } from "@/utils/hooks";
 import { EntityAPI } from "../../api";
 import EntityCard from "../EntityCard";
 import styles from "./index.module.scss";
@@ -28,11 +27,11 @@ const StoreOptions: { label: string; value: string }[] = [
   { label: "当前系统", value: "local" },
 ];
 
-const SorterOptions: SortField[] = ["collect", "createDate", "likes"];
+const SorterOptions: SortField[] = ["updateDate", "createDate", "likes"];
 
-const ListTypeOptions: { label: any; value: ListType }[] = [
-  { label: <FolderTree className="anticon" size={14} />, value: "dir" },
-  { label: <List className="anticon" size={14} />, value: "file" },
+const ListTypeOptions: { label: any; value: ListType; tooltip: string }[] = [
+  { label: <FolderTree className="anticon" size={14} />, value: "dir", tooltip: "目录层级" },
+  { label: <List className="anticon" size={14} />, value: "file", tooltip: "文件平铺" },
 ];
 
 // const ListTypeOptions: { label: any; value: string }[] = [
@@ -48,6 +47,7 @@ interface EntityCardListProps {
 
 const Component: FC<EntityCardListProps> = (props) => {
   const { permissions, auth } = usePermissions();
+  const { favoriteMap, favoriteLoading, onFavoriteChange } = useMyFavoriteIds();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const queryState = useState(props.query);
   const query = queryState[0];
@@ -71,10 +71,11 @@ const Component: FC<EntityCardListProps> = (props) => {
   });
 
   const onListTypeChange = useEvent((listType: ListType) => {
+    const { dir, keyword } = query;
     if (listType === "file") {
-      setQuery({ ...query, page: undefined, type: entityType });
+      setQuery({ dir, keyword, type: entityType });
     } else {
-      setQuery({ ...query, page: undefined, type: undefined });
+      setQuery({ dir, keyword, type: undefined });
     }
   });
 
@@ -91,7 +92,7 @@ const Component: FC<EntityCardListProps> = (props) => {
   });
 
   const onSearch = useEvent((keyword?: string) => {
-    setQuery({ dir: query.dir, keyword });
+    setQuery({ dir, keyword, type: query.type });
   });
 
   const onItemClick = useEvent((item: _Entity.IEntity) => {
@@ -164,31 +165,10 @@ const Component: FC<EntityCardListProps> = (props) => {
   //   [workflowAlter],
   // );
 
-  const onCollect = useEvent((id: string, collected: boolean) => {
-    //nodeAlter.mutate({ id, collected });
-  });
-
-  const header = (
-    <div className="hd">
-      <div className="space">
-        <Segmented options={StoreOptions} onChange={onStoreChange as any} />
-        {breadcrumb}
-      </div>
-      <div className="space">
-        <SearchInput variant="filled" onChange={onSearch} value={query.keyword} placeholder="当前目录下搜索..." />
-        <Segmented value={listType} options={ListTypeOptions} onChange={onListTypeChange} />
-        <div>
-          <span style={{ marginRight: 2 }}>排序：</span>
-          <FieldSorter options={SorterOptions} value={query} onChange={onSort} />
-        </div>
-      </div>
-    </div>
-  );
-
   if (entityQuery.isError) {
     return (
       <section className={`${styles.EntityCardList} g-page`}>
-        {header}
+        <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Result status="warning" title={entityQuery.error?.message || "错误"} />
         </div>
@@ -199,7 +179,7 @@ const Component: FC<EntityCardListProps> = (props) => {
   if (!entityList || !entityListSummary) {
     return (
       <section className={`${styles.EntityCardList} g-page`}>
-        {header}
+        <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <SkeletonCardList />
         </div>
@@ -209,8 +189,21 @@ const Component: FC<EntityCardListProps> = (props) => {
 
   return (
     <section className={`${styles.EntityCardList} g-page`}>
-      <LoadingMask show={entityQuery.isFetching || entityAlter.isPending || entityDeleter.isPending} />
-      {header}
+      <LoadingMask show={entityQuery.isFetching || entityAlter.isPending || entityDeleter.isPending || favoriteLoading} />
+      <div className="hd">
+        <div className="space">
+          <Segmented options={StoreOptions} onChange={onStoreChange as any} />
+          {breadcrumb}
+        </div>
+        <div className="space">
+          <SearchInput variant="filled" onChange={onSearch} value={query.keyword} placeholder="当前目录下搜索..." />
+          <Segmented value={listType} options={ListTypeOptions} onChange={onListTypeChange} />
+          <div>
+            <span style={{ marginRight: 2 }}>排序：</span>
+            <FieldSorter options={SorterOptions} value={query} onChange={onSort} />
+          </div>
+        </div>
+      </div>
       <div className="bd" ref={scrollerRef}>
         <div className="g-grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
           {entityList.map((item) => {
@@ -220,9 +213,10 @@ const Component: FC<EntityCardListProps> = (props) => {
                 item={item}
                 permissions={permissions}
                 authId={auth.id}
+                favoriteMap={favoriteMap}
                 onDelete={onDelete}
                 setCurEdit={setCurEdit}
-                onCollect={onCollect}
+                onFavoriteChange={onFavoriteChange}
                 onItemClick={onItemClick}
               />
             );
@@ -236,6 +230,7 @@ const Component: FC<EntityCardListProps> = (props) => {
           current={entityListSummary.page}
           pageSize={entityListSummary.pageSize}
           total={entityListSummary.total}
+          showTotal={ShowTotal}
           onChange={onPageChange}
         />
       </div>

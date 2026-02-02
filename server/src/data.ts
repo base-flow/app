@@ -34,6 +34,8 @@ export const Personals: _Personal.IPersonal[] = Users.map(({ id, username, nickn
   publicDir: "",
   totalWorkflows: randomInt(10, 100),
   totalNodes: randomInt(10, 100),
+  totalPublics: randomInt(10, 100),
+  totalItems: randomInt(10, 100),
 }));
 
 export const PersonalsMap: { [id: string]: _Personal.IPersonal } = Personals.reduce((obj, cur) => {
@@ -54,6 +56,7 @@ const Projects: _Project.IProject[] = Mock.mock({
       totalItems: 34,
       totalWorkflows: 4,
       totalNodes: 5,
+      totalPublics: 23,
     },
   ],
 }).list.map((item: any) => ({ ...item, id: `${item.id}`, logo: FlagSrc.create() }));
@@ -69,6 +72,7 @@ Projects.unshift(
     totalItems: 34,
     totalWorkflows: 4,
     totalNodes: 5,
+    totalPublics: 23,
   },
   {
     id: "2",
@@ -80,6 +84,7 @@ Projects.unshift(
     totalItems: 34,
     totalWorkflows: 4,
     totalNodes: 5,
+    totalPublics: 23,
   },
 );
 
@@ -193,10 +198,10 @@ function createPlatformEntities() {
   drive.push(createDir({ type: "personal", id: Users[1].id }, Users[1].username, ["public"]));
   drive.push(createDir({ type: "project", id: Projects[0].id }, Projects[0].name, ["public"]));
   drive.push(createDir({ type: "project", id: Projects[1].id }, Projects[1].name, ["public"]));
-  drive.push(createDir({ type: "platform", id: "" }, "workflow-server"));
-  drive.push(createDir({ type: "platform", id: "" }, "workflow-browser"));
-  drive.push(createDir({ type: "platform", id: "" }, "node-server"));
-  drive.push(createDir({ type: "platform", id: "" }, "node-browser"));
+  drive.push(createDir({ type: "platform", id: "workflow/server" }, "workflow-server"));
+  drive.push(createDir({ type: "platform", id: "workflow/browser" }, "workflow-browser"));
+  drive.push(createDir({ type: "platform", id: "node/server" }, "node-server"));
+  drive.push(createDir({ type: "platform", id: "node/browser" }, "node-browser"));
   return drive;
 }
 
@@ -216,3 +221,5 @@ Projects[0].dir = deepseekFolder.id;
 Projects[0].publicDir = deepseekFolder.children!.find((item) => item.name === "public")?.id || "";
 Projects[1].dir = googleFolder.id;
 Projects[1].publicDir = googleFolder.children!.find((item) => item.name === "public")?.id || "";
+
+export const FavoriteList: { [id: string]: boolean } = {};
