@@ -1,4 +1,3 @@
-import * as path from "node:path";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
@@ -12,9 +11,11 @@ import jwtConfig from "./config/jwt.config";
 import redisConfig from "./config/redis.config";
 import { EntityModule } from "./entity/entity.module";
 import { FavoriteModule } from "./favorite/favorite.module";
+import { GotSharedModule } from "./gotShared/gotShared.module";
 import { AuthGuard } from "./guards/auth.guard";
 import { PersonalModule } from "./personal/personal.module";
 import { ProjectModule } from "./project/project.module";
+import { SharedModule } from "./shared/shared.module";
 import { UserModule } from "./user/user.module";
 import { WorkflowModule } from "./workflow/workflow.module";
 
@@ -43,6 +44,8 @@ import { WorkflowModule } from "./workflow/workflow.module";
     ProjectModule,
     EntityModule,
     FavoriteModule,
+    SharedModule,
+    GotSharedModule,
     WorkflowModule,
     PersonalModule,
     CacheModule,

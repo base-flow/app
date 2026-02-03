@@ -145,3 +145,6 @@ export function openEntity(entity: _Entity.IEntity, parentDir?: boolean, windowK
     //window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}?dir="${id}"`, windowKey);
   }
 }
+export function openShared(id: string, windowKey: string = "shared"): void {
+  window.open(`${window.BASE_PATH || ""}/shared/${id}`, windowKey);
+}

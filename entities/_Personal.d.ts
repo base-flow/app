@@ -2,6 +2,7 @@ declare namespace _Personal {
   interface IPersonal extends _Resource.IItem {
     username: string;
     nickname: string;
+    avatar: string;
     dir: string;
     publicDir: string;
     totalItems: number;

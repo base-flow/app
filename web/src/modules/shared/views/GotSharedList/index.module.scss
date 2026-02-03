@@ -1,0 +1,18 @@
+:global {
+  :local(.GotSharedList) {
+    &:global(__hd) {
+      > .tips {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        font-size: 11px;
+        color: var(--bf-tx-lesser);
+      }
+
+      .ant-input-prefix {
+        padding-right: 3px;
+        color: var(--bf-tx-summary);
+      }
+    }
+  }
+}

@@ -4,9 +4,9 @@ import { Result, Skeleton } from "antd";
 import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import LoadingMask from "@/components/LoadingMask";
+import Nameplate from "@/components/Nameplate";
 import { useAppStore } from "@/modules/app/store";
 import { PersonalAPI } from "@/modules/personal/api";
-import PersonalFlag from "@/modules/personal/views/PersonalFlag";
 import PersonalMenu from "@/modules/personal/views/PersonalMenu";
 import { PermissionsContext, PersonalContext } from "@/utils/hooks";
 
@@ -50,7 +50,7 @@ function RouteComponent() {
       <PersonalContext value={{ personal }}>
         <aside>
           <div>
-            <PersonalFlag />
+            <Nameplate type="personal" title={personal.nickname} remark={personal.username} logo={personal.avatar} />
             <PersonalMenu />
           </div>
         </aside>

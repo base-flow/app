@@ -4,9 +4,9 @@ import { Result, Skeleton } from "antd";
 import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import LoadingMask from "@/components/LoadingMask";
+import Nameplate from "@/components/Nameplate";
 import { useAppStore } from "@/modules/app/store";
 import { ProjectAPI } from "@/modules/project/api";
-import ProjectFlag from "@/modules/project/views/ProjectFlag";
 import ProjectMenu from "@/modules/project/views/ProjectMenu";
 import ProjectSettings from "@/modules/project/views/ProjectSettings";
 import { PermissionsContext, ProjectContext } from "@/utils/hooks";
@@ -51,7 +51,7 @@ function RouteComponent() {
       <ProjectContext value={{ project }}>
         <aside>
           <div>
-            <ProjectFlag />
+            <Nameplate type="project" title={project.name} logo={project.logo} />
             <ProjectMenu />
           </div>
           <ProjectSettings />

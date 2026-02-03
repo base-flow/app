@@ -30,9 +30,12 @@ const Component: FC<{}> = () => {
     if (list && type) {
       list = list.filter((item) => item.type === type);
     }
-    if (list && sorterField && sorterOrder) {
-      console.log(sorterOrder);
-      list = sortList(list, sorterField, sorterOrder);
+    if (list) {
+      if (sorterField && sorterOrder) {
+        list = sortList(list, sorterField, sorterOrder);
+      } else {
+        list = sortList(list, "type", "ascend");
+      }
     }
     return list;
   }, [favoriteQuery.data, query]);
@@ -45,7 +48,7 @@ const Component: FC<{}> = () => {
         children: (
           <>
             <FolderTree size={12} />
-            <span>目录</span>
+            <span>全部</span>
           </>
         ),
       },
@@ -107,20 +110,32 @@ const Component: FC<{}> = () => {
         title: "运行环境",
         dataIndex: "runtime",
         key: "runtime",
-        width: 140,
+        width: 120,
         align: "center",
         sorter: true,
         sortOrder: (query.sorterField === "runtime" && query.sorterOrder) || null,
       },
       {
-        title: "空间",
+        title: "所属空间",
         dataIndex: "spaceType",
         key: "spaceType",
-        width: 100,
+        width: 120,
         align: "center",
         sorter: true,
         sortOrder: (query.sorterField === "spaceType" && query.sorterOrder) || null,
         render: (spaceType: _App.EntrySpace) => Lang.spaceType[spaceType],
+      },
+      {
+        title: "操作",
+        key: "action",
+        width: 80,
+        render: (_, row) => {
+          return (
+            <div className="g-actions-cell">
+              <a onClick={() => onFavoriteChange(row.id, false)}>取消</a>
+            </div>
+          );
+        },
       },
     ];
   }, [query]);
@@ -174,7 +189,7 @@ const Component: FC<{}> = () => {
           <div className="title">
             我的收藏
             <small className="g-dot">
-              ({favoriteQuery.data?.length}/最多{config!.favMax}项)
+              ({favoriteQuery.data?.length}项 / 最多{config!.favMax}项)
             </small>
           </div>
           {selectedRows.length ? (

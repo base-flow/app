@@ -27,12 +27,12 @@ const Component: FC<Props> = ({ item, getPermissionsInProject, setCurEdit, onDel
       </div>
       <div className="footer">
         <div className="flows">
-          <TextAlignJustify size={11} strokeWidth={3} />
+          <TextAlignJustify size={11} strokeWidth={3} className="anticon" style={{ marginRight: "3px" }} />
           <span>{item.totalItems}</span>
         </div>
         {projectRole && (
           <div className="member">
-            <UserRound size={11} strokeWidth={2.5} />
+            <UserRound size={12} strokeWidth={2.5} className="anticon" style={{ marginRight: "2px" }} />
             <span>{projectRole}</span>
           </div>
         )}

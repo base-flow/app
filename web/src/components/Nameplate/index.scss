@@ -1,0 +1,43 @@
+.comp-Nameplate {
+  position: relative;
+  padding-bottom: 17px;
+  margin: 13px 15px 0 10px;
+  text-align: center;
+  border-bottom: 1px solid var(--bf-bd-input);
+
+  &::after {
+    position: absolute;
+    bottom: -3px;
+    width: 5px;
+    height: 5px;
+    overflow: hidden;
+    content: "";
+    background: var(--bf-bd-input);
+    border-radius: 10px;
+  }
+
+  > .icon {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    overflow: hidden;
+    border: 3px solid #fff;
+    border-radius: var(--bf-rd-btn);
+    box-shadow: 0 0 80px 10px #fff;
+
+    &.avatar {
+      border-radius: 50px;
+    }
+  }
+
+  > .title {
+    padding: 10px 5px 6px;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  small {
+    font-size: 11px;
+    font-weight: normal;
+  }
+}

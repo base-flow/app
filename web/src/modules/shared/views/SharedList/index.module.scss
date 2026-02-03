@@ -1,5 +1,5 @@
 :global {
-  :local(.FavoriteList) {
+  :local(.SharedList) {
     > .hd {
       height: 35px;
       padding: 25px 27px 0;
@@ -15,10 +15,6 @@
         font-weight: normal;
         color: var(--bf-tx-lesser);
       }
-    }
-
-    .comp-LinkTab {
-      font-size: 12px;
     }
   }
 }

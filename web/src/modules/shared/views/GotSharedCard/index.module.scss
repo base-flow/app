@@ -1,6 +1,7 @@
 :global {
-  :local(.ProjectItem) {
-    height: 144px;
+  :local(.GotSharedCard) {
+    height: 100px;
+    cursor: pointer;
 
     > .head-icon {
       padding-bottom: 10px;
@@ -17,8 +18,18 @@
     }
 
     > .footer {
-      > .member {
+      gap: 10px;
+
+      > .user {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--bf-tx-summary);
+        white-space: nowrap;
+      }
+
+      > .expires {
         color: var(--bf-tx-success);
+        white-space: nowrap;
       }
     }
   }

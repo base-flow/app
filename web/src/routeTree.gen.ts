@@ -22,6 +22,7 @@ import { Route as AuthExecutorIndexRouteImport } from './routes/_auth/executor/i
 import { Route as AuthWorkflowWorkflowIdRouteImport } from './routes/_auth/workflow/$workflowId'
 import { Route as AuthProjectProjectIdRouteRouteImport } from './routes/_auth/project/$projectId/route'
 import { Route as AuthPersonalPersonalIdRouteRouteImport } from './routes/_auth/personal/$personalId/route'
+import { Route as AuthSharedSharedIdIndexRouteImport } from './routes/_auth/shared/$sharedId/index'
 import { Route as AuthProjectProjectIdIndexRouteImport } from './routes/_auth/project/$projectId/index'
 import { Route as AuthPersonalPersonalIdIndexRouteImport } from './routes/_auth/personal/$personalId/index'
 import { Route as AuthProjectProjectIdSharedRouteImport } from './routes/_auth/project/$projectId/shared'
@@ -96,6 +97,11 @@ const AuthPersonalPersonalIdRouteRoute =
     path: '/personal/$personalId',
     getParentRoute: () => AuthRouteRoute,
   } as any)
+const AuthSharedSharedIdIndexRoute = AuthSharedSharedIdIndexRouteImport.update({
+  id: '/shared/$sharedId/',
+  path: '/shared/$sharedId/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthProjectProjectIdIndexRoute =
   AuthProjectProjectIdIndexRouteImport.update({
     id: '/',
@@ -158,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/project/$projectId/shared': typeof AuthProjectProjectIdSharedRoute
   '/personal/$personalId/': typeof AuthPersonalPersonalIdIndexRoute
   '/project/$projectId/': typeof AuthProjectProjectIdIndexRoute
+  '/shared/$sharedId': typeof AuthSharedSharedIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/project/$projectId/shared': typeof AuthProjectProjectIdSharedRoute
   '/personal/$personalId': typeof AuthPersonalPersonalIdIndexRoute
   '/project/$projectId': typeof AuthProjectProjectIdIndexRoute
+  '/shared/$sharedId': typeof AuthSharedSharedIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -198,6 +206,7 @@ export interface FileRoutesById {
   '/_auth/project/$projectId/shared': typeof AuthProjectProjectIdSharedRoute
   '/_auth/personal/$personalId/': typeof AuthPersonalPersonalIdIndexRoute
   '/_auth/project/$projectId/': typeof AuthProjectProjectIdIndexRoute
+  '/_auth/shared/$sharedId/': typeof AuthSharedSharedIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
     | '/project/$projectId/shared'
     | '/personal/$personalId/'
     | '/project/$projectId/'
+    | '/shared/$sharedId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/project/$projectId/shared'
     | '/personal/$personalId'
     | '/project/$projectId'
+    | '/shared/$sharedId'
   id:
     | '__root__'
     | '/'
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/_auth/project/$projectId/shared'
     | '/_auth/personal/$personalId/'
     | '/_auth/project/$projectId/'
+    | '/_auth/shared/$sharedId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -359,6 +371,13 @@ declare module '@tanstack/react-router' {
       path: '/personal/$personalId'
       fullPath: '/personal/$personalId'
       preLoaderRoute: typeof AuthPersonalPersonalIdRouteRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/shared/$sharedId/': {
+      id: '/_auth/shared/$sharedId/'
+      path: '/shared/$sharedId'
+      fullPath: '/shared/$sharedId'
+      preLoaderRoute: typeof AuthSharedSharedIdIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/_auth/project/$projectId/': {
@@ -491,6 +510,7 @@ interface AuthRouteRouteChildren {
   AuthWorkflowWorkflowIdRoute: typeof AuthWorkflowWorkflowIdRoute
   AuthProjectIndexRoute: typeof AuthProjectIndexRoute
   AuthSharedIndexRoute: typeof AuthSharedIndexRoute
+  AuthSharedSharedIdIndexRoute: typeof AuthSharedSharedIdIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
@@ -503,6 +523,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthWorkflowWorkflowIdRoute: AuthWorkflowWorkflowIdRoute,
   AuthProjectIndexRoute: AuthProjectIndexRoute,
   AuthSharedIndexRoute: AuthSharedIndexRoute,
+  AuthSharedSharedIdIndexRoute: AuthSharedSharedIdIndexRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

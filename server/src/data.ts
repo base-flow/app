@@ -30,6 +30,7 @@ export const Personals: _Personal.IPersonal[] = Users.map(({ id, username, nickn
   id,
   username,
   nickname,
+  avatar: "",
   dir: "",
   publicDir: "",
   totalWorkflows: randomInt(10, 100),
@@ -223,3 +224,63 @@ Projects[1].dir = googleFolder.id;
 Projects[1].publicDir = googleFolder.children!.find((item) => item.name === "public")?.id || "";
 
 export const FavoriteList: { [id: string]: boolean } = {};
+
+export const SharedList: _Shared.IShared[] = [
+  {
+    id: `${uid++}`,
+    name: Random.ctitle(5, 10),
+    expiresAt: Date.now(),
+    createDate: Random.datetime(),
+    viewed: randomInt(10, 100),
+    spaceId: Users[0].id,
+    spaceType: "personal",
+    spaceName: Users[0].nickname,
+    spaceLogo: "",
+    spaceRemark: Users[0].username,
+    createBy: Users[0].username,
+  },
+  {
+    id: `${uid++}`,
+    name: Random.ctitle(5, 10),
+    expiresAt: Date.now(),
+    createDate: Random.datetime(),
+    viewed: randomInt(10, 100),
+    spaceId: Users[1].id,
+    spaceType: "personal",
+    spaceName: Users[1].nickname,
+    spaceLogo: "",
+    spaceRemark: Users[0].username,
+    createBy: Users[1].username,
+  },
+  {
+    id: `${uid++}`,
+    name: Random.ctitle(5, 10),
+    expiresAt: Date.now(),
+    createDate: Random.datetime(),
+    viewed: randomInt(10, 100),
+    spaceId: Projects[0].id,
+    spaceType: "project",
+    spaceName: Projects[0].name,
+    spaceLogo: Projects[0].logo,
+    createBy: Users[0].username,
+  },
+  {
+    id: `${uid++}`,
+    name: Random.ctitle(5, 10),
+    expiresAt: Date.now(),
+    createDate: Random.datetime(),
+    viewed: randomInt(10, 100),
+    spaceId: Projects[1].id,
+    spaceType: "project",
+    spaceName: Projects[1].name,
+    spaceLogo: Projects[1].logo,
+    createBy: Users[1].username,
+  },
+];
+
+export const SharedMap: { [id: string]: _Shared.IShared } = SharedList.reduce((obj, cur) => {
+  obj[cur.id] = cur;
+  return obj;
+}, {} as any);
+
+export const GotSharedList: _Shared.IGotShared[] = SharedList.map((item) => ({ ...item, sharedId: item.id, id: `${uid++}` }));
