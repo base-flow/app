@@ -1,8 +1,8 @@
 declare namespace _Resource {
   interface IItem {
     id: string;
-    updateDate?: string;
-    createDate?: string;
+    updateAt?: string;
+    createAt?: string;
     createBy?: string;
     updateBy?: string;
   }

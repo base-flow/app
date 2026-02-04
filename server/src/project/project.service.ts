@@ -12,7 +12,7 @@ const list: _Project.IProject[] = mockjs
         name: "@ctitle(10, 20)",
         logo: "emoji://#fef7c3@:smile:@😀",
         desc: "@csentence(20, 60)",
-        updateDate: "@datetime",
+        updateAt: "@datetime",
         totalItems: 34,
         totalWorkflows: 4,
         totalNodes: 5,
@@ -59,7 +59,7 @@ export class ProjectService {
   }
 
   async createItem(userId: string, data: _Project.IProject): Promise<_Project.CreateResult> {
-    const newItem: _Project.IProject = { ...data, id: `${Date.now()}`, updateDate: `${Date.now()}` };
+    const newItem: _Project.IProject = { ...data, id: `${Date.now()}`, updateAt: `${Date.now()}` };
     list.unshift(newItem);
     return { id: newItem.id };
   }
@@ -69,7 +69,7 @@ export class ProjectService {
     if (!item) {
       throw new NotFoundException(`App[${id}]不存在`);
     }
-    Object.assign(item, data, { updateDate: `${Date.now()}` });
+    Object.assign(item, data, { updateAt: `${Date.now()}` });
     return { id };
   }
 

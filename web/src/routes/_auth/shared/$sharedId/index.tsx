@@ -4,6 +4,9 @@ import { Result, Skeleton } from "antd";
 import LoadingMask from "@/components/LoadingMask";
 import Nameplate from "@/components/Nameplate";
 import { SharedAPI } from "@/modules/shared/api";
+import SharedContent from "@/modules/shared/views/SharedContent";
+import SharedInfo from "@/modules/shared/views/SharedInfo";
+import SharedSettings from "@/modules/shared/views/SharedSettings";
 
 export const Route = createFileRoute("/_auth/shared/$sharedId/")({
   component: RouteComponent,
@@ -35,9 +38,14 @@ function RouteComponent() {
       <aside>
         <div>
           <Nameplate type={shared.spaceType} title={shared.spaceName} logo={shared.spaceLogo} remark={shared.spaceRemark} />
+          <SharedInfo info={shared} />
         </div>
+        <SharedSettings />
       </aside>
-      <main className="g-col-paper">sss</main>
+      <main className="g-col-paper">
+        <LoadingMask show={sharedQuery.isFetching} />
+        <SharedContent id={params.sharedId} title={shared.name} />
+      </main>
     </>
   );
 }

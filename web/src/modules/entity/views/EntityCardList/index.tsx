@@ -27,7 +27,7 @@ const StoreOptions: { label: string; value: string }[] = [
   { label: "当前系统", value: "local" },
 ];
 
-const SorterOptions: SortField[] = ["updateDate", "createDate", "likes"];
+const SorterOptions: SortField[] = ["updateAt", "createAt", "likes"];
 
 const ListTypeOptions: { label: any; value: ListType; tooltip: string }[] = [
   { label: <FolderTree className="anticon" size={14} />, value: "dir", tooltip: "目录层级" },

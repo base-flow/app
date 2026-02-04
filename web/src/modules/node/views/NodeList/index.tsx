@@ -19,7 +19,7 @@ const StoreOptions: { label: string; value: string }[] = [
   { label: "当前系统", value: "local" },
 ];
 
-const SorterOptions: SortField[] = ["collect", "createDate", "likes"];
+const SorterOptions: SortField[] = ["collect", "createAt", "likes"];
 
 const NodeList: FC<{ query: _Node.Query }> = (props) => {
   const { permissions, auth } = usePermissions();

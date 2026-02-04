@@ -1,5 +1,5 @@
-import { Controller, Get, Param, Request } from "@nestjs/common";
-import { SharedList, SharedMap } from "@/data";
+import { Body, Controller, Delete, Get, Param, Request } from "@nestjs/common";
+import { EntityMap, SharedList, SharedMap } from "@/data";
 import { sleep } from "@/utils";
 
 @Controller("shared")
@@ -7,13 +7,22 @@ export class SharedController {
   @Get()
   async getList(@Request() { user, query }: { user: _App.AuthUser; query: _Shared.Query }): Promise<_Shared.IShared[]> {
     await sleep(1000);
-    return SharedList.filter((item) => item.spaceType === query.spaceType && item.spaceId === query.spaceId);
+    return SharedList.filter((item) => item.spaceType === query.spaceType && item.spaceId === query.spaceId).map((item) => ({
+      ...item,
+      content: undefined,
+    }));
   }
 
   @Get(":id")
   async getItem(@Param() param: { id: string }): Promise<_Shared.IShared> {
     await sleep(1000);
     return SharedMap[param.id];
+  }
+
+  @Get(":id/content")
+  async getContent(@Param() param: { id: string }): Promise<_Entity.IEntity[]> {
+    await sleep(1000);
+    return SharedMap[param.id].content;
   }
 
   // @Post()
@@ -33,9 +42,9 @@ export class SharedController {
   //   //return this.workflowService.deleteItem(param.id);
   // }
 
-  // @Delete()
-  // async batchDelete(@Body() { ids }: { ids: string[] }): Promise<void> {
-  //   await sleep(1000);
-  //   // return this.workflowService.batchDelete(ids);
-  // }
+  @Delete(":id/content")
+  async batchDelete(@Body() { ids }: { ids: string[] }): Promise<void> {
+    await sleep(1000);
+    // return this.workflowService.batchDelete(ids);
+  }
 }

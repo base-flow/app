@@ -10,6 +10,7 @@ export class AppController {
     return Promise.resolve({
       favMax: 100,
       sharedMax: 50,
+      sharedContentMax: 10,
       dirs: {
         workflow: {
           server: EntityList.find((item) => item.name === "workflow-server")!.id,

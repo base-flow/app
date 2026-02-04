@@ -45,6 +45,17 @@ const Component: FC<GotSharedCardProps> = ({ item, onDelete }) => {
 
   return (
     <div className={classnames(styles.GotSharedCard, "g-card")} onClick={() => openShared(item.sharedId)}>
+      <div
+        title="删除"
+        className="remove"
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          onDelete(item.id, item.name);
+        }}
+      >
+        <Trash2 size={13} />
+      </div>
       <div className="head-icon">
         {avatar}
         <h4 className="title">{item.name}</h4>
@@ -59,19 +70,6 @@ const Component: FC<GotSharedCardProps> = ({ item, onDelete }) => {
           {item.spaceName}
         </div>
         <div className="expires">24小时后过期</div>
-      </div>
-      <div className="tools">
-        <div
-          title="删除"
-          className="btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            onDelete(item.id, item.name);
-          }}
-        >
-          <Trash2 size={13} />
-        </div>
       </div>
     </div>
   );

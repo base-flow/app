@@ -1,30 +1,36 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { TableProps } from "antd";
 import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
-import { FolderSymlink, FolderTree, Link2Off, Plus, Share2, Trash2 } from "lucide-react";
+import { FolderSymlink, Plus, PlusSquare, StarOff } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
+import Lang from "@/assets/Lang";
+import IconEntity from "@/components/IconEntity";
 import LoadingMask from "@/components/LoadingMask";
 import { useAppStore } from "@/modules/app/store";
 import { useEvent } from "@/utils/hooks";
-import { debounce, openShared, sortList } from "@/utils/tools";
+import { debounce, openEntity, sortList } from "@/utils/tools";
 import { SharedAPI } from "../../api";
 import styles from "./index.module.scss";
 
-const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
+const Component: FC<{ id: string; title: string }> = (props) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [tableScroll, setTableScroll] = useState({ y: 0 });
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [config] = useAppStore(useShallow(({ config }) => [config]));
   const queryClient = useQueryClient();
-  const sharedQuery = useQuery(SharedAPI.queryList(props.query));
+  const sharedQuery = useQuery(SharedAPI.queryContent(props.id));
   const [query, setQuery] = useState<{ sorterField?: string; sorterOrder?: "ascend" | "descend" }>({});
   const sharedList = useMemo(() => {
     let list = sharedQuery.data;
     const { sorterOrder, sorterField } = query;
-    if (list && sorterField && sorterOrder) {
-      list = sortList(list, sorterField, sorterOrder);
+    if (list) {
+      if (sorterField && sorterOrder) {
+        list = sortList(list, sorterField, sorterOrder);
+      } else {
+        list = sortList(list, "type", "ascend");
+      }
     }
     return list;
   }, [sharedQuery.data, query]);
@@ -37,61 +43,72 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
     },
   );
 
+  const sharedDeleter = useMutation({
+    mutationFn: SharedAPI.batchDeleteContentItem,
+    onSuccess: () => {
+      setSelectedRows([]);
+      queryClient.invalidateQueries({ queryKey: [SharedAPI.contentQueryKey, props.id] });
+    },
+  });
+
+  const onRemove = useEvent((ids: string[]) => sharedDeleter.mutate({ sharedId: props.id, entityIds: ids }));
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   const columns = useMemo<TableProps<_Entity.IEntity>["columns"]>(() => {
     return [
       {
-        title: "名称",
+        title: "文件名称",
         dataIndex: "name",
         key: "name",
         render: (name, row) => (
           <div className="g-entity-cell">
-            <Share2 className="icon" size={13} />
-            <a onClick={() => openShared(row.id)}>{name}</a>
+            <IconEntity className="icon" type={row.type} />
+            <a onClick={() => openEntity(row, false, "favorite")}>{name}</a>
+            {row.path ? (
+              <Tooltip placement="bottom" title={row.path.replace(/\/.+? /g, "/").replace(/\/[^/]+?$/, "") || "/"}>
+                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => openEntity(row, true, "favorite")} />
+              </Tooltip>
+            ) : null}
           </div>
         ),
       },
       {
-        title: "浏览次数",
-        dataIndex: "viewed",
-        key: "viewed",
-        width: 100,
-        align: "center",
-      },
-      {
-        title: "状态",
-        dataIndex: "expiresAt",
-        key: "expiresAt",
-        width: 200,
+        title: "运行环境",
+        dataIndex: "runtime",
+        key: "runtime",
+        width: 120,
         align: "center",
         sorter: true,
-        sortOrder: (query.sorterField === "expiresAt" && query.sorterOrder) || null,
+        sortOrder: (query.sorterField === "runtime" && query.sorterOrder) || null,
       },
       {
-        title: "分享者",
-        dataIndex: "createBy",
-        key: "createBy",
-        width: 120,
-        ellipsis: true,
-      },
-      {
-        title: "分享日期",
+        title: "创建日期",
         dataIndex: "createAt",
         key: "createAt",
-        width: 160,
+        width: 120,
         align: "center",
         sorter: true,
         sortOrder: (query.sorterField === "createAt" && query.sorterOrder) || null,
       },
       {
+        title: "更新日期",
+        dataIndex: "updateAt",
+        key: "updateAt",
+        width: 120,
+        align: "center",
+        sorter: true,
+        sortOrder: (query.sorterField === "updateAt" && query.sorterOrder) || null,
+      },
+      {
         title: "操作",
         key: "action",
-        width: 160,
+        width: 120,
         render: (_, row) => {
           return (
             <div className="g-actions-cell">
-              <a>修改设置</a>
-              <a>取消分享</a>
+              <a onClick={() => onRemove([row.id])}>移除</a>
+              <a onClick={() => onRemove([row.id])}>转存</a>
+              <a onClick={() => onRemove([row.id])}>下载</a>
             </div>
           );
         },
@@ -120,7 +137,7 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
 
   if (sharedQuery.isError) {
     return (
-      <div className={`${styles.SharedList} g-page min-wrap`}>
+      <div className={`${styles.SharedContent} g-page min-wrap`}>
         <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Result status="warning" title={sharedQuery.error?.message || "错误"} />
@@ -131,7 +148,7 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
 
   if (!sharedList) {
     return (
-      <div className={`${styles.SharedList} g-page min-wrap`}>
+      <div className={`${styles.SharedContent} g-page min-wrap`}>
         <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Skeleton active />
@@ -141,22 +158,33 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
   }
 
   return (
-    <div className={`${styles.SharedList} g-page min-wrap`}>
+    <div className={`${styles.SharedContent} g-page min-wrap`}>
       <LoadingMask show={sharedQuery.isFetching} />
       <div className="hd">
         <Space>
           <div className="title">
             {props.title}
             <small className="g-dot">
-              ({sharedQuery.data?.length}项 / 最多{config!.sharedMax}项)
+              ({sharedQuery.data?.length}项 / 最多{config!.sharedContentMax}项)
             </small>
           </div>
           {selectedRows.length ? (
-            <Button size="small" color="danger" variant="filled" icon={<Link2Off size={13} strokeWidth={2.5} className="anticon" />}>
+            <Button
+              size="small"
+              color="danger"
+              variant="filled"
+              icon={<StarOff size={13} strokeWidth={2.5} className="anticon" />}
+              onClick={() => onRemove(selectedRows)}
+            >
               批量取消
             </Button>
           ) : null}
         </Space>
+        <div>
+          <Button size="small" type="link" icon={<Plus size={13} strokeWidth={2.5} />}>
+            添加文件
+          </Button>
+        </div>
       </div>
       <div className="bd" ref={scrollerRef}>
         <Table<any>

@@ -34,7 +34,7 @@ const list: _Workflow.IWorkflow[] = mockjs
         appId: "@integer(1, 50)",
         appName: "@ctitle(10, 20)",
         appLogo: "emoji://#fef7c3@:smile:@😀",
-        updateDate: "@datetime",
+        updateAt: "@datetime",
       },
     ],
   })
@@ -65,7 +65,7 @@ export class WorkflowService {
   }
 
   async createItem(userId: string, data: _Workflow.IWorkflow): Promise<_Workflow.CreateResult> {
-    const newItem: _Workflow.IWorkflow = { ...data, id: `${Date.now()}`, updateDate: `${Date.now()}` };
+    const newItem: _Workflow.IWorkflow = { ...data, id: `${Date.now()}`, updateAt: `${Date.now()}` };
     list.unshift(newItem);
     return { id: newItem.id };
   }
@@ -75,7 +75,7 @@ export class WorkflowService {
     if (!item) {
       throw new NotFoundException(`Flow[${id}]不存在`);
     }
-    Object.assign(item, data, { updateDate: `${Date.now()}` });
+    Object.assign(item, data, { updateAt: `${Date.now()}` });
     return { id };
   }
 

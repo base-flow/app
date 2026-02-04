@@ -147,10 +147,10 @@ const Component: FC<WorkflowListProps> = (props) => {
       },
       {
         title: "更新时间",
-        dataIndex: "updateDate",
-        key: "updateDate",
+        dataIndex: "updateAt",
+        key: "updateAt",
         sorter: true,
-        sortOrder: (query.sorterField === "updateDate" && query.sorterOrder) || null,
+        sortOrder: (query.sorterField === "updateAt" && query.sorterOrder) || null,
         width: 180,
       },
       {

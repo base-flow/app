@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Request } from "@nestjs/common";
-import { EntityList, EntityMap } from "@/data";
+import { EntityMap } from "@/data";
 import { sleep } from "@/utils";
 
 @Controller("entity")

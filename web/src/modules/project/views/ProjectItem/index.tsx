@@ -20,7 +20,7 @@ const Component: FC<Props> = ({ item, getPermissionsInProject, setCurEdit, onDel
       <div className="head-icon">
         <Flag className="icon" src={item.logo} />
         <h4 className="title">{item.name}</h4>
-        <div className="info">{item.updateDate}</div>
+        <div className="info">{item.updateAt}</div>
       </div>
       <div className="summary" title={item.desc}>
         {item.desc}

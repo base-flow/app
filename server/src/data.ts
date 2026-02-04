@@ -53,7 +53,7 @@ const Projects: _Project.IProject[] = Mock.mock({
       desc: "@csentence(20, 60)",
       dir: "",
       publicDir: "",
-      updateDate: "@datetime",
+      updateAt: "@datetime",
       totalItems: 34,
       totalWorkflows: 4,
       totalNodes: 5,
@@ -225,12 +225,12 @@ Projects[1].publicDir = googleFolder.children!.find((item) => item.name === "pub
 
 export const FavoriteList: { [id: string]: boolean } = {};
 
-export const SharedList: _Shared.IShared[] = [
+export const SharedList: (_Shared.IShared & { content: _Entity.IEntity[] })[] = [
   {
     id: `${uid++}`,
     name: Random.ctitle(5, 10),
     expiresAt: Date.now(),
-    createDate: Random.datetime(),
+    createAt: Random.datetime(),
     viewed: randomInt(10, 100),
     spaceId: Users[0].id,
     spaceType: "personal",
@@ -238,12 +238,13 @@ export const SharedList: _Shared.IShared[] = [
     spaceLogo: "",
     spaceRemark: Users[0].username,
     createBy: Users[0].username,
+    content: [],
   },
   {
     id: `${uid++}`,
     name: Random.ctitle(5, 10),
     expiresAt: Date.now(),
-    createDate: Random.datetime(),
+    createAt: Random.datetime(),
     viewed: randomInt(10, 100),
     spaceId: Users[1].id,
     spaceType: "personal",
@@ -251,34 +252,37 @@ export const SharedList: _Shared.IShared[] = [
     spaceLogo: "",
     spaceRemark: Users[0].username,
     createBy: Users[1].username,
+    content: [],
   },
   {
     id: `${uid++}`,
     name: Random.ctitle(5, 10),
     expiresAt: Date.now(),
-    createDate: Random.datetime(),
+    createAt: Random.datetime(),
     viewed: randomInt(10, 100),
     spaceId: Projects[0].id,
     spaceType: "project",
     spaceName: Projects[0].name,
     spaceLogo: Projects[0].logo,
     createBy: Users[0].username,
+    content: [],
   },
   {
     id: `${uid++}`,
     name: Random.ctitle(5, 10),
     expiresAt: Date.now(),
-    createDate: Random.datetime(),
+    createAt: Random.datetime(),
     viewed: randomInt(10, 100),
     spaceId: Projects[1].id,
     spaceType: "project",
     spaceName: Projects[1].name,
     spaceLogo: Projects[1].logo,
     createBy: Users[1].username,
+    content: [],
   },
 ];
 
-export const SharedMap: { [id: string]: _Shared.IShared } = SharedList.reduce((obj, cur) => {
+export const SharedMap: { [id: string]: _Shared.IShared & { content: _Entity.IEntity[] } } = SharedList.reduce((obj, cur) => {
   obj[cur.id] = cur;
   return obj;
 }, {} as any);

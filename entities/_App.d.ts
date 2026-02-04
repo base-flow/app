@@ -2,6 +2,7 @@ declare namespace _App {
   interface Config {
     favMax: number;
     sharedMax: number;
+    sharedContentMax: number;
     dirs: {
       workflow: { [key in Runtime]: string };
       node: { [key in Runtime]: string };

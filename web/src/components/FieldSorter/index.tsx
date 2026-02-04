@@ -5,11 +5,11 @@ import { memo, useMemo } from "react";
 import "./index.scss";
 import { useEvent } from "@/utils/hooks";
 
-export type SortField = "createDate" | "updateDate" | "likes";
+export type SortField = "createAt" | "updateAt" | "likes";
 
 const SortOptions: { [key in SortField]: { value: string; icon: ReactNode; tooltip: string } } = {
-  createDate: { value: "createDate", tooltip: "创建时间", icon: <FilePlusCorner className="anticon" size={14} /> },
-  updateDate: { value: "updateDate", tooltip: "更新时间", icon: <FilePen className="anticon" size={14} /> },
+  createAt: { value: "createAt", tooltip: "创建时间", icon: <FilePlusCorner className="anticon" size={14} /> },
+  updateAt: { value: "updateAt", tooltip: "更新时间", icon: <FilePen className="anticon" size={14} /> },
   likes: { value: "likes", tooltip: "点赞数量", icon: <ThumbsUp className="anticon" size={14} /> },
 };
 
@@ -19,8 +19,8 @@ export interface FieldSorterProps {
   options?: SortField[];
 }
 
-const DefaultOptions: SortField[] = ["updateDate", "createDate"];
-const DefaultField = "createDate";
+const DefaultOptions: SortField[] = ["updateAt", "createAt"];
+const DefaultField = "createAt";
 const DefaultOrder = "descend";
 
 const Component: FC<FieldSorterProps> = ({ value, onChange, options = DefaultOptions }) => {

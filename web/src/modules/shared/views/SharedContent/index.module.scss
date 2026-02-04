@@ -1,0 +1,20 @@
+:global {
+  :local(.SharedContent) {
+    > .hd {
+      height: 45px;
+      padding: 25px 27px 0;
+      overflow: hidden;
+
+      .title {
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      small {
+        margin-left: 3px;
+        font-weight: normal;
+        color: var(--bf-tx-lesser);
+      }
+    }
+  }
+}

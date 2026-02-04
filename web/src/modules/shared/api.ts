@@ -5,6 +5,7 @@ export const SharedAPI = {
   listQueryKey: "SharedList",
   gotListQueryKey: "GotSharedList",
   itemQueryKey: "SharedItem",
+  contentQueryKey: "SharedContent",
   getList(query: _Shared.Query): Promise<_Shared.IShared[]> {
     return request.get("/api/shared", { params: query }).then((res) => res.data);
   },
@@ -14,11 +15,20 @@ export const SharedAPI = {
   getItem(id: string): Promise<_Shared.IShared> {
     return request.get(`/api/shared/${id}`).then((res) => res.data);
   },
+  getContent(id: string): Promise<_Entity.IEntity[]> {
+    return request.get(`/api/shared/${id}/content`).then((res) => res.data);
+  },
   deleteItem(id: string): Promise<void> {
     return request.delete("/api/shared", { params: { id } });
   },
   deleteGotItem(id: string): Promise<void> {
     return request.delete("/api/gotShared", { params: { id } });
+  },
+  deleteContentItem(id: string): Promise<void> {
+    return request.delete(`/api/shared/${id}/content`);
+  },
+  batchDeleteContentItem(args: { sharedId: string; entityIds: string[] }): Promise<void> {
+    return request.delete(`/api/shared/${args.sharedId}/content`, { data: { ids: args.entityIds } });
   },
   queryList(query: _Shared.Query) {
     return queryOptions({
@@ -44,6 +54,15 @@ export const SharedAPI = {
     return queryOptions({
       queryKey: [SharedAPI.itemQueryKey, id],
       queryFn: () => SharedAPI.getItem(id),
+      staleTime: Infinity,
+      retry: 0,
+      refetchOnWindowFocus: false,
+    });
+  },
+  queryContent(id: string) {
+    return queryOptions({
+      queryKey: [SharedAPI.contentQueryKey, id],
+      queryFn: () => SharedAPI.getContent(id),
       staleTime: Infinity,
       retry: 0,
       refetchOnWindowFocus: false,

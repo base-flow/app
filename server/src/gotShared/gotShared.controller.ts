@@ -7,7 +7,10 @@ export class GotSharedController {
   @Get()
   async getList(): Promise<_Shared.IGotShared[]> {
     await sleep(1000);
-    return GotSharedList;
+    return GotSharedList.map((item) => ({
+      ...item,
+      list: undefined,
+    }));
   }
 
   // @Get(":id")
