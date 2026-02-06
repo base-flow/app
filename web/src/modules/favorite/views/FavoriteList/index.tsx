@@ -40,6 +40,8 @@ const Component: FC<{}> = () => {
     return list;
   }, [favoriteQuery.data, query]);
 
+  const onListTypeTo = useEvent((item: LinkItem) => setQuery({ type: item.key === "all" ? undefined : (item.key as "workflow" | "node") }));
+
   const listTypeLinks = useMemo(() => {
     const items: LinkItem[] = [
       {
@@ -48,7 +50,7 @@ const Component: FC<{}> = () => {
         children: (
           <>
             <FolderTree size={12} />
-            <span>全部</span>
+            <span>目录</span>
           </>
         ),
       },
@@ -73,10 +75,8 @@ const Component: FC<{}> = () => {
         ),
       },
     ];
-    return items;
-  }, [query]);
-
-  const onListTypeTo = useEvent((item: LinkItem) => setQuery({ type: item.key === "all" ? undefined : (item.key as "workflow" | "node") }));
+    return <LinkTab links={items} onTo={onListTypeTo} />;
+  }, [query, onListTypeTo]);
 
   const onTableChange = useEvent(
     (_pagination: { current?: number; pageSize?: number }, _filters: any, sorter?: { field: string; order: "ascend" | "descend" }) => {
@@ -96,10 +96,10 @@ const Component: FC<{}> = () => {
         render: (name, row) => (
           <div className="g-entity-cell">
             <IconEntity className="icon" type={row.type} />
-            <a onClick={() => openEntity(row, false, "favorite")}>{name}</a>
+            <a onClick={() => openEntity(row, false, "EntityView")}>{name}</a>
             {row.path ? (
               <Tooltip placement="bottom" title={row.path.replace(/\/.+? /g, "/").replace(/\/[^/]+?$/, "") || "/"}>
-                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => openEntity(row, true, "favorite")} />
+                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => openEntity(row, true, "EntityView")} />
               </Tooltip>
             ) : null}
             <Collect id={row.id} value={true} onChange={onFavoriteChange} />
@@ -204,7 +204,7 @@ const Component: FC<{}> = () => {
             </Button>
           ) : null}
         </Space>
-        <LinkTab links={listTypeLinks} onTo={onListTypeTo} />
+        {listTypeLinks}
       </div>
       <div className="bd" ref={scrollerRef}>
         <Table<any>

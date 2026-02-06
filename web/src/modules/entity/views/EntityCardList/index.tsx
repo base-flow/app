@@ -40,6 +40,7 @@ const ListTypeOptions: { label: any; value: ListType; tooltip: string }[] = [
 // ];
 
 interface EntityCardListProps {
+  rootDir: string;
   query: _Entity.Query;
   entity: "workflow" | "node";
   runtime: _App.Runtime;
@@ -67,7 +68,11 @@ const Component: FC<EntityCardListProps> = (props) => {
   }, [props.query, queryState[1]]);
 
   const setQuery = useEvent((query: _Entity.Query) => {
-    navigate({ to: ".", search: query });
+    const { dir, page } = query;
+    navigate({
+      to: ".",
+      search: { ...query, dir: dir === props.rootDir ? undefined : dir, page: page === 1 ? undefined : page },
+    });
   });
 
   const onListTypeChange = useEvent((listType: ListType) => {
@@ -101,16 +106,12 @@ const Component: FC<EntityCardListProps> = (props) => {
     }
   });
 
-  const resetQueryExceptDir = useEvent(() => {
-    return { dir };
-  });
-
   const breadcrumb = useFolderRoute(
     Lang.entityDirName[`${entityType}.${props.runtime}`],
+    props.rootDir,
     entityListQuery,
     entityListSummary?.path,
     setQuery,
-    resetQueryExceptDir,
   );
 
   const entityAlter = useMutation({

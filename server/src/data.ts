@@ -99,7 +99,7 @@ export const EntityMap: { [id: string]: _Entity.IEntity } = {};
 function createEntities(
   parentId: string,
   parentPath: string,
-  space: { id: string; type: _App.EntrySpace },
+  space: { id: string; type: _App.EntrySpace; dir: string },
   level: number,
   singleType?: "workflow" | "node",
   children: string[] = [],
@@ -115,6 +115,7 @@ function createEntities(
       path: "",
       spaceType: space.type,
       spaceId: space.id,
+      spaceDir: space.dir,
       children: [],
     };
     item.path = `${parentPath}/${item.id} ${item.name}`;
@@ -136,6 +137,7 @@ function createEntities(
         path: "",
         spaceType: space.type,
         spaceId: space.id,
+        spaceDir: space.dir,
         runtime: Random.pick(["server", "browser"]),
         likes: 21,
       };
@@ -152,6 +154,7 @@ function createEntities(
         path: "",
         spaceType: space.type,
         spaceId: space.id,
+        spaceDir: space.dir,
         runtime: Random.pick(["server", "browser"]),
         nodeType: Random.pick(["executor", "trigger"]),
         icon: "",
@@ -168,7 +171,7 @@ function createEntities(
   return dirs.concat(items);
 }
 
-function createDir(space: { type: _App.EntrySpace; id: string }, name: string, children?: string[]) {
+function createRootDir(space: { type: _App.EntrySpace; id: string }, name: string, children?: string[]) {
   const item: _App.IDirectory = {
     id: `${uid++}`,
     type: "directory",
@@ -176,16 +179,18 @@ function createDir(space: { type: _App.EntrySpace; id: string }, name: string, c
     desc: Random.csentence(20, 60),
     parentId: "",
     path: "",
+    spaceDir: "",
     spaceType: space.type,
     spaceId: space.id,
     children: [],
   };
+  item.spaceDir = item.id;
   item.path = `/${item.id} ${item.name}`;
   EntityMap[item.id] = item;
   item.children = createEntities(
     item.id,
     `/${item.id} ${item.name}`,
-    space,
+    { ...space, dir: item.id },
     2,
     name.startsWith("workflow-") ? "workflow" : name.startsWith("node-") ? "node" : undefined,
     children,
@@ -195,14 +200,14 @@ function createDir(space: { type: _App.EntrySpace; id: string }, name: string, c
 
 function createPlatformEntities() {
   const drive: _App.IDirectory[] = [];
-  drive.push(createDir({ type: "personal", id: Users[0].id }, Users[0].username, ["public"]));
-  drive.push(createDir({ type: "personal", id: Users[1].id }, Users[1].username, ["public"]));
-  drive.push(createDir({ type: "project", id: Projects[0].id }, Projects[0].name, ["public"]));
-  drive.push(createDir({ type: "project", id: Projects[1].id }, Projects[1].name, ["public"]));
-  drive.push(createDir({ type: "platform", id: "workflow/server" }, "workflow-server"));
-  drive.push(createDir({ type: "platform", id: "workflow/browser" }, "workflow-browser"));
-  drive.push(createDir({ type: "platform", id: "node/server" }, "node-server"));
-  drive.push(createDir({ type: "platform", id: "node/browser" }, "node-browser"));
+  drive.push(createRootDir({ type: "personal", id: Users[0].id }, Users[0].username, ["public"]));
+  drive.push(createRootDir({ type: "personal", id: Users[1].id }, Users[1].username, ["public"]));
+  drive.push(createRootDir({ type: "project", id: Projects[0].id }, Projects[0].name, ["public"]));
+  drive.push(createRootDir({ type: "project", id: Projects[1].id }, Projects[1].name, ["public"]));
+  drive.push(createRootDir({ type: "platform", id: "workflow/server" }, "workflow-server"));
+  drive.push(createRootDir({ type: "platform", id: "workflow/browser" }, "workflow-browser"));
+  drive.push(createRootDir({ type: "platform", id: "node/server" }, "node-server"));
+  drive.push(createRootDir({ type: "platform", id: "node/browser" }, "node-browser"));
   return drive;
 }
 
@@ -232,12 +237,13 @@ export const SharedList: (_Shared.IShared & { content: _Entity.IEntity[] })[] = 
     expiresAt: Date.now(),
     createAt: Random.datetime(),
     viewed: randomInt(10, 100),
-    spaceId: Users[0].id,
     spaceType: "personal",
-    spaceName: Users[0].nickname,
+    spaceId: Personals[0].id,
+    spaceDir: Personals[0].dir,
+    spaceName: Personals[0].nickname,
+    spaceRemark: Personals[0].username,
     spaceLogo: "",
-    spaceRemark: Users[0].username,
-    createBy: Users[0].username,
+    createBy: Personals[0].username,
     content: [],
   },
   {
@@ -246,12 +252,13 @@ export const SharedList: (_Shared.IShared & { content: _Entity.IEntity[] })[] = 
     expiresAt: Date.now(),
     createAt: Random.datetime(),
     viewed: randomInt(10, 100),
-    spaceId: Users[1].id,
     spaceType: "personal",
-    spaceName: Users[1].nickname,
+    spaceId: Personals[1].id,
+    spaceDir: Personals[1].dir,
+    spaceName: Personals[1].nickname,
+    spaceRemark: Personals[1].username,
     spaceLogo: "",
-    spaceRemark: Users[0].username,
-    createBy: Users[1].username,
+    createBy: Personals[1].username,
     content: [],
   },
   {
@@ -260,8 +267,9 @@ export const SharedList: (_Shared.IShared & { content: _Entity.IEntity[] })[] = 
     expiresAt: Date.now(),
     createAt: Random.datetime(),
     viewed: randomInt(10, 100),
-    spaceId: Projects[0].id,
     spaceType: "project",
+    spaceId: Projects[0].id,
+    spaceDir: Projects[0].dir,
     spaceName: Projects[0].name,
     spaceLogo: Projects[0].logo,
     createBy: Users[0].username,
@@ -273,8 +281,9 @@ export const SharedList: (_Shared.IShared & { content: _Entity.IEntity[] })[] = 
     expiresAt: Date.now(),
     createAt: Random.datetime(),
     viewed: randomInt(10, 100),
-    spaceId: Projects[1].id,
     spaceType: "project",
+    spaceId: Projects[1].id,
+    spaceDir: Projects[1].dir,
     spaceName: Projects[1].name,
     spaceLogo: Projects[1].logo,
     createBy: Users[1].username,

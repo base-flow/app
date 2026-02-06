@@ -68,10 +68,10 @@ function RootComponent() {
     TimePicker,
     DescMD,
     message: {
-      success: (text: string, width?: string) => modal.success({ title: "成功", content: text, width }),
-      error: (text: string, width?: string) => modal.error({ title: "错误", content: text, width }),
-      warning: (text: string, width?: string) => modal.warning({ title: "警告", content: text, width }),
-      info: (text: string, width?: string) => modal.info({ title: "提示", content: messageWrap(text), width }),
+      success: (text: string, width?: string) => modal.success({ title: "成功！", content: text, width }),
+      error: (text: string, width?: string) => modal.error({ title: "错误！", content: text, width }),
+      warning: (text: string, width?: string) => modal.warning({ title: "警告！", content: text, width }),
+      info: (text: string, width?: string) => modal.info({ title: "提示！", content: messageWrap(text), width }),
     },
     confirm: (message: string, callback: (ok: boolean) => void, props?: { title?: string; okText?: string; cancelText?: string }) => {
       modal.confirm({

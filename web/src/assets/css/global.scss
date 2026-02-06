@@ -250,6 +250,10 @@ a {
   display: inline-block;
   font-size: 0;
   line-height: 0;
+
+  > svg {
+    pointer-events: none;
+  }
 }
 
 .g-block {

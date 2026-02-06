@@ -37,6 +37,7 @@ declare namespace _App {
     path: string;
     spaceId: string;
     spaceType: EntrySpace;
+    spaceDir: string;
   }
 
   interface IDirectory extends BaseEntry {

@@ -55,10 +55,10 @@ export function useInfiniteList(fetchNextPage: () => void): [RefObject<HTMLDivEl
 
 export function useFolderRoute<Q extends { [key: string]: any } = { [key: string]: any }>(
   rootName: string,
+  rootDir: string | undefined,
   query: Q,
   listPath: string | undefined,
   setQuery: (query: Q) => void,
-  resetQueryExceptDir: () => Q,
 ) {
   const history = useRef<Q[]>([]);
   let historyLength = history.current.length;
@@ -101,11 +101,11 @@ export function useFolderRoute<Q extends { [key: string]: any } = { [key: string
 
   const onBreadcrumbRoute = useEvent((path: string, isRoot: boolean) => {
     if (path) {
-      setQuery({ ...resetQueryExceptDir(), dir: isRoot ? undefined : path });
+      setQuery({ dir: path === "/" ? rootDir : path } as any);
     } else if (isRoot) {
-      setQuery({ ...resetQueryExceptDir(), dir: undefined });
+      setQuery({ dir: rootDir } as any);
     } else {
-      setQuery(resetQueryExceptDir());
+      setQuery({ dir: query.dir } as any);
     }
   });
 
@@ -144,6 +144,23 @@ export function useTablePagination(listSummary: _Resource.IQuerySummary | undefi
     [listSummary],
   );
   return pagination;
+}
+
+export function useTableChange<Q extends _Resource.IQuery>(query: Q, setQuery: (query: Q) => void) {
+  const onTableChange = useEvent(
+    (paginate: { current?: number; pageSize?: number }, _filters: any, sort: any, extra: { action: "paginate" | "sort" | "filter" }) => {
+      if (extra.action === "paginate") {
+        setQuery({ ...query, page: paginate.current });
+      } else if (extra.action === "sort") {
+        setQuery({ ...query, page: undefined, sorterField: sort.field, sorterOrder: sort.order });
+      }
+    },
+  );
+  const onDirSearch = useEvent((keyword?: string) => {
+    const { dir, type } = query as any;
+    setQuery({ dir, type, keyword } as any);
+  });
+  return { onTableChange, onDirSearch };
 }
 
 export function useMyFavoriteIds() {

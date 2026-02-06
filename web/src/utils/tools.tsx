@@ -137,7 +137,7 @@ export function isDirectory(item: { type: string }): item is _App.IDirectory {
 export function isWorkflow(item: { type: string }): item is _Workflow.IWorkflow {
   return item.type === "workflow";
 }
-export function openEntity(entity: _Entity.IEntity, parentDir: boolean, windowKey: string): void {
+export function openEntity(entity: _Entity.IEntity, parentDir: boolean, windowKey: "EntityEdit" | "EntityView"): void {
   const { id, type, spaceType, spaceId, parentId } = entity;
   if (parentDir || type === "directory") {
     window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}?dir="${parentDir ? parentId : id}"`, windowKey);

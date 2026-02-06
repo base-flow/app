@@ -75,7 +75,7 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
         ellipsis: true,
       },
       {
-        title: "分享日期",
+        title: "分享时间",
         dataIndex: "createAt",
         key: "createAt",
         width: 160,

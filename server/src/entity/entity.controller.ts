@@ -7,6 +7,7 @@ export class EntityController {
   @Get()
   async getList(@Request() { query }: { query: _Entity.Query }): Promise<_Entity.QueryResult> {
     await sleep(1000);
+    query.page = Number(query.page) || 1;
     const folder = EntityMap[query.dir || ""] as _App.IDirectory;
     if (!folder) {
       throw new NotFoundException();
@@ -45,7 +46,7 @@ export class EntityController {
       list: list.slice((page - 1) * pageSize, page * pageSize).map((item) => {
         return { ...item, children: undefined, path: showPath ? item.path : "" };
       }),
-      summary: { total: list.length, page, pageSize, path, spaceType, spaceId },
+      summary: { total: list.length, page, pageSize, path }, //spaceType, spaceId
     };
   }
 

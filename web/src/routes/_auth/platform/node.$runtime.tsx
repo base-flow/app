@@ -16,5 +16,12 @@ function RouteComponent() {
   const runtime = Route.useParams().runtime as _App.Runtime;
   const search = Route.useSearch();
   const { config } = useConfig();
-  return <EntityCardList entity="node" runtime={runtime} query={{ ...search, dir: search.dir || config.dirs.node[runtime] }} />;
+  return (
+    <EntityCardList
+      entity="node"
+      runtime={runtime}
+      rootDir={config.dirs.node[runtime]}
+      query={{ ...search, dir: search.dir || config.dirs.node[runtime] }}
+    />
+  );
 }

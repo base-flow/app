@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Request } from "@nestjs/common";
+import { Body, Controller, Delete, Get, NotFoundException, Param, Put, Request } from "@nestjs/common";
 import { EntityMap, SharedList, SharedMap } from "@/data";
 import { sleep } from "@/utils";
 
@@ -20,9 +20,57 @@ export class SharedController {
   }
 
   @Get(":id/content")
-  async getContent(@Param() param: { id: string }): Promise<_Entity.IEntity[]> {
+  async getContent(@Request() { params, query }: { params: { id: string }; query: _Entity.Query }): Promise<_Entity.QueryResult> {
     await sleep(1000);
-    return SharedMap[param.id].content;
+    query.page = Number(query.page) || 1;
+    if (!query.dir) {
+      const list = SharedMap[params.id].content;
+      return {
+        query: {},
+        list: list,
+        summary: { total: list.length, page: 1, pageSize: 100, path: "" },
+      };
+    } else {
+      const folder = EntityMap[query.dir] as _App.IDirectory;
+      if (!folder) {
+        throw new NotFoundException();
+      }
+      const path = folder.path;
+      let showPath = false;
+      let list = folder.children!;
+      if (query.type) {
+        showPath = true;
+        list = Object.keys(EntityMap)
+          .filter((id) => {
+            const item = EntityMap[id];
+            return (
+              item.parentId &&
+              item.type === query.type &&
+              item.path.includes(`/${query.dir} `) &&
+              (query.keyword ? item.name.includes(query.keyword) : true)
+            );
+          })
+          .map((id) => EntityMap[id]);
+      } else if (query.keyword) {
+        showPath = true;
+        list = Object.keys(EntityMap)
+          .filter((id) => {
+            const item = EntityMap[id];
+            return item.parentId && item.path.includes(`/${query.dir} `) && (query.keyword ? item.name.includes(query.keyword) : true);
+          })
+          .map((id) => EntityMap[id]);
+      }
+
+      const { page = 1 } = query;
+      const pageSize = 20;
+      return {
+        query,
+        list: list.slice((page - 1) * pageSize, page * pageSize).map((item) => {
+          return { ...item, children: undefined, path: showPath ? item.path : "" };
+        }),
+        summary: { total: list.length, page, pageSize, path }, //spaceType, spaceId
+      };
+    }
   }
 
   // @Post()
@@ -37,13 +85,19 @@ export class SharedController {
   //   //return this.workflowService.updateItem(user.id, params.id, body);
   // }
 
-  // @Delete(":id")
-  // async deleteItem(@Param() param: { id: string }): Promise<void> {
-  //   //return this.workflowService.deleteItem(param.id);
-  // }
+  @Put(":id/content")
+  async batchPutContentItem(@Request() { params, body }: { params: { id: string }; body: { data: { ids: string[] } } }): Promise<void> {
+    await sleep(1000);
+    const item = SharedMap[params.id];
+    if (!item) {
+      throw new NotFoundException();
+    }
+    item.content = item.content.concat(...body.data.ids.map((id) => EntityMap[id]));
+    // return this.workflowService.batchDelete(ids);
+  }
 
   @Delete(":id/content")
-  async batchDelete(@Body() { ids }: { ids: string[] }): Promise<void> {
+  async batchDeleteContentItem(@Body() { ids }: { ids: string[] }): Promise<void> {
     await sleep(1000);
     // return this.workflowService.batchDelete(ids);
   }

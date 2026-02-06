@@ -1,8 +1,9 @@
 import classnames from "classnames";
-import { Clock, Link2, Trash2, UserRound } from "lucide-react";
+import { CircleX, Clock, Link2, UserRound } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo } from "react";
 import Flag from "@/components/Flag";
+import IconRemove from "@/components/IconRemove";
 import { openShared } from "@/utils/tools";
 import styles from "./index.module.scss";
 
@@ -54,7 +55,7 @@ const Component: FC<GotSharedCardProps> = ({ item, onDelete }) => {
           onDelete(item.id, item.name);
         }}
       >
-        <Trash2 size={13} />
+        <IconRemove size={13} />
       </div>
       <div className="head-icon">
         {avatar}

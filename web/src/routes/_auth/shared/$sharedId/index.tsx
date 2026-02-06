@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Result, Skeleton } from "antd";
+import { z } from "zod";
 import LoadingMask from "@/components/LoadingMask";
 import Nameplate from "@/components/Nameplate";
 import { SharedAPI } from "@/modules/shared/api";
@@ -10,9 +11,16 @@ import SharedSettings from "@/modules/shared/views/SharedSettings";
 
 export const Route = createFileRoute("/_auth/shared/$sharedId/")({
   component: RouteComponent,
+  validateSearch: z.object({
+    page: z.number().optional(),
+    keyword: z.string().optional(),
+    dir: z.string().optional(),
+    type: z.enum(["workflow", "node"]).optional(),
+  }),
 });
 
 function RouteComponent() {
+  const search = Route.useSearch();
   const params = Route.useParams();
   const sharedQuery = useQuery(SharedAPI.queryItem(params.sharedId));
   const shared = sharedQuery.data;
@@ -44,7 +52,7 @@ function RouteComponent() {
       </aside>
       <main className="g-col-paper">
         <LoadingMask show={sharedQuery.isFetching} />
-        <SharedContent id={params.sharedId} title={shared.name} />
+        <SharedContent shared={shared} query={search} />
       </main>
     </>
   );

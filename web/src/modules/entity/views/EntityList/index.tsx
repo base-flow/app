@@ -12,69 +12,49 @@ import type { LinkItem } from "@/components/LinkTab";
 import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
-import { useEvent, useFolderRoute, useMyFavoriteIds, useTablePagination } from "@/utils/hooks";
+import { useEvent, useFolderRoute, useMyFavoriteIds, useTableChange, useTablePagination } from "@/utils/hooks";
 import { debounce } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import styles from "./index.module.scss";
 
 interface EntityListProps {
+  rootDir: string;
+  rootName: string;
   query: _Entity.Query;
-  title: string;
 }
 
 const Component: FC<EntityListProps> = (props) => {
+  const [curEdit, setCurEdit] = useState<Partial<_Entity.IEntity>>();
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [tableScroll, setTableScroll] = useState({ y: 0 });
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const { favoriteMap, favoriteLoading, onFavoriteChange } = useMyFavoriteIds();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const queryState = useState(props.query);
   const query = queryState[0];
   const entityQuery = useQuery(EntityAPI.queryList(query));
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const dir = query.dir || "";
   const entityList = entityQuery.data?.list;
   const entityListQuery = entityQuery.data?.query || query;
   const entityListSummary = entityQuery.data?.summary;
-  const [curEdit, setCurEdit] = useState<Partial<_Entity.IEntity>>();
 
   useMemo(() => {
     queryState[1](props.query);
   }, [props.query, queryState[1]]);
 
   const setQuery = useEvent((query: _Entity.Query) => {
-    navigate({ to: ".", search: query });
+    const { dir, page } = query;
+    navigate({ to: ".", search: { ...query, dir: dir === props.rootDir ? undefined : dir, page: page === 1 ? undefined : page } });
   });
 
-  const onSort = useEvent((sorter: { sorterField?: string; sorterOrder?: "ascend" | "descend" }) => {
-    setQuery({ ...query, page: undefined, ...sorter });
-  });
+  const breadcrumb = useFolderRoute(props.rootName, props.rootDir, entityListQuery, entityListSummary?.path, setQuery);
 
-  const onPageChange = useEvent((page: number) => {
-    setQuery({ ...query, page });
-  });
-
-  const onTableChange = useEvent((pagination: { current?: number; pageSize?: number }, filters: any, sorter: any) => {
-    if (pagination.current) {
-      setQuery({ ...query, page: pagination.current });
-    }
-  });
-
-  const onSearch = useEvent((keyword?: string) => {
-    setQuery({ dir, keyword, type: query.type });
-  });
-
-  const resetQueryExceptDir = useEvent(() => {
-    return { dir };
-  });
-
-  const breadcrumb = useFolderRoute(props.title, entityListQuery, entityListSummary?.path, setQuery, resetQueryExceptDir);
-
-  const [tableScroll, setTableScroll] = useState({ y: 0 });
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const { onTableChange, onDirSearch } = useTableChange(query, setQuery);
 
   const entityAlter = useMutation({
     mutationFn: EntityAPI.updateItem,
     onSuccess: (result, args) => {
-      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey, { dir }] });
+      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey, { dir: query.dir }] });
       queryClient.invalidateQueries({ queryKey: [EntityAPI.itemQueryKey, args.id] });
     },
   });
@@ -83,7 +63,7 @@ const Component: FC<EntityListProps> = (props) => {
     mutationFn: EntityAPI.batchDelete,
     onSuccess: () => {
       setSelectedRows([]);
-      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey, { dir }] });
+      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey, { dir: query.dir }] });
     },
   });
 
@@ -260,17 +240,6 @@ const Component: FC<EntityListProps> = (props) => {
     [selectedRows],
   );
 
-  useEffect(() => {
-    setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
-    const onResize = debounce(() => {
-      setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
-    }, 300);
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
-
   const listTypeLinks = useMemo(() => {
     const { dir, keyword } = query;
     const items: LinkItem[] = [
@@ -314,6 +283,17 @@ const Component: FC<EntityListProps> = (props) => {
     return <LinkTab links={items} />;
   }, [query]);
 
+  useEffect(() => {
+    setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
+    const onResize = debounce(() => {
+      setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
+    }, 300);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
   if (entityQuery.isError) {
     return (
       <div className={`${styles.EntityList} g-page min-wrap`}>
@@ -343,7 +323,7 @@ const Component: FC<EntityListProps> = (props) => {
         <div className="row">
           {breadcrumb}
           <Space>
-            <SearchInput value={query.keyword} onChange={onSearch} placeholder="当前目录下搜索..." />
+            <SearchInput value={query.keyword} onChange={onDirSearch} placeholder="当前目录下搜索..." />
           </Space>
         </div>
         <div className="row">

@@ -14,8 +14,8 @@ declare namespace _Entity {
 
   interface QuerySummary extends _Resource.IQuerySummary {
     path: string;
-    spaceType: _App.EntrySpace;
-    spaceId: string;
+    // spaceType: _App.EntrySpace;
+    // spaceId: string;
   }
   type QueryResult = _Resource.IQueryResult<IEntity, Query, QuerySummary>;
 

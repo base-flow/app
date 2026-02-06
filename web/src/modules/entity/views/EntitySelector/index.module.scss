@@ -1,0 +1,72 @@
+:global {
+  :local(.EntitySelector) {
+    position: relative;
+    box-sizing: border-box;
+    height: 650px;
+    padding-top: 5px;
+
+    > .hd {
+      display: block;
+      height: 76px;
+      overflow: hidden;
+
+      > .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &:last-child {
+          padding-top: 14px;
+          font-size: 12px;
+        }
+      }
+
+      .use-favs {
+        margin-left: 2px;
+        cursor: pointer;
+
+        &:hover {
+          color: var(--bf-primary);
+        }
+      }
+    }
+
+    > .ft {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      gap: 10px;
+
+      > .selected {
+        position: absolute;
+        top: -20px;
+        right: 2px;
+        font-size: 11px;
+        color: var(--bf-tx-lesser);
+
+        &::before {
+          content: "- ";
+        }
+
+        > span {
+          margin: 0 2px;
+        }
+      }
+    }
+
+    &:global(__favs) {
+      height: 40px !important;
+
+      .back {
+        margin-right: 3px;
+      }
+
+      .filter {
+        margin-left: 3px;
+        font-size: 12px;
+        color: var(--bf-tx-summary);
+      }
+    }
+  }
+}
