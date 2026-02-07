@@ -1,33 +1,34 @@
-import { BaseWidgets } from "@baseflow/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
-import type { MenuProps, TablePaginationConfig, TableProps } from "antd";
-import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
+import { useQuery } from "@tanstack/react-query";
+import type { TablePaginationConfig, TableProps } from "antd";
+import { Button, Result, Skeleton, Table, Tooltip } from "antd";
 import classnames from "classnames";
 import { ArrowLeft, FolderSymlink, FolderTree, Star } from "lucide-react";
 import type { FC } from "react";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import Collect from "@/components/Collect";
 import IconEntity from "@/components/IconEntity";
 import type { LinkItem } from "@/components/LinkTab";
 import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
-import { useEvent, useFolderRoute, useMyFavoriteList, useTableChange, useTablePagination } from "@/utils/hooks";
+import { useEvent, useMyFavoriteList, useTableChange, useTablePagination } from "@/utils/hooks";
 import { openEntity } from "@/utils/tools";
 import { EntityAPI } from "../../api";
+import Breadcrumb from "../Breadcrumb";
 import styles from "./index.module.scss";
 
 interface EntitySelectorProps {
   spaceDir: string;
   spaceName: string;
   query: _Entity.Query;
+  maximum?: number;
+  disabledItems?: { [id: string]: boolean };
   onCancel: () => void;
   onSubmit: (selectedIds: string[]) => void;
 }
 
 const Component: FC<EntitySelectorProps> = (props) => {
-  const { onCancel, onSubmit, spaceDir, spaceName } = props;
+  const { onCancel, onSubmit, spaceDir, spaceName, maximum, disabledItems = {} } = props;
   const { favoriteQuery, onFavoriteChange } = useMyFavoriteList();
   const favoriteList = useMemo(() => {
     return favoriteQuery.data?.filter((item) => item.spaceDir === spaceDir);
@@ -47,6 +48,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
   }, [favoriteList]);
   const [showFavs, setShowFavs] = useState(false);
   const [selectedRows, setSelectedRows] = useState<string[]>();
+  const selectedNum = selectedRows?.length || 0;
   const queryState = useState(props.query);
   const query = queryState[0];
   const entityQuery = useQuery(EntityAPI.queryList(query));
@@ -60,8 +62,6 @@ const Component: FC<EntitySelectorProps> = (props) => {
     const { page } = query;
     queryState[1]({ ...query, page: page === 1 ? undefined : page });
   });
-
-  const breadcrumb = useFolderRoute(spaceName, spaceDir, entityListQuery, entityListSummary?.path, setQuery);
 
   const { onTableChange, onDirSearch } = useTableChange(query, setQuery);
 
@@ -131,8 +131,11 @@ const Component: FC<EntitySelectorProps> = (props) => {
     () => ({
       selectedRowKeys: selectedRows,
       onChange: setSelectedRows as any,
+      getCheckboxProps: (record: _Entity.IEntity) => ({
+        disabled: disabledItems[record.id],
+      }),
     }),
-    [selectedRows],
+    [selectedRows, disabledItems],
   );
 
   const onListTypeTo = useEvent((item: LinkItem) =>
@@ -176,7 +179,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
   }, [query, onListTypeTo]);
 
   const tableScroll = useMemo(() => {
-    return showFavs ? { y: 500 } : { y: 465 };
+    return showFavs ? { y: 500 } : { y: 460 };
   }, [showFavs]);
 
   if (entityQuery.isError) {
@@ -187,7 +190,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
     );
   }
 
-  if (!entityList) {
+  if (!entityList || !entityListSummary) {
     return (
       <div className={styles.EntitySelector}>
         <Skeleton active />
@@ -218,7 +221,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
       ) : (
         <div className="hd">
           <div className="row">
-            {breadcrumb}
+            <Breadcrumb rootDir={spaceDir} rootName={spaceName} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
             <SearchInput value={query.keyword} onChange={onDirSearch} placeholder="当前目录下搜索..." />
           </div>
           <div className="row">
@@ -254,8 +257,9 @@ const Component: FC<EntitySelectorProps> = (props) => {
         <Button type="primary" disabled={!selectedRows?.length} onClick={() => onSubmit(selectedRows!)}>
           确定
         </Button>
-        <div className="selected">
-          已选择<span>{selectedRows?.length || 0}</span>项
+        <div className={classnames("selected", { err: maximum && selectedNum > maximum })}>
+          {maximum ? `最多可选${maximum}项，` : ""}
+          {`已选${selectedNum}项`}
         </div>
       </div>
     </div>

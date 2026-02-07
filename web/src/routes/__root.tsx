@@ -109,6 +109,7 @@ function RootComponent() {
             colorFillTertiary: "var(--bf-bg-filled2)",
             colorBorder: "var(--bf-bd-input)",
             colorLinkHover: "var(--bf-second)",
+            colorTextDisabled: "var(--bf-tx-placeholder)",
           },
           components: {
             Input: {

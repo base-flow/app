@@ -1,22 +1,17 @@
 import { BaseWidgets } from "@baseflow/react";
-import { StringSelect } from "@baseflow/widgets";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
-import type { TablePaginationConfig, TableProps } from "antd";
-import { Button, Dropdown, type MenuProps, Pagination, Result, Segmented, Skeleton, Space, Table } from "antd";
-import classnames from "classnames";
+import { useNavigate } from "@tanstack/react-router";
+import { Pagination, Result, Segmented } from "antd";
 import { FolderTree, List } from "lucide-react";
 import type { FC } from "react";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Lang from "@/assets/Lang";
+import { memo, useMemo, useRef, useState } from "react";
 import FieldSorter, { type SortField } from "@/components/FieldSorter";
-import IconEntity from "@/components/IconEntity";
-import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import SkeletonCardList from "@/components/SkeletonCardList";
-import { ShowTotal, useEvent, useFolderRoute, useMyFavoriteIds, usePermissions } from "@/utils/hooks";
+import { ShowTotal, useEvent, useMyFavoriteIds, usePermissions } from "@/utils/hooks";
 import { EntityAPI } from "../../api";
+import Breadcrumb from "../Breadcrumb";
 import EntityCard from "../EntityCard";
 import styles from "./index.module.scss";
 
@@ -40,6 +35,7 @@ const ListTypeOptions: { label: any; value: ListType; tooltip: string }[] = [
 // ];
 
 interface EntityCardListProps {
+  rootName: string;
   rootDir: string;
   query: _Entity.Query;
   entity: "workflow" | "node";
@@ -47,6 +43,7 @@ interface EntityCardListProps {
 }
 
 const Component: FC<EntityCardListProps> = (props) => {
+  const { rootName, rootDir } = props;
   const { permissions, auth } = usePermissions();
   const { favoriteMap, favoriteLoading, onFavoriteChange } = useMyFavoriteIds();
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -105,14 +102,6 @@ const Component: FC<EntityCardListProps> = (props) => {
       setQuery({ dir: item.id });
     }
   });
-
-  const breadcrumb = useFolderRoute(
-    Lang.entityDirName[`${entityType}.${props.runtime}`],
-    props.rootDir,
-    entityListQuery,
-    entityListSummary?.path,
-    setQuery,
-  );
 
   const entityAlter = useMutation({
     mutationFn: EntityAPI.updateItem,
@@ -194,7 +183,7 @@ const Component: FC<EntityCardListProps> = (props) => {
       <div className="hd">
         <div className="space">
           <Segmented options={StoreOptions} onChange={onStoreChange as any} />
-          {breadcrumb}
+          <Breadcrumb rootDir={rootDir} rootName={rootName} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
         </div>
         <div className="space">
           <SearchInput variant="filled" onChange={onSearch} value={query.keyword} placeholder="当前目录下搜索..." />

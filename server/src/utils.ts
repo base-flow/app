@@ -95,3 +95,10 @@ export function randomInt(min: number, max: number, includeMax: boolean = true):
   const range = includeMax ? max - min + 1 : max - min;
   return Math.floor(Math.random() * range) + min;
 }
+
+export function escapeRegExp(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+export function arrayToRegExp(arr: string[], flags?: string | undefined) {
+  return new RegExp(arr.map(escapeRegExp).join("|"), flags);
+}

@@ -4,7 +4,6 @@ import type { FC } from "react";
 import { memo } from "react";
 import Collect from "@/components/Collect";
 import Likes from "@/components/Likes";
-import { isDirectory } from "@/utils/tools";
 import styles from "./index.module.scss";
 
 const DefaultIcon =
@@ -23,7 +22,7 @@ interface Props {
 }
 
 const Component: FC<Props> = ({ item, permissions, authId, setCurEdit, onDelete, onCollect, onItemClick }) => {
-  if (isDirectory(item)) {
+  if (item.type === "directory") {
     return (
       <div className={classnames(styles.NodeItem, "g-card folder")} onClick={() => onItemClick(item)}>
         <Collect absolute id={item.id} value={undefined} onChange={onCollect} />

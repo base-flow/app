@@ -131,12 +131,12 @@ export function messageWrap(message: string): ReactNode {
   const arr = message.split("\n");
   return arr.length > 1 ? arr.map((line) => <div key={line}>{line}</div>) : message;
 }
-export function isDirectory(item: { type: string }): item is _App.IDirectory {
-  return item.type === "directory";
-}
-export function isWorkflow(item: { type: string }): item is _Workflow.IWorkflow {
-  return item.type === "workflow";
-}
+// export function isDirectory(item: { type: string }): item is _App.IDirectory {
+//   return item.type === "directory";
+// }
+// export function isWorkflow(item: { type: string }): item is _Workflow.IWorkflow {
+//   return item.type === "workflow";
+// }
 export function openEntity(entity: _Entity.IEntity, parentDir: boolean, windowKey: "EntityEdit" | "EntityView"): void {
   const { id, type, spaceType, spaceId, parentId } = entity;
   if (parentDir || type === "directory") {

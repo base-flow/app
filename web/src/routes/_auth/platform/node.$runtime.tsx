@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import Lang from "@/assets/Lang";
 import EntityCardList from "@/modules/entity/views/EntityCardList";
 import { useConfig } from "@/utils/hooks";
 
@@ -21,6 +22,7 @@ function RouteComponent() {
       entity="node"
       runtime={runtime}
       rootDir={config.dirs.node[runtime]}
+      rootName={Lang.entityDirName[`node.${runtime}`]}
       query={{ ...search, dir: search.dir || config.dirs.node[runtime] }}
     />
   );

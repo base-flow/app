@@ -56,7 +56,7 @@ export const SharedAPI = {
   },
   queryContentList(id: string, query: _Entity.Query) {
     return queryOptions({
-      queryKey: [SharedAPI.contentListQueryKey, id],
+      queryKey: [SharedAPI.contentListQueryKey, id, query],
       queryFn: () => SharedAPI.getContentList(id, query),
       staleTime: Infinity,
       retry: 0,

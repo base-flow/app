@@ -1,17 +1,27 @@
 :global {
   :local(.SharedContent) {
     > .hd {
+      flex-wrap: wrap;
       height: 45px;
       padding: 25px 27px 0;
       overflow: hidden;
 
+      > .search {
+        display: flex;
+        gap: 13px;
+        align-items: center;
+      }
+
       .title {
         font-size: 14px;
         font-weight: bold;
+        line-height: 32px;
       }
 
-      small {
-        margin-left: 3px;
+      .user {
+        display: inline-block;
+        margin-left: 5px;
+        font-size: 12px;
         font-weight: normal;
         color: var(--bf-tx-lesser);
       }

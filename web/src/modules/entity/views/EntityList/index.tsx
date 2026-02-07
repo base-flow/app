@@ -12,9 +12,10 @@ import type { LinkItem } from "@/components/LinkTab";
 import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
-import { useEvent, useFolderRoute, useMyFavoriteIds, useTableChange, useTablePagination } from "@/utils/hooks";
+import { useEvent, useMyFavoriteIds, useTableChange, useTablePagination } from "@/utils/hooks";
 import { debounce } from "@/utils/tools";
 import { EntityAPI } from "../../api";
+import Breadcrumb from "../Breadcrumb";
 import styles from "./index.module.scss";
 
 interface EntityListProps {
@@ -24,6 +25,7 @@ interface EntityListProps {
 }
 
 const Component: FC<EntityListProps> = (props) => {
+  const { rootDir, rootName } = props;
   const [curEdit, setCurEdit] = useState<Partial<_Entity.IEntity>>();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [tableScroll, setTableScroll] = useState({ y: 0 });
@@ -46,8 +48,6 @@ const Component: FC<EntityListProps> = (props) => {
     const { dir, page } = query;
     navigate({ to: ".", search: { ...query, dir: dir === props.rootDir ? undefined : dir, page: page === 1 ? undefined : page } });
   });
-
-  const breadcrumb = useFolderRoute(props.rootName, props.rootDir, entityListQuery, entityListSummary?.path, setQuery);
 
   const { onTableChange, onDirSearch } = useTableChange(query, setQuery);
 
@@ -280,7 +280,7 @@ const Component: FC<EntityListProps> = (props) => {
         ),
       },
     ];
-    return <LinkTab links={items} />;
+    return items;
   }, [query]);
 
   useEffect(() => {
@@ -305,7 +305,7 @@ const Component: FC<EntityListProps> = (props) => {
     );
   }
 
-  if (!entityList) {
+  if (!entityList || !entityListSummary) {
     return (
       <div className={`${styles.EntityList} g-page min-wrap`}>
         <div className="hd" />
@@ -321,10 +321,8 @@ const Component: FC<EntityListProps> = (props) => {
       <LoadingMask show={entityQuery.isFetching || entityAlter.isPending || entityDeleter.isPending || favoriteLoading} />
       <div className="hd">
         <div className="row">
-          {breadcrumb}
-          <Space>
-            <SearchInput value={query.keyword} onChange={onDirSearch} placeholder="当前目录下搜索..." />
-          </Space>
+          <Breadcrumb rootDir={rootDir} rootName={rootName} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
+          <SearchInput value={query.keyword} onChange={onDirSearch} placeholder="当前目录下搜索..." />
         </div>
         <div className="row">
           {!selectedRows.length ? (
@@ -338,7 +336,7 @@ const Component: FC<EntityListProps> = (props) => {
               </Button>
             </Dropdown>
           )}
-          {listTypeLinks}
+          <LinkTab links={listTypeLinks} />
         </div>
       </div>
       <div className="bd" ref={scrollerRef}>

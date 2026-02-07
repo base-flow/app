@@ -1,9 +1,9 @@
 import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import type { TablePaginationConfig, TableProps } from "antd";
-import { Button, Dropdown, Modal, Result, Skeleton, Space, Table, Tooltip } from "antd";
-import { FolderSymlink, FolderTree, Plus, StarOff } from "lucide-react";
+import { Button, Modal, Result, Skeleton, Space, Table, Tooltip } from "antd";
+import { FolderSymlink, FolderTree, Link, ListX, Plus, UserRound } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -13,9 +13,10 @@ import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import { useAppStore } from "@/modules/app/store";
+import Breadcrumb from "@/modules/entity/views/Breadcrumb";
 import EntitySelector from "@/modules/entity/views/EntitySelector";
-import { useEvent, useFolderRoute, useTablePagination } from "@/utils/hooks";
-import { debounce, openEntity, sortList } from "@/utils/tools";
+import { useEvent, useTableChange, useTablePagination } from "@/utils/hooks";
+import { debounce, openEntity } from "@/utils/tools";
 import { SharedAPI } from "../../api";
 import styles from "./index.module.scss";
 
@@ -36,7 +37,6 @@ const Component: FC<SharedContentProps> = (props) => {
   const queryState = useState(props.query);
   const query = queryState[0];
   const entityQuery = useQuery(SharedAPI.queryContentList(shared.id, query));
-  const dir = query.dir || "";
   const entityList = entityQuery.data?.list;
   const entityListQuery = entityQuery.data?.query || query;
   const entityListSummary = entityQuery.data?.summary;
@@ -48,28 +48,11 @@ const Component: FC<SharedContentProps> = (props) => {
   }, [props.query, queryState[1]]);
 
   const setQuery = useEvent((query: _Entity.Query) => {
-    navigate({ to: ".", search: { ...query, dir: query.dir || undefined } });
+    const { dir, page } = query;
+    navigate({ to: ".", search: { ...query, dir: dir === shared.id ? undefined : dir, page: page === 1 ? undefined : page } });
   });
 
-  const breadcrumb = useFolderRoute(shared.name, "", entityListQuery, entityListSummary?.path, setQuery);
-
-  const onSort = useEvent((sorter: { sorterField?: string; sorterOrder?: "ascend" | "descend" }) => {
-    setQuery({ ...query, page: undefined, ...sorter });
-  });
-
-  const onPageChange = useEvent((page: number) => {
-    setQuery({ ...query, page });
-  });
-
-  const onTableChange = useEvent((pagination: { current?: number; pageSize?: number }, filters: any, sorter: any) => {
-    if (pagination.current) {
-      setQuery({ ...query, page: pagination.current });
-    }
-  });
-
-  const onSearch = useEvent((keyword?: string) => {
-    setQuery({ dir, keyword, type: query.type });
-  });
+  const { onTableChange, onDirSearch } = useTableChange(query, setQuery);
 
   const entityCreater = useMutation({
     mutationFn: SharedAPI.batchPutContentItem,
@@ -112,10 +95,28 @@ const Component: FC<SharedContentProps> = (props) => {
         render: (name, row) => (
           <div className="g-entity-cell">
             <IconEntity className="icon" type={row.type} />
-            <a onClick={() => openEntity(row, false, "EntityView")}>{name}</a>
+            <a
+              onClick={() => {
+                row.type === "directory" ? setQuery({ dir: row.id }) : openEntity(row, false, "EntityView");
+              }}
+            >
+              {name}
+            </a>
             {row.path ? (
-              <Tooltip placement="bottom" title={row.path.replace(/\/.+? /g, "/").replace(/\/[^/]+?$/, "") || "/"}>
-                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => openEntity(row, true, "EntityView")} />
+              <Tooltip
+                placement="bottom"
+                title={
+                  row.path
+                    .replace(/\/.+? /g, "/")
+                    .replace(/^\/.+?\//, "/")
+                    .replace(/\/[^/]+?$/, "") || "/"
+                }
+              >
+                {entityListQuery.dir ? (
+                  <FolderSymlink className="dir anticon" size={13} onClick={() => setQuery({ dir: row.parentId })} />
+                ) : (
+                  <Link className="dir anticon" size={13} onClick={() => openEntity(row, true, "EntityView")} />
+                )}
               </Tooltip>
             ) : null}
           </div>
@@ -128,7 +129,7 @@ const Component: FC<SharedContentProps> = (props) => {
         width: 120,
         align: "center",
         sorter: true,
-        sortOrder: (query.sorterField === "runtime" && query.sorterOrder) || null,
+        sortOrder: (entityListQuery.sorterField === "runtime" && entityListQuery.sorterOrder) || null,
       },
       {
         title: "创建时间",
@@ -137,7 +138,7 @@ const Component: FC<SharedContentProps> = (props) => {
         width: 120,
         align: "center",
         sorter: true,
-        sortOrder: (query.sorterField === "createAt" && query.sorterOrder) || null,
+        sortOrder: (entityListQuery.sorterField === "createAt" && entityListQuery.sorterOrder) || null,
       },
       {
         title: "更新时间",
@@ -146,7 +147,7 @@ const Component: FC<SharedContentProps> = (props) => {
         width: 120,
         align: "center",
         sorter: true,
-        sortOrder: (query.sorterField === "updateAt" && query.sorterOrder) || null,
+        sortOrder: (entityListQuery.sorterField === "updateAt" && entityListQuery.sorterOrder) || null,
       },
       {
         title: "操作",
@@ -155,7 +156,7 @@ const Component: FC<SharedContentProps> = (props) => {
         render: (_, row) => {
           return (
             <div className="g-actions-cell">
-              <a onClick={() => onRemove([row.id])}>移除</a>
+              {!entityListQuery.dir && <a onClick={() => onRemove([row.id])}>移除</a>}
               <a onClick={() => onRemove([row.id])}>转存</a>
               <a onClick={() => onRemove([row.id])}>下载</a>
             </div>
@@ -163,7 +164,7 @@ const Component: FC<SharedContentProps> = (props) => {
         },
       },
     ];
-  }, [query]);
+  }, [entityListQuery]);
 
   const pagination: TablePaginationConfig = useTablePagination(entityListSummary);
 
@@ -175,90 +176,58 @@ const Component: FC<SharedContentProps> = (props) => {
     [selectedRows],
   );
 
-  const header = useMemo(() => {
-    if (query.dir) {
-      const { dir, keyword } = query;
-      const items: LinkItem[] = [
-        {
-          key: "all",
-          to: ".",
-          search: { dir, keyword, type: undefined },
-          className: !query.type ? "on" : undefined,
-          children: (
-            <>
-              <FolderTree size={12} />
-              <span>目录</span>
-            </>
-          ),
-        },
-        {
-          key: "workflow",
-          to: ".",
-          search: { dir, keyword, type: "workflow" },
-          className: query.type === "workflow" ? "on" : undefined,
-          children: (
-            <>
-              <IconEntity size={12} type="workflow" />
-              <span>流程</span>
-            </>
-          ),
-        },
-        {
-          key: "node",
-          to: ".",
-          search: { dir, keyword, type: "node" },
-          className: query.type === "node" ? "on" : undefined,
-          children: (
-            <>
-              <IconEntity size={12} type="node" />
-              <span>节点</span>
-            </>
-          ),
-        },
-      ];
-      return (
-        <div className="hd">
-          {breadcrumb}
-          <LinkTab links={items} />
-        </div>
-      );
-    } else {
-      return (
-        <div className="hd">
-          <Space>
-            <div className="title">
-              {shared.name}
-              <small className="g-dot">
-                ({entityListTotal}项 / 最多{sharedContentMax}项)
-              </small>
-            </div>
-            {selectedRows.length ? (
-              <Button
-                size="small"
-                color="danger"
-                variant="filled"
-                icon={<StarOff size={13} strokeWidth={2.5} className="anticon" />}
-                onClick={() => onRemove(selectedRows)}
-              >
-                批量取消
-              </Button>
-            ) : null}
-          </Space>
-          <div>
-            <Button
-              size="small"
-              type="link"
-              disabled={entityListTotal >= sharedContentMax}
-              onClick={() => setShowEntitySelector(true)}
-              icon={<Plus size={13} strokeWidth={2.5} />}
-            >
-              添加文件
-            </Button>
-          </div>
-        </div>
-      );
-    }
-  }, [entityListTotal, sharedContentMax, onRemove, query, selectedRows, shared.name, breadcrumb]);
+  const addedIds = useMemo(() => {
+    return (entityList || []).reduce(
+      (obj, cur) => {
+        obj[cur.id] = true;
+        return obj;
+      },
+      {} as { [id: string]: boolean },
+    );
+  }, [entityList]);
+
+  const listTypeLinks = useMemo(() => {
+    const { dir, keyword } = query;
+    const items: LinkItem[] = [
+      {
+        key: "all",
+        to: ".",
+        search: { dir, keyword, type: undefined },
+        className: !query.type ? "on" : undefined,
+        children: (
+          <>
+            <FolderTree size={12} />
+            <span>目录</span>
+          </>
+        ),
+      },
+      {
+        key: "workflow",
+        to: ".",
+        search: { dir, keyword, type: "workflow" },
+        className: query.type === "workflow" ? "on" : undefined,
+        children: (
+          <>
+            <IconEntity size={12} type="workflow" />
+            <span>流程</span>
+          </>
+        ),
+      },
+      {
+        key: "node",
+        to: ".",
+        search: { dir, keyword, type: "node" },
+        className: query.type === "node" ? "on" : undefined,
+        children: (
+          <>
+            <IconEntity size={12} type="node" />
+            <span>节点</span>
+          </>
+        ),
+      },
+    ];
+    return items;
+  }, [query]);
 
   useEffect(() => {
     setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
@@ -282,7 +251,7 @@ const Component: FC<SharedContentProps> = (props) => {
     );
   }
 
-  if (!entityList) {
+  if (!entityList || !entityListSummary) {
     return (
       <div className={`${styles.SharedContent} g-page min-wrap`}>
         <div className="hd" />
@@ -296,7 +265,52 @@ const Component: FC<SharedContentProps> = (props) => {
   return (
     <div className={`${styles.SharedContent} g-page min-wrap`}>
       <LoadingMask show={entityQuery.isFetching || entityDeleter.isPending || entityCreater.isPending} />
-      {header}
+      {entityListQuery.dir ? (
+        <div className="hd">
+          <Breadcrumb rootDir={shared.id} rootName={shared.name} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
+          <div className="search">
+            <SearchInput value={query.keyword} placeholder="当前目录下搜索..." onChange={onDirSearch} />
+            <LinkTab links={listTypeLinks} />
+          </div>
+        </div>
+      ) : (
+        <div className="hd">
+          <Space>
+            <div className="title">
+              {shared.name}
+              <div className="user">
+                <UserRound size={12} className="anticon" strokeWidth={2.5} style={{ marginRight: "1px" }} />
+                {shared.createBy}
+              </div>
+            </div>
+            {selectedRows.length ? (
+              <Button
+                size="small"
+                color="danger"
+                variant="filled"
+                icon={<ListX size={13} strokeWidth={2.5} className="anticon" />}
+                onClick={() => onRemove(selectedRows)}
+              >
+                批量移除
+              </Button>
+            ) : null}
+          </Space>
+          <div>
+            {/* <small className="g-dot">
+                ({entityListTotal}项<span style={{ margin: "0 2px" }}>/</span>最多{sharedContentMax}项)
+              </small> */}
+            <Button
+              size="small"
+              type="link"
+              disabled={entityListTotal >= sharedContentMax}
+              onClick={() => setShowEntitySelector(true)}
+              icon={<Plus size={13} strokeWidth={2.5} />}
+            >
+              添加文件
+            </Button>
+          </div>
+        </div>
+      )}
       <div className="bd" ref={scrollerRef}>
         <Table<any>
           rowKey="id"
@@ -314,10 +328,12 @@ const Component: FC<SharedContentProps> = (props) => {
         <Modal open width={1200} onCancel={closeEntitySelector} footer={null} closable={false}>
           <EntitySelector
             query={{ dir: shared.spaceDir }}
-            spaceName={shared.spaceName}
+            spaceName={shared.spaceType === "personal" ? "我的文档" : shared.spaceName}
             spaceDir={shared.spaceDir}
             onCancel={closeEntitySelector}
             onSubmit={submitEntitySelector}
+            maximum={sharedContentMax - entityListTotal}
+            disabledItems={addedIds}
           />
         </Modal>
       )}

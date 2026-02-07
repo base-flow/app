@@ -43,16 +43,21 @@
         top: -20px;
         right: 2px;
         font-size: 11px;
-        color: var(--bf-tx-lesser);
+        color: var(--bf-tx-placeholder);
+        white-space: nowrap;
 
         &::before {
           content: "- ";
         }
 
-        > span {
-          margin: 0 2px;
+        &.err {
+          color: var(--bf-special);
         }
       }
+    }
+
+    .ant-table-pagination {
+      margin-top: 30px !important;
     }
 
     &:global(__favs) {

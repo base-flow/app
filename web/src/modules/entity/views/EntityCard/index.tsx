@@ -6,7 +6,6 @@ import { memo } from "react";
 import Collect from "@/components/Collect";
 import IconFolder from "@/components/IconFolder";
 import Likes from "@/components/Likes";
-import { isDirectory, isWorkflow } from "@/utils/tools";
 import styles from "./index.module.scss";
 
 const DefaultIcon =
@@ -25,7 +24,7 @@ interface EntityCardProps {
 }
 
 const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap, setCurEdit, onDelete, onFavoriteChange, onItemClick }) => {
-  if (isDirectory(item)) {
+  if (item.type === "directory") {
     return (
       <div className={classnames(styles.EntityCard, "g-card folder")} onClick={() => onItemClick(item)}>
         {item.path ? (
@@ -91,7 +90,7 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap
         )}
       </div>
     );
-  } else if (isWorkflow(item)) {
+  } else if (item.type === "workflow") {
     return (
       <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}>
         {item.path ? (
