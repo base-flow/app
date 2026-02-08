@@ -1,7 +1,7 @@
 declare namespace _Node {
   type NodeType = "executor" | "trigger";
 
-  interface INode extends _App.BaseEntry {
+  interface INode extends _App.BaseEntity {
     type: "node";
     runtime: _App.Runtime;
     nodeType: NodeType;

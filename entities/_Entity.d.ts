@@ -9,12 +9,12 @@ declare namespace _Entity {
     dir?: string;
     //当keyword不存在时：如果指定了类型，列表子孙，否则仅列表当前目录
     //当keyword存在时：搜索子孙
-    type?: _App.EntryFileType;
+    type?: _App.EntityFileType;
   }
 
   interface QuerySummary extends _Resource.IQuerySummary {
     path: string;
-    // spaceType: _App.EntrySpace;
+    // spaceType: _App.EntitySpace;
     // spaceId: string;
   }
   type QueryResult = _Resource.IQueryResult<IEntity, Query, QuerySummary>;

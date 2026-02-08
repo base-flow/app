@@ -4,7 +4,7 @@ import type { FC } from "react";
 import { memo } from "react";
 
 interface Props {
-  type: _App.EntryType;
+  type: _App.EntityType;
   className?: string;
   size?: number;
   onClick?: () => void;

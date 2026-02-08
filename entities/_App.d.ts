@@ -25,23 +25,23 @@ declare namespace _App {
   }
 
   type Runtime = "server" | "browser";
-  type EntrySpace = "personal" | "project" | "platform";
-  type EntryType = "directory" | "workflow" | "node" | "data";
-  type EntryFileType = "workflow" | "node" | "data";
+  type EntitySpace = "personal" | "project" | "platform";
+  type EntityType = "directory" | "workflow" | "node" | "data";
+  type EntityFileType = "workflow" | "node" | "data";
 
-  interface BaseEntry extends _Resource.IItem {
-    type: EntryType;
+  interface BaseEntity extends _Resource.IItem {
+    type: EntityType;
     name: string;
     desc: string;
     icon?: string;
     parentId: string;
     path: string;
     spaceId: string;
-    spaceType: EntrySpace;
+    spaceType: EntitySpace;
     spaceDir: string;
   }
 
-  interface IDirectory extends BaseEntry {
+  interface IDirectory extends BaseEntity {
     type: "directory";
     children?: _Entity.IEntity[];
   }

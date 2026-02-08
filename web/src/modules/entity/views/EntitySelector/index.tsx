@@ -139,7 +139,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
   );
 
   const onListTypeTo = useEvent((item: LinkItem) =>
-    setQuery({ dir: query.dir, keyword: query.keyword, type: item.key === "all" ? undefined : (item.key as _App.EntryFileType) }),
+    setQuery({ dir: query.dir, keyword: query.keyword, type: item.key === "all" ? undefined : (item.key as _App.EntityFileType) }),
   );
 
   const listTypeLinks = useMemo(() => {

@@ -1,5 +1,5 @@
 declare namespace _Data {
-  interface IData extends _App.BaseEntry {
+  interface IData extends _App.BaseEntity {
     type: "data";
     likes: number;
   }

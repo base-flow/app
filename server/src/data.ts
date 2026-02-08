@@ -99,9 +99,9 @@ export const EntityMap: { [id: string]: _Entity.IEntity } = {};
 function createEntities(
   parentId: string,
   parentPath: string,
-  space: { id: string; type: _App.EntrySpace; dir: string },
+  space: { id: string; type: _App.EntitySpace; dir: string },
   level: number,
-  singleType?: _App.EntryFileType,
+  singleType?: _App.EntityFileType,
   children: string[] = [],
 ) {
   const dirs: _Entity.IEntity[] = new Array(3).fill("").map(() => {
@@ -187,7 +187,7 @@ function createEntities(
   return dirs.concat(items);
 }
 
-function createRootDir(space: { type: _App.EntrySpace; id: string }, name: string, children?: string[]) {
+function createRootDir(space: { type: _App.EntitySpace; id: string }, name: string, children?: string[]) {
   const item: _App.IDirectory = {
     id: `${uid++}`,
     type: "directory",

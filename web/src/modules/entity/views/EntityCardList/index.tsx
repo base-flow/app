@@ -38,7 +38,7 @@ interface EntityCardListProps {
   rootName: string;
   rootDir: string;
   query: _Entity.Query;
-  entity: _App.EntryFileType;
+  entity: _App.EntityFileType;
   runtime: _App.Runtime;
 }
 
