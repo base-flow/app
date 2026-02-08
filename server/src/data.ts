@@ -101,7 +101,7 @@ function createEntities(
   parentPath: string,
   space: { id: string; type: _App.EntrySpace; dir: string },
   level: number,
-  singleType?: "workflow" | "node",
+  singleType?: _App.EntryFileType,
   children: string[] = [],
 ) {
   const dirs: _Entity.IEntity[] = new Array(3).fill("").map(() => {
@@ -126,8 +126,24 @@ function createEntities(
     return item;
   });
   const items: _Entity.IEntity[] = new Array(20).fill("").map(() => {
-    const int = singleType === "workflow" ? 2 : singleType === "node" ? 1 : randomInt(1, 2);
-    if (int === 2) {
+    const int = singleType === "data" ? 3 : singleType === "workflow" ? 2 : singleType === "node" ? 1 : randomInt(1, 3);
+    if (int === 3) {
+      const item: _Data.IData = {
+        id: `${uid++}`,
+        type: "data",
+        name: Random.ctitle(10, 20),
+        desc: Random.csentence(20, 60),
+        parentId,
+        path: "",
+        spaceType: space.type,
+        spaceId: space.id,
+        spaceDir: space.dir,
+        likes: 21,
+      };
+      item.path = `${parentPath}/${item.id} ${item.name}`;
+      EntityMap[item.id] = item;
+      return item;
+    } else if (int === 2) {
       const item: _Workflow.IWorkflow = {
         id: `${uid++}`,
         type: "workflow",

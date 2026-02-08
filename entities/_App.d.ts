@@ -26,7 +26,8 @@ declare namespace _App {
 
   type Runtime = "server" | "browser";
   type EntrySpace = "personal" | "project" | "platform";
-  type EntryType = "directory" | "workflow" | "node";
+  type EntryType = "directory" | "workflow" | "node" | "data";
+  type EntryFileType = "workflow" | "node" | "data";
 
   interface BaseEntry extends _Resource.IItem {
     type: EntryType;

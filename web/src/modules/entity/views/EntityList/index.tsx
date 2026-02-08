@@ -141,6 +141,10 @@ const Component: FC<EntityListProps> = (props) => {
               <Link to="/workflow/$workflowId" params={{ workflowId: row.id }} search={{ dir: 1 }}>
                 {name}
               </Link>
+            ) : row.type === "node" ? (
+              <Link to="/node/$nodeId" params={{ nodeId: row.id }}>
+                {name}
+              </Link>
             ) : (
               <Link to="/node/$nodeId" params={{ nodeId: row.id }}>
                 {name}
@@ -164,6 +168,13 @@ const Component: FC<EntityListProps> = (props) => {
         ),
       },
       {
+        title: "文件类型",
+        dataIndex: "type",
+        key: "type",
+        width: 100,
+        align: "center",
+      },
+      {
         title: "运行环境",
         dataIndex: "runtime",
         key: "runtime",
@@ -171,15 +182,11 @@ const Component: FC<EntityListProps> = (props) => {
         align: "center",
       },
       {
-        title: "创建者",
-        dataIndex: "createBy",
-        key: "createBy",
-        width: 140,
-      },
-      {
-        title: "更新者",
-        dataIndex: "updateBy",
-        key: "updateBy",
+        title: "创建时间",
+        dataIndex: "createAt",
+        key: "createAt",
+        sorter: true,
+        sortOrder: (query.sorterField === "createAt" && query.sorterOrder) || null,
         width: 140,
       },
       {
@@ -188,7 +195,7 @@ const Component: FC<EntityListProps> = (props) => {
         key: "updateAt",
         sorter: true,
         sortOrder: (query.sorterField === "updateAt" && query.sorterOrder) || null,
-        width: 180,
+        width: 140,
       },
       {
         title: "操作",
@@ -276,6 +283,18 @@ const Component: FC<EntityListProps> = (props) => {
           <>
             <IconEntity size={12} type="node" />
             <span>节点</span>
+          </>
+        ),
+      },
+      {
+        key: "data",
+        to: ".",
+        search: { dir, keyword, type: "data" },
+        className: query.type === "data" ? "on" : undefined,
+        children: (
+          <>
+            <IconEntity size={12} type="data" />
+            <span>数据</span>
           </>
         ),
       },

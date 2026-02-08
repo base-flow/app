@@ -3,13 +3,13 @@ declare namespace _Entity {
   // type Repository = "remote" | "local";
   // type NodeType = "executor" | "trigger";
 
-  type IEntity = _App.IDirectory | _Workflow.IWorkflow | _Node.INode;
+  type IEntity = _App.IDirectory | _Workflow.IWorkflow | _Node.INode | _Data.IData;
 
   interface Query extends _Resource.IQuery {
     dir?: string;
     //当keyword不存在时：如果指定了类型，列表子孙，否则仅列表当前目录
     //当keyword存在时：搜索子孙
-    type?: "workflow" | "node";
+    type?: _App.EntryFileType;
   }
 
   interface QuerySummary extends _Resource.IQuerySummary {

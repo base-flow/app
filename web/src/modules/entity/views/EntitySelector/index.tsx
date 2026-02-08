@@ -139,7 +139,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
   );
 
   const onListTypeTo = useEvent((item: LinkItem) =>
-    setQuery({ dir: query.dir, keyword: query.keyword, type: item.key === "all" ? undefined : (item.key as "workflow" | "node") }),
+    setQuery({ dir: query.dir, keyword: query.keyword, type: item.key === "all" ? undefined : (item.key as _App.EntryFileType) }),
   );
 
   const listTypeLinks = useMemo(() => {
@@ -171,6 +171,16 @@ const Component: FC<EntitySelectorProps> = (props) => {
           <>
             <IconEntity size={12} type="node" />
             <span>节点</span>
+          </>
+        ),
+      },
+      {
+        key: "data",
+        className: query.type === "data" ? "on" : undefined,
+        children: (
+          <>
+            <IconEntity size={12} type="data" />
+            <span>数据</span>
           </>
         ),
       },

@@ -161,7 +161,7 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap
         )}
       </div>
     );
-  } else {
+  } else if (item.type === "node") {
     return (
       <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}>
         {item.path ? (
@@ -232,6 +232,8 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap
         )}
       </div>
     );
+  } else {
+    return <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}></div>;
   }
 };
 

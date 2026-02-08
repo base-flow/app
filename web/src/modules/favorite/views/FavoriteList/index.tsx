@@ -23,7 +23,7 @@ const Component: FC<{}> = () => {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [config] = useAppStore(useShallow(({ config }) => [config]));
   const { favoriteQuery, onFavoriteChange, onFavoriteRemove } = useMyFavoriteList(() => setSelectedRows([]));
-  const [query, setQuery] = useState<{ type?: "workflow" | "node"; sorterField?: string; sorterOrder?: "ascend" | "descend" }>({});
+  const [query, setQuery] = useState<{ type?: _App.EntryFileType; sorterField?: string; sorterOrder?: "ascend" | "descend" }>({});
   const favoriteList = useMemo(() => {
     let list = favoriteQuery.data;
     const { type, sorterOrder, sorterField } = query;
@@ -40,7 +40,7 @@ const Component: FC<{}> = () => {
     return list;
   }, [favoriteQuery.data, query]);
 
-  const onListTypeTo = useEvent((item: LinkItem) => setQuery({ type: item.key === "all" ? undefined : (item.key as "workflow" | "node") }));
+  const onListTypeTo = useEvent((item: LinkItem) => setQuery({ type: item.key === "all" ? undefined : (item.key as _App.EntryFileType) }));
 
   const listTypeLinks = useMemo(() => {
     const items: LinkItem[] = [

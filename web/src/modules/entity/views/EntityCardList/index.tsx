@@ -38,7 +38,7 @@ interface EntityCardListProps {
   rootName: string;
   rootDir: string;
   query: _Entity.Query;
-  entity: "workflow" | "node";
+  entity: _App.EntryFileType;
   runtime: _App.Runtime;
 }
 

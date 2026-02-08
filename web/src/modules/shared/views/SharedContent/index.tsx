@@ -225,6 +225,18 @@ const Component: FC<SharedContentProps> = (props) => {
           </>
         ),
       },
+      {
+        key: "data",
+        to: ".",
+        search: { dir, keyword, type: "data" },
+        className: query.type === "data" ? "on" : undefined,
+        children: (
+          <>
+            <IconEntity size={12} type="data" />
+            <span>数据</span>
+          </>
+        ),
+      },
     ];
     return items;
   }, [query]);
