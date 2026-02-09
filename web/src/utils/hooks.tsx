@@ -3,9 +3,7 @@ import type { TablePaginationConfig } from "antd";
 import type { RefObject } from "react";
 import { createContext, useContext, useEffect, useMemo, useRef } from "react";
 import { useInView } from "react-intersection-observer";
-import Pathcrumb from "@/components/Pathcrumb";
 import { FavoriteAPI } from "@/modules/favorite/api";
-import { deepEqual } from "@/utils/tools";
 
 // biome-ignore lint/complexity/noBannedTypes: <>
 export function useEvent<F extends Function>(fn: F): F {
@@ -111,7 +109,6 @@ export function useMyFavoriteIds() {
   const favoriteUpdater = useMutation({
     mutationFn: FavoriteAPI.batchUpdate,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [FavoriteAPI.listQueryKey] });
       queryClient.invalidateQueries({ queryKey: [FavoriteAPI.idsQueryKey] });
     },
   });
@@ -129,7 +126,6 @@ export function useMyFavoriteList(onChangeSuccess?: () => void) {
     mutationFn: FavoriteAPI.batchUpdate,
     onSuccess: () => {
       onChangeSuccess?.();
-      queryClient.invalidateQueries({ queryKey: [FavoriteAPI.listQueryKey] });
       queryClient.invalidateQueries({ queryKey: [FavoriteAPI.idsQueryKey] });
     },
   });

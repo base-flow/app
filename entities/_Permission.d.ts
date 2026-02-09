@@ -28,7 +28,7 @@ declare namespace _Permission {
   type ProjectRole = "Owner" | "Admin" | "Developer" | "Tester" | "Member";
 
   interface MyProjectRoles {
-    [projectId: string]: ProjectRole;
+    [projectId: string]: { projectName: string; projectDir: string; projectRole: ProjectRole };
   }
 
   type IPermissions = { [key in keyof Actions]?: Actions[key] };

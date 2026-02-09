@@ -16,7 +16,10 @@ export class EntityController {
     const path = folder.path;
     let showPath = false;
     let list = folder.children!;
-    if (query.type) {
+    if (query.type === "directory") {
+      showPath = true;
+      list = list.filter((item) => item.type === "directory");
+    } else if (query.type) {
       showPath = true;
       list = Object.keys(EntityMap)
         .filter((id) => {
@@ -60,21 +63,30 @@ export class EntityController {
   //   //return this.workflowService.createItem(user.id, body);
   // }
 
-  // @Put(":id")
-  // async updateItem(
-  //   @Request() { user, body, params }: { user: _App.AuthUser; body: _Entity.IEntity; params: { id: string } },
-  // ): Promise<_Entity.UpdateResult> {
-  //   //return this.workflowService.updateItem(user.id, params.id, body);
-  // }
+  @Put(":id")
+  async updateItem(@Request() { body, params }: { body: _Entity.IEntity; params: { id: string } }): Promise<_Entity.UpdateResult> {
+    const entity = EntityMap[params.id];
+    if (!entity) {
+      throw new NotFoundException();
+    }
+    entity.name = body.name || entity.name;
+    return { id: params.id };
+  }
 
   // @Delete(":id")
   // async deleteItem(@Param() param: { id: string }): Promise<void> {
   //   //return this.workflowService.deleteItem(param.id);
   // }
 
-  // @Delete()
-  // async batchDelete(@Body() { ids }: { ids: string[] }): Promise<void> {
-  //   await sleep(1000);
-  //   // return this.workflowService.batchDelete(ids);
-  // }
+  @Delete()
+  async batchDelete(@Body() { ids }: { ids: string[] }): Promise<void> {
+    await sleep(1000);
+    console.log(ids);
+    ids.forEach((id) => {
+      const item = EntityMap[id];
+      const parent = EntityMap[item.parentId] as _App.IDirectory;
+      parent.children = parent.children!.filter((sub) => sub.id !== id);
+      delete EntityMap[id];
+    });
+  }
 }

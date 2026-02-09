@@ -74,6 +74,16 @@ const Component: FC<{}> = () => {
           </>
         ),
       },
+      {
+        key: "data",
+        className: query.type === "data" ? "on" : undefined,
+        children: (
+          <>
+            <IconEntity size={12} type="data" />
+            <span>数据</span>
+          </>
+        ),
+      },
     ];
     return <LinkTab links={items} onTo={onListTypeTo} />;
   }, [query, onListTypeTo]);
@@ -86,7 +96,6 @@ const Component: FC<{}> = () => {
     },
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   const columns = useMemo<TableProps<_Entity.IEntity>["columns"]>(() => {
     return [
       {
@@ -105,6 +114,13 @@ const Component: FC<{}> = () => {
             <Collect id={row.id} value={true} onChange={onFavoriteChange} />
           </div>
         ),
+      },
+      {
+        title: "文件类型",
+        dataIndex: "type",
+        key: "type",
+        width: 100,
+        align: "center",
       },
       {
         title: "运行环境",
@@ -132,13 +148,13 @@ const Component: FC<{}> = () => {
         render: (_, row) => {
           return (
             <div className="g-actions-cell">
-              <a onClick={() => onFavoriteChange(row.id, false)}>取消</a>
+              <a onClick={() => onFavoriteChange(row.id, false)}>取消收藏</a>
             </div>
           );
         },
       },
     ];
-  }, [query]);
+  }, [query, onFavoriteChange]);
 
   const rowSelection: TableProps<any>["rowSelection"] = useMemo(
     () => ({
@@ -188,9 +204,9 @@ const Component: FC<{}> = () => {
         <Space>
           <div className="title">
             我的收藏
-            <small className="g-dot">
-              ({favoriteQuery.data?.length}项 / 最多{config!.favMax}项)
-            </small>
+            <div className="tips g-dot">
+              （{favoriteQuery.data?.length}项<span style={{ margin: "0 2px" }}>/</span>最多{config!.favMax}项）
+            </div>
           </div>
           {selectedRows.length ? (
             <Button

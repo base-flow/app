@@ -1,0 +1,24 @@
+.comp-FileTools {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+  gap: 15px;
+  align-items: center;
+  height: 100%;
+  padding: 0 10px;
+  background: var(--ant-table-row-hover-bg);
+
+  > span {
+    padding: 3px 5px;
+    line-height: 0;
+    color: var(--bf-second);
+    cursor: pointer;
+    border-radius: var(--bf-rd-btn);
+
+    &:hover {
+      color: var(--bf-primary);
+      background: var(--bf-bg-filled2);
+    }
+  }
+}

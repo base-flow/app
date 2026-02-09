@@ -37,7 +37,6 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
     },
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   const columns = useMemo<TableProps<_Entity.IEntity>["columns"]>(() => {
     return [
       {
@@ -147,9 +146,9 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
         <Space>
           <div className="title">
             {props.title}
-            <small className="g-dot">
-              ({sharedQuery.data?.length}项 / 最多{config!.sharedMax}项)
-            </small>
+            <div className="tips g-dot">
+              （{sharedQuery.data?.length}项<span style={{ margin: "0 2px" }}>/</span>最多{config!.sharedMax}项）
+            </div>
           </div>
           {selectedRows.length ? (
             <Button size="small" color="danger" variant="filled" icon={<Link2Off size={13} strokeWidth={2.5} className="anticon" />}>

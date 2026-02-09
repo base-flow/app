@@ -3,7 +3,6 @@ import request from "@/utils/request";
 
 export const FavoriteAPI = {
   idsQueryKey: "FavoriteIds",
-  listQueryKey: "FavoriteList",
   getList(): Promise<_Entity.IEntity[]> {
     return request.get("/api/favorite").then((res) => res.data);
   },
@@ -25,9 +24,9 @@ export const FavoriteAPI = {
   },
   queryList() {
     return queryOptions({
-      queryKey: [FavoriteAPI.listQueryKey],
+      queryKey: ["FavoriteList"],
       queryFn: () => FavoriteAPI.getList(),
-      staleTime: Infinity,
+      staleTime: 0,
       retry: 0,
       refetchOnWindowFocus: false,
       placeholderData: keepPreviousData,

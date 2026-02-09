@@ -2,11 +2,12 @@ import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { MenuProps, TablePaginationConfig, TableProps } from "antd";
-import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
-import { ChevronDown, Delete, FolderSymlink, FolderTree, Plus, Trash2 } from "lucide-react";
+import { Button, Dropdown, Result, Skeleton, Table, Tooltip } from "antd";
+import { ChevronDown, Copy, FolderSymlink, FolderTree, Plus, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Collect from "@/components/Collect";
+import FileTools, { type FileToolsAction } from "@/components/FileTools";
 import IconEntity from "@/components/IconEntity";
 import type { LinkItem } from "@/components/LinkTab";
 import LinkTab from "@/components/LinkTab";
@@ -16,6 +17,8 @@ import { useEvent, useMyFavoriteIds, useTableChange, useTablePagination } from "
 import { debounce } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
+import EntityCopy from "../EntityCopy";
+import EntityRename from "../EntityRename";
 import styles from "./index.module.scss";
 
 interface EntityListProps {
@@ -26,7 +29,8 @@ interface EntityListProps {
 
 const Component: FC<EntityListProps> = (props) => {
   const { rootDir, rootName } = props;
-  const [curEdit, setCurEdit] = useState<Partial<_Entity.IEntity>>();
+  const [currentEdit, setCurrentEdit] = useState<{ item: _Entity.IEntity; action: "rename" }>();
+  const [batchEdit, setBatchEdit] = useState<{ ids: string[]; file?: string; action: "copy" }>();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [tableScroll, setTableScroll] = useState({ y: 0 });
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -50,11 +54,15 @@ const Component: FC<EntityListProps> = (props) => {
   });
 
   const { onTableChange, onDirSearch } = useTableChange(query, setQuery);
+  const closeCurrentEdit = useEvent(() => setCurrentEdit(undefined));
+  const closeBatchEdit = useEvent(() => setBatchEdit(undefined));
 
   const entityAlter = useMutation({
     mutationFn: EntityAPI.updateItem,
-    onSuccess: (result, args) => {
+    onSuccess: (_result, args) => {
+      closeCurrentEdit();
       queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey, { dir: query.dir }] });
+      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey, { dir: args.id }] });
       queryClient.invalidateQueries({ queryKey: [EntityAPI.itemQueryKey, args.id] });
     },
   });
@@ -71,14 +79,6 @@ const Component: FC<EntityListProps> = (props) => {
   //   setCurEdit({ directoryId });
   // });
 
-  const onDelete = useEvent((id: string, name: string) => {
-    BaseWidgets.confirm(`确定要删除“${name}”吗？`, (ok) => {
-      if (ok) {
-        entityDeleter.mutate([id]);
-      }
-    });
-  });
-
   const onBatchDelete = useEvent((ids: string[]) => {
     BaseWidgets.confirm(`确定要删除选中的“${ids.length}”项吗？`, (ok) => {
       if (ok) {
@@ -87,26 +87,22 @@ const Component: FC<EntityListProps> = (props) => {
     });
   });
 
-  // const onToTemplate = useCallback(
-  //   (id: string, name: string, templated: boolean) => {
-  //     BaseWidgets.confirm(
-  //       `《${name}》${templated ? "共享为模版后，该流程内所有节点及连接配置将公开可见，请注意去除敏感信息和配置账号！" : "取消共享为模版后，将不在出现在模版列表中，但不影响已基于此模版创建的流程！"}`,
-  //       (ok) => {
-  //         if (ok) {
-  //           workflowAlter.mutate({ id });
-  //         }
-  //       },
-  //       templated
-  //         ? { title: "确定要共享为模版吗？", okText: "确定共享", cancelText: "放弃操作" }
-  //         : { title: "确定要取消共享为模版吗？", okText: "确定取消", cancelText: "放弃操作" },
-  //     );
-  //   },
-  //   [workflowAlter],
-  // );
+  const onRename = useEvent((id: string, name: string) => {
+    entityAlter.mutate({ id, name });
+  });
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
+  const onCopy = useEvent((ids: string[], target: string, action: "copy" | "move") => {
+    console.log(ids, target, action);
+    closeBatchEdit();
+  });
+
   const batchMenu = useMemo(() => {
     const items: MenuProps["items"] = [
+      {
+        label: "批量移动/复制",
+        key: "copy",
+        icon: <Copy size={13} />,
+      },
       {
         label: "批量删除",
         key: "delete",
@@ -118,53 +114,72 @@ const Component: FC<EntityListProps> = (props) => {
       onClick: ({ key }: { key: string }) => {
         if (key === "delete") {
           onBatchDelete(selectedRows);
+        } else if (key === "copy") {
+          setBatchEdit({ ids: selectedRows, action: "copy" });
         }
       },
     };
-  }, [selectedRows]);
+  }, [selectedRows, onBatchDelete]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
+  const onToolsClick = useEvent((item: _Entity.IEntity, action: FileToolsAction) => {
+    if (action === "rename") {
+      setCurrentEdit({ item, action: "rename" });
+    } else if (action === "delete") {
+      BaseWidgets.confirm(`确定要删除“${item.name}”吗？`, (ok) => {
+        if (ok) {
+          entityDeleter.mutate([item.id]);
+        }
+      });
+    } else if (action === "copy") {
+      setBatchEdit({ ids: [item.id], file: item.name, action: "copy" });
+    }
+  });
+
   const columns = useMemo<TableProps<_Entity.IEntity>["columns"]>(() => {
     return [
       {
         title: "名称",
         dataIndex: "name",
         key: "name",
+        className: "g-file-cell",
         render: (name, row) => (
-          <div className="g-entity-cell">
-            <IconEntity className="icon" type={row.type} />
-            {row.type === "directory" ? (
-              <Link to="." search={{ dir: row.id }}>
-                {name}
-              </Link>
-            ) : row.type === "workflow" ? (
-              <Link to="/workflow/$workflowId" params={{ workflowId: row.id }} search={{ dir: 1 }}>
-                {name}
-              </Link>
-            ) : row.type === "node" ? (
-              <Link to="/node/$nodeId" params={{ nodeId: row.id }}>
-                {name}
-              </Link>
-            ) : (
-              <Link to="/node/$nodeId" params={{ nodeId: row.id }}>
-                {name}
-              </Link>
-            )}
-            {row.path ? (
-              <Tooltip
-                placement="bottom"
-                title={
-                  row.path
-                    .replace(/\/.+? /g, "/")
-                    .replace(/^\/.+?\//, "/")
-                    .replace(/\/[^/]+?$/, "") || "/"
-                }
-              >
-                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
-              </Tooltip>
-            ) : null}
-            <Collect id={row.id} value={favoriteMap[row.id]} onChange={onFavoriteChange} />
-          </div>
+          <>
+            <div className="g-entity-cell">
+              <IconEntity className="icon" type={row.type} />
+              {row.type === "directory" ? (
+                <Link to="." search={{ dir: row.id }}>
+                  {name}
+                </Link>
+              ) : row.type === "workflow" ? (
+                <Link to="/workflow/$workflowId" params={{ workflowId: row.id }} search={{ dir: 1 }}>
+                  {name}
+                </Link>
+              ) : row.type === "node" ? (
+                <Link to="/node/$nodeId" params={{ nodeId: row.id }}>
+                  {name}
+                </Link>
+              ) : (
+                <Link to="/node/$nodeId" params={{ nodeId: row.id }}>
+                  {name}
+                </Link>
+              )}
+              {row.path ? (
+                <Tooltip
+                  placement="bottom"
+                  title={
+                    row.path
+                      .replace(/\/.+? /g, "/")
+                      .replace(/^\/.+?\//, "/")
+                      .replace(/\/[^/]+?$/, "") || "/"
+                  }
+                >
+                  <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
+                </Tooltip>
+              ) : null}
+              <Collect id={row.id} value={favoriteMap[row.id]} onChange={onFavoriteChange} />
+            </div>
+            <FileTools item={row} onClick={onToolsClick} />
+          </>
         ),
       },
       {
@@ -186,7 +201,7 @@ const Component: FC<EntityListProps> = (props) => {
         dataIndex: "createAt",
         key: "createAt",
         sorter: true,
-        sortOrder: (query.sorterField === "createAt" && query.sorterOrder) || null,
+        sortOrder: (entityListQuery.sorterField === "createAt" && entityListQuery.sorterOrder) || null,
         width: 140,
       },
       {
@@ -194,48 +209,11 @@ const Component: FC<EntityListProps> = (props) => {
         dataIndex: "updateAt",
         key: "updateAt",
         sorter: true,
-        sortOrder: (query.sorterField === "updateAt" && query.sorterOrder) || null,
+        sortOrder: (entityListQuery.sorterField === "updateAt" && entityListQuery.sorterOrder) || null,
         width: 140,
       },
-      {
-        title: "操作",
-        key: "action",
-        width: 160,
-        render: (_, row) => {
-          return (
-            <div className="g-td-actions">
-              <a>编排</a>
-              <a onClick={() => setCurEdit(row)}>修改</a>
-              <Dropdown
-                menu={{
-                  onClick: ({ key }: { key: string }) => {
-                    if (key === "delete") {
-                      onDelete(row.id, row.name);
-                    }
-                  },
-                  items: [
-                    {
-                      key: "delete",
-                      label: (
-                        <span>
-                          <Delete /> 删除流程
-                        </span>
-                      ),
-                    },
-                  ],
-                }}
-              >
-                <a>
-                  <span>更多</span>
-                  <ChevronDown size={13} className="anticon" />
-                </a>
-              </Dropdown>
-            </div>
-          );
-        },
-      },
     ];
-  }, [query, favoriteMap]);
+  }, [entityListQuery, favoriteMap, onFavoriteChange, setQuery, onToolsClick]);
 
   const pagination: TablePaginationConfig = useTablePagination(entityListSummary);
 
@@ -371,6 +349,8 @@ const Component: FC<EntityListProps> = (props) => {
           onChange={onTableChange}
         />
       </div>
+      {currentEdit?.action === "rename" && <EntityRename item={currentEdit.item} onCancel={closeCurrentEdit} onSubmit={onRename} />}
+      {batchEdit?.action === "copy" && <EntityCopy ids={batchEdit.ids} file={batchEdit.file} onCancel={closeBatchEdit} onSubmit={onCopy} />}
       {/* <FlowEdit item={curEdit} setItem={setCurEdit} /> */}
     </div>
   );

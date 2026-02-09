@@ -37,10 +37,10 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException("Token解析失败");
     }
     try {
-      const { sub, username, nickname, roles }: TokenPayload = await this.jwtService.verifyAsync(token, {
+      const { sub, username, nickname, dir, roles }: TokenPayload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get("JWT_SECRET"),
       });
-      const user: _App.AuthUser = { id: sub, username, nickname, roles: roles as _Permission.SystemRole[] };
+      const user: _App.AuthUser = { id: sub, username, nickname, dir, roles: roles as _Permission.SystemRole[] };
       request.user = user;
       const now = Date.now();
       const dt = (now - Number(tokenUpdateTime)) / 1000;

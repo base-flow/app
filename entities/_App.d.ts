@@ -12,6 +12,7 @@ declare namespace _App {
     id: string;
     username: string;
     nickname: string;
+    dir: string;
     roles: _Permission.SystemRole[];
   }
 

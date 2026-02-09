@@ -16,6 +16,16 @@ export function replaceApiBase(url: string): string {
   return url.replace(/^\/(api)\//, (pre) => (API_PROXY as any)[pre]);
 }
 
+export function verifyFileName(name: string): string {
+  if (!name) {
+    return "文件名不能为空";
+  }
+  if (/[\s/]/.test(name)) {
+    return "文件名中不能包含空格和/字符";
+  }
+  return "";
+}
+
 export function debounce<T extends (...rest: any[]) => any>(callbak: T, delay = 0, every?: T): T {
   let timer: any = null;
   return ((...args: any[]) => {
@@ -127,6 +137,30 @@ export function sortList<T extends { [key: string]: any }>(list: T[], sortField:
   });
 }
 
+interface TreeData {
+  key: string;
+  title: string;
+  children?: TreeData[];
+}
+
+export function findInTree<T extends TreeData>(tree: T, reduce: (item: T) => boolean | T | void): T | undefined {
+  const result = reduce(tree);
+  if (result) {
+    return typeof result === "boolean" ? tree : result;
+  }
+  if (tree.children?.length) {
+    const arr = tree.children;
+    for (let i = 0, k = arr.length; i < k; i++) {
+      const item = arr[i] as T;
+      const result = findInTree(item as T, reduce);
+      if (result) {
+        return typeof result === "boolean" ? item : result;
+      }
+    }
+  }
+  return undefined;
+}
+
 export function messageWrap(message: string): ReactNode {
   const arr = message.split("\n");
   return arr.length > 1 ? arr.map((line) => <div key={line}>{line}</div>) : message;
@@ -138,9 +172,13 @@ export function messageWrap(message: string): ReactNode {
 //   return item.type === "workflow";
 // }
 export function openEntity(entity: _Entity.IEntity, parentDir: boolean, windowKey: "EntityEdit" | "EntityView"): void {
-  const { id, type, spaceType, spaceId, parentId } = entity;
+  const { id, type, spaceType, spaceId, parentId, path } = entity;
   if (parentDir || type === "directory") {
-    window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}?dir="${parentDir ? parentId : id}"`, windowKey);
+    let dir = `?dir="${parentDir ? parentId : id}"`;
+    if (parentDir && path.split("/").length === 3) {
+      dir = "";
+    }
+    window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}${dir}`, windowKey);
   } else {
     //window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}?dir="${id}"`, windowKey);
   }

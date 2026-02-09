@@ -77,7 +77,7 @@ function RootComponent() {
       modal.confirm({
         title: "提示",
         content: message,
-        width: 500,
+        width: 450,
         ...props,
         onOk() {
           callback(true);
@@ -114,6 +114,9 @@ function RootComponent() {
           components: {
             Input: {
               activeShadow: "0 0 5px 1px #1677ff2f;",
+            },
+            Select: {
+              activeOutlineColor: "#1677ff1f",
             },
             Pagination: { itemBg: "transparent" },
             Table: {

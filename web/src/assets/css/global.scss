@@ -184,6 +184,18 @@ a {
   }
 }
 
+.g-file-cell {
+  &.ant-table-cell-row-hover {
+    > .comp-FileTools {
+      display: flex;
+    }
+  }
+}
+
+.ant-table-row-selected > .g-file-cell > .comp-FileTools {
+  display: none;
+}
+
 .g-entity-cell {
   padding-left: 20px;
 
@@ -277,7 +289,7 @@ a {
   justify-content: flex-end;
 
   > .ant-btn {
-    padding: 0 25px;
+    padding: 0 20px;
     font-weight: 500;
   }
 }

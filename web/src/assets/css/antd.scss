@@ -52,6 +52,13 @@
   scrollbar-color: var(--bf-bg-filled) transparent;
 }
 
+.ant-modal-footer {
+  > .ant-btn {
+    padding: 0 20px;
+    font-weight: 500;
+  }
+}
+
 // .ant-btn-color-primary,
 // .ant-btn-color-default {
 //   box-shadow: none;

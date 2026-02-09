@@ -1,0 +1,11 @@
+:global {
+  :local(.EntityRename) {
+    > .error {
+      height: 1em;
+      padding: 5px 0 0 2px;
+      font-size: 11px;
+      line-height: 1em;
+      color: var(--bf-special);
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import { ProjectsMap } from "./data";
 export const SystemRoleConfg: _Permission.SystemRoleConfg = {
   Admin: {
     project_list: "all",
@@ -71,8 +72,8 @@ export const ProjectRoleConfg: _Permission.ProjectRoleConfg = {
   },
 };
 export const MyProjectRoles: _Permission.MyProjectRoles = {
-  "3": "Owner",
-  "5": "Admin",
+  "1": { projectName: ProjectsMap[1].name, projectDir: ProjectsMap[1].dir, projectRole: "Owner" },
+  "2": { projectName: ProjectsMap[2].name, projectDir: ProjectsMap[2].dir, projectRole: "Admin" },
 };
 export function getPermissions(user: _App.AuthUser): _Permission.IPermissions {
   const systemPermissions = user.roles.reduce((obj, role) => {

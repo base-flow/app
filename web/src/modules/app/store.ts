@@ -47,7 +47,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const state = get();
     const { systemPermissions = {}, myProjectRoles, projectRoleConfg } = state;
     if (projectId && projectRoleConfg) {
-      const projectRole = myProjectRoles[projectId];
+      const projectRole = myProjectRoles[projectId]?.projectRole;
       if (projectRole) {
         const projectPermissions = projectRoleConfg[projectRole];
         return { ...projectPermissions, ...systemPermissions };

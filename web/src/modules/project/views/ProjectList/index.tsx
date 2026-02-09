@@ -119,7 +119,7 @@ const Component: FC<ProjectListProps> = (props) => {
               <ProjectItem
                 key={item.id}
                 getPermissionsInProject={getPermissionsInProject}
-                projectRole={myProjectRoles[item.id]}
+                projectRole={myProjectRoles[item.id]?.projectRole}
                 item={item}
                 onDelete={onDelete}
                 setCurEdit={setCurEdit}

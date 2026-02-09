@@ -10,6 +10,7 @@ export const Users: Array<_App.AuthUser & { password: string }> = [
     username: "admin",
     nickname: "小布丁",
     password: "123456",
+    dir: "",
     roles: ["Admin"],
   },
   {
@@ -17,6 +18,7 @@ export const Users: Array<_App.AuthUser & { password: string }> = [
     username: "maria",
     nickname: "多啦啊嘛",
     password: "123456",
+    dir: "",
     roles: ["Member"],
   },
 ];
@@ -234,6 +236,8 @@ const mariaFolder = EntityList.find((item) => item.name === "maria") as _App.IDi
 const deepseekFolder = EntityList.find((item) => item.name === "deepseek") as _App.IDirectory;
 const googleFolder = EntityList.find((item) => item.name === "google") as _App.IDirectory;
 
+Users[0].dir = adminFolder.id;
+Users[1].dir = mariaFolder.id;
 Personals[0].dir = adminFolder.id;
 Personals[0].publicDir = adminFolder.children!.find((item) => item.name === "public")?.id || "";
 Personals[1].dir = mariaFolder.id;

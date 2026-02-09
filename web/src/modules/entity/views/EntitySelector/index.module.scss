@@ -38,6 +38,10 @@
       display: flex;
       gap: 10px;
 
+      > .ant-btn {
+        font-weight: 500;
+      }
+
       > .selected {
         position: absolute;
         top: -20px;

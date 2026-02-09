@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_auth/project/$projectId/")({
     page: z.number().optional(),
     keyword: z.string().optional(),
     dir: z.string().optional(),
-    type: z.enum(["workflow", "node", "data"]).optional(),
+    type: z.enum(["directory", "workflow", "node", "data"]).optional(),
   }),
 });
 
