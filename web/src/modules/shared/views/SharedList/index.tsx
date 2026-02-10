@@ -1,14 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import type { TableProps } from "antd";
-import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
-import { FolderSymlink, FolderTree, Link2Off, Plus, Share2, Trash2 } from "lucide-react";
+import { Button, Result, Skeleton, Space, Table } from "antd";
+import { Link2Off, Share2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import LoadingMask from "@/components/LoadingMask";
 import { useAppStore } from "@/modules/app/store";
 import { useEvent } from "@/utils/hooks";
-import { debounce, openShared, sortList } from "@/utils/tools";
+import { debounce, sortList } from "@/utils/tools";
 import { SharedAPI } from "../../api";
 import styles from "./index.module.scss";
 
@@ -17,7 +18,7 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
   const [tableScroll, setTableScroll] = useState({ y: 0 });
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [config] = useAppStore(useShallow(({ config }) => [config]));
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const sharedQuery = useQuery(SharedAPI.queryList(props.query));
   const [query, setQuery] = useState<{ sorterField?: string; sorterOrder?: "ascend" | "descend" }>({});
   const sharedList = useMemo(() => {
@@ -46,7 +47,7 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
         render: (name, row) => (
           <div className="g-entity-cell">
             <Share2 className="icon" size={13} />
-            <a onClick={() => openShared(row.id)}>{name}</a>
+            <a onClick={() => navigate({ to: "/shared/$sharedId", params: { sharedId: row.id } })}>{name}</a>
           </div>
         ),
       },
@@ -96,7 +97,7 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
         },
       },
     ];
-  }, [query]);
+  }, [query, navigate]);
 
   const rowSelection: TableProps<any>["rowSelection"] = useMemo(
     () => ({

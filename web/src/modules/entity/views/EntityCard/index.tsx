@@ -6,6 +6,7 @@ import { memo } from "react";
 import Collect from "@/components/Collect";
 import IconFolder from "@/components/IconFolder";
 import Likes from "@/components/Likes";
+import { showPath } from "@/utils/tools";
 import styles from "./index.module.scss";
 
 const DefaultIcon =
@@ -28,15 +29,7 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap
     return (
       <div className={classnames(styles.EntityCard, "g-card folder")} onClick={() => onItemClick(item)}>
         {item.path ? (
-          <Tooltip
-            placement="bottom"
-            title={
-              item.path
-                .replace(/\/.+? /g, "/")
-                .replace(/^\/.+?\//, "/")
-                .replace(/\/[^/]+?$/, "") || "/"
-            }
-          >
+          <Tooltip placement="bottom" title={showPath(item.path)}>
             <span className="path">
               <FolderSymlink size={12} strokeWidth={2.5} />
             </span>
@@ -94,15 +87,7 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap
     return (
       <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}>
         {item.path ? (
-          <Tooltip
-            placement="bottom"
-            title={
-              item.path
-                .replace(/\/.+? /g, "/")
-                .replace(/^\/.+?\//, "/")
-                .replace(/\/[^/]+?$/, "") || "/"
-            }
-          >
+          <Tooltip placement="bottom" title={showPath(item.path)}>
             <span className="path">
               <FolderSymlink size={12} strokeWidth={2.5} />
             </span>
@@ -165,15 +150,7 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap
     return (
       <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}>
         {item.path ? (
-          <Tooltip
-            placement="bottom"
-            title={
-              item.path
-                .replace(/\/.+? /g, "/")
-                .replace(/^\/.+?\//, "/")
-                .replace(/\/[^/]+?$/, "") || "/"
-            }
-          >
+          <Tooltip placement="bottom" title={showPath(item.path)}>
             <span className="path">
               <FolderSymlink size={12} strokeWidth={2.5} />
             </span>

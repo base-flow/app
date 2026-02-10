@@ -311,6 +311,7 @@ export const SharedList: (_Shared.IShared & { content: _Entity.IEntity[] })[] = 
   },
 ];
 
+console.log(SharedList);
 export const SharedMap: { [id: string]: _Shared.IShared & { content: _Entity.IEntity[] } } = SharedList.reduce((obj, cur) => {
   obj[cur.id] = cur;
   return obj;

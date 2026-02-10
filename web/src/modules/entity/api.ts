@@ -17,6 +17,9 @@ export const EntityAPI = {
   batchDelete(ids: string[]): Promise<void> {
     return request.delete("/api/entity", { data: { ids } });
   },
+  batchMove(data: { ids: string[]; target: string; action: "move" | "copy" }): Promise<void> {
+    return Promise.resolve();
+  },
   createItem(item: Partial<_Entity.IEntity>): Promise<_Entity.CreateResult> {
     return request.post("/api/entity", item).then((res) => res.data);
   },

@@ -9,7 +9,7 @@ import Lang, { formatLang } from "@/assets/Lang";
 import IconEntity from "@/components/IconEntity";
 import { useAppStore } from "@/modules/app/store";
 import { useEvent } from "@/utils/hooks";
-import { findInTree } from "@/utils/tools";
+import { findInTree, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import styles from "./index.module.scss";
 
@@ -97,7 +97,7 @@ const Component: FC<EntityCopyProps> = ({ file, ids, onCancel, onSubmit }) => {
       return Promise.resolve();
     }
     return queryClient.fetchQuery(EntityAPI.queryList({ dir: key, type: "directory" })).then((data) => {
-      const children = data.list.map((item) => ({ title: item.name, key: item.id, path: item.path.replace(/\/.+? /g, "/") }));
+      const children = data.list.map((item) => ({ title: item.name, key: item.id, path: showPath(item.path, true) }));
       const newTreeData = produce(treeData, (draft) => {
         for (let i = 0, k = draft.length; i < k; i++) {
           const dir = findInTree(draft[i], (item) => {

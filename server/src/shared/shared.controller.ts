@@ -16,6 +16,9 @@ export class SharedController {
   @Get(":id")
   async getItem(@Param() param: { id: string }): Promise<_Shared.IShared> {
     await sleep(1000);
+    if (!SharedMap[param.id]) {
+      throw new NotFoundException();
+    }
     return SharedMap[param.id];
   }
 

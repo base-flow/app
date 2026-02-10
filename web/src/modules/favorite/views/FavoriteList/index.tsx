@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import type { MenuProps, TableProps } from "antd";
 import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
 import classnames from "classnames";
@@ -14,10 +14,11 @@ import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import { useAppStore } from "@/modules/app/store";
 import { useEvent, useMyFavoriteList } from "@/utils/hooks";
-import { debounce, openEntity, sortList } from "@/utils/tools";
+import { debounce, openDirectory, openFile, showPath, sortList } from "@/utils/tools";
 import styles from "./index.module.scss";
 
-const Component: FC<{}> = () => {
+const Component: FC = () => {
+  const navigate = useNavigate();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [tableScroll, setTableScroll] = useState({ y: 0 });
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -105,10 +106,15 @@ const Component: FC<{}> = () => {
         render: (name, row) => (
           <div className="g-entity-cell">
             <IconEntity className="icon" type={row.type} />
-            <a onClick={() => openEntity(row, false, "EntityView")}>{name}</a>
+            {row.type === "directory" ? (
+              <a onClick={() => openDirectory(row, false, navigate)}>{name}</a>
+            ) : (
+              <a onClick={() => openFile(row, "EntityView")}>{name}</a>
+            )}
+
             {row.path ? (
-              <Tooltip placement="bottom" title={row.path.replace(/\/.+? /g, "/").replace(/\/[^/]+?$/, "") || "/"}>
-                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => openEntity(row, true, "EntityView")} />
+              <Tooltip placement="bottom" title={showPath(row.path)}>
+                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => openDirectory(row, true, navigate)} />
               </Tooltip>
             ) : null}
             <Collect id={row.id} value={true} onChange={onFavoriteChange} />
@@ -154,7 +160,7 @@ const Component: FC<{}> = () => {
         },
       },
     ];
-  }, [query, onFavoriteChange]);
+  }, [query, onFavoriteChange, navigate]);
 
   const rowSelection: TableProps<any>["rowSelection"] = useMemo(
     () => ({

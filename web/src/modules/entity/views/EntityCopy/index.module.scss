@@ -23,5 +23,9 @@
         color: var(--bf-tx-summary);
       }
     }
+
+    .ant-tree-node-content-wrapper {
+      padding-inline: 0;
+    }
   }
 }

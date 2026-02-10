@@ -14,7 +14,7 @@ import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import { useEvent, useMyFavoriteIds, useTableChange, useTablePagination } from "@/utils/hooks";
-import { debounce } from "@/utils/tools";
+import { debounce, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
 import EntityCopy from "../EntityCopy";
@@ -59,11 +59,9 @@ const Component: FC<EntityListProps> = (props) => {
 
   const entityAlter = useMutation({
     mutationFn: EntityAPI.updateItem,
-    onSuccess: (_result, args) => {
+    onSuccess: () => {
       closeCurrentEdit();
-      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey, { dir: query.dir }] });
-      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey, { dir: args.id }] });
-      queryClient.invalidateQueries({ queryKey: [EntityAPI.itemQueryKey, args.id] });
+      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey] });
     },
   });
 
@@ -71,7 +69,16 @@ const Component: FC<EntityListProps> = (props) => {
     mutationFn: EntityAPI.batchDelete,
     onSuccess: () => {
       setSelectedRows([]);
-      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey, { dir: query.dir }] });
+      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey] });
+    },
+  });
+
+  const entityMover = useMutation({
+    mutationFn: EntityAPI.batchMove,
+    onSuccess: () => {
+      closeBatchEdit();
+      setSelectedRows([]);
+      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey] });
     },
   });
 
@@ -87,19 +94,18 @@ const Component: FC<EntityListProps> = (props) => {
     });
   });
 
-  const onRename = useEvent((id: string, name: string) => {
-    entityAlter.mutate({ id, name });
+  const onBatchCopy = useEvent((ids: string[], target: string, action: "copy" | "move") => {
+    entityMover.mutate({ ids, target, action });
   });
 
-  const onCopy = useEvent((ids: string[], target: string, action: "copy" | "move") => {
-    console.log(ids, target, action);
-    closeBatchEdit();
+  const onRename = useEvent((id: string, name: string) => {
+    entityAlter.mutate({ id, name });
   });
 
   const batchMenu = useMemo(() => {
     const items: MenuProps["items"] = [
       {
-        label: "批量移动/复制",
+        label: "移动/复制",
         key: "copy",
         icon: <Copy size={13} />,
       },
@@ -164,15 +170,7 @@ const Component: FC<EntityListProps> = (props) => {
                 </Link>
               )}
               {row.path ? (
-                <Tooltip
-                  placement="bottom"
-                  title={
-                    row.path
-                      .replace(/\/.+? /g, "/")
-                      .replace(/^\/.+?\//, "/")
-                      .replace(/\/[^/]+?$/, "") || "/"
-                  }
-                >
+                <Tooltip placement="bottom" title={showPath(row.path)}>
                   <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
                 </Tooltip>
               ) : null}
@@ -350,7 +348,7 @@ const Component: FC<EntityListProps> = (props) => {
         />
       </div>
       {currentEdit?.action === "rename" && <EntityRename item={currentEdit.item} onCancel={closeCurrentEdit} onSubmit={onRename} />}
-      {batchEdit?.action === "copy" && <EntityCopy ids={batchEdit.ids} file={batchEdit.file} onCancel={closeBatchEdit} onSubmit={onCopy} />}
+      {batchEdit?.action === "copy" && <EntityCopy ids={batchEdit.ids} file={batchEdit.file} onCancel={closeBatchEdit} onSubmit={onBatchCopy} />}
       {/* <FlowEdit item={curEdit} setItem={setCurEdit} /> */}
     </div>
   );

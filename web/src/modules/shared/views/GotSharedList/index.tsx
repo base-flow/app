@@ -1,19 +1,17 @@
 import { BaseWidgets } from "@baseflow/react";
-import { Icons, StringInput } from "@baseflow/widgets";
+import { StringInput } from "@baseflow/widgets";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { Button, Result, Space } from "antd";
 import classnames from "classnames";
 import { Info, Link, Plus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo, useRef, useState } from "react";
-import { useShallow } from "zustand/react/shallow";
-import FieldSorter from "@/components/FieldSorter";
 import LoadingMask from "@/components/LoadingMask";
-import SearchInput from "@/components/SearchInput";
 import SkeletonCardList from "@/components/SkeletonCardList";
 import { FlagSrc } from "@/components/utils";
-import { useEvent, usePermissions } from "@/utils/hooks";
-import { debounce, openEntity, sortList } from "@/utils/tools";
+import { useEvent } from "@/utils/hooks";
+import { sortList } from "@/utils/tools";
 import { SharedAPI } from "../../api";
 import GotSharedCard from "../GotSharedCard";
 import styles from "./index.module.scss";
@@ -21,6 +19,7 @@ import styles from "./index.module.scss";
 const Component: FC = () => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const sharedQuery = useQuery(SharedAPI.queryGotList());
   const [query, setQuery] = useState<{ sorterField?: string; sorterOrder?: "ascend" | "descend" }>({});
   const sharedList = useMemo(() => {
@@ -39,6 +38,10 @@ const Component: FC = () => {
 
   const onCreate = useEvent(() => {
     setCurEdit({ logo: FlagSrc.create() } as _Project.IProject);
+  });
+
+  const onItemClick = useEvent((item: _Shared.IGotShared) => {
+    navigate({ to: "/shared/$sharedId", params: { sharedId: item.sharedId } });
   });
 
   const sharedDeleter = useMutation({
@@ -104,7 +107,7 @@ const Component: FC = () => {
       <div className="bd" ref={scrollerRef}>
         <div className="g-grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
           {sharedList.map((item) => {
-            return <GotSharedCard key={item.id} item={item} onDelete={onDelete} />;
+            return <GotSharedCard key={item.id} item={item} onDelete={onDelete} onItemClick={onItemClick} />;
           })}
         </div>
       </div>

@@ -12,7 +12,7 @@ import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import { useEvent, useMyFavoriteList, useTableChange, useTablePagination } from "@/utils/hooks";
-import { openEntity } from "@/utils/tools";
+import { openFile, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
 import styles from "./index.module.scss";
@@ -78,18 +78,10 @@ const Component: FC<EntitySelectorProps> = (props) => {
             {row.type === "directory" ? (
               <a onClick={() => setQuery({ dir: row.id })}>{name}</a>
             ) : (
-              <a onClick={() => openEntity(row, false, "EntityView")}>{name}</a>
+              <a onClick={() => openFile(row, "EntityView")}>{name}</a>
             )}
             {row.path ? (
-              <Tooltip
-                placement="bottom"
-                title={
-                  row.path
-                    .replace(/\/.+? /g, "/")
-                    .replace(/^\/.+?\//, "/")
-                    .replace(/\/[^/]+?$/, "") || "/"
-                }
-              >
+              <Tooltip placement="bottom" title={showPath(row.path)}>
                 <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
               </Tooltip>
             ) : null}

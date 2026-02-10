@@ -16,7 +16,7 @@ import { useAppStore } from "@/modules/app/store";
 import Breadcrumb from "@/modules/entity/views/Breadcrumb";
 import EntitySelector from "@/modules/entity/views/EntitySelector";
 import { useEvent, useTableChange, useTablePagination } from "@/utils/hooks";
-import { debounce, openEntity } from "@/utils/tools";
+import { debounce, openDirectory, openFile, showPath } from "@/utils/tools";
 import { SharedAPI } from "../../api";
 import styles from "./index.module.scss";
 
@@ -97,25 +97,17 @@ const Component: FC<SharedContentProps> = (props) => {
             <IconEntity className="icon" type={row.type} />
             <a
               onClick={() => {
-                row.type === "directory" ? setQuery({ dir: row.id }) : openEntity(row, false, "EntityView");
+                row.type === "directory" ? setQuery({ dir: row.id }) : openFile(row, "EntityView");
               }}
             >
               {name}
             </a>
             {row.path ? (
-              <Tooltip
-                placement="bottom"
-                title={
-                  row.path
-                    .replace(/\/.+? /g, "/")
-                    .replace(/^\/.+?\//, "/")
-                    .replace(/\/[^/]+?$/, "") || "/"
-                }
-              >
+              <Tooltip placement="bottom" title={showPath(row.path)}>
                 {entityListQuery.dir ? (
                   <FolderSymlink className="dir anticon" size={13} onClick={() => setQuery({ dir: row.parentId })} />
                 ) : (
-                  <Link className="dir anticon" size={13} onClick={() => openEntity(row, true, "EntityView")} />
+                  <Link className="dir anticon" size={13} onClick={() => openDirectory(row, true, navigate)} />
                 )}
               </Tooltip>
             ) : null}

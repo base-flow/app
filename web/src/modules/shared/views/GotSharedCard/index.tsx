@@ -1,18 +1,18 @@
 import classnames from "classnames";
-import { CircleX, Clock, Link2, UserRound } from "lucide-react";
+import { Clock, UserRound } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo } from "react";
 import Flag from "@/components/Flag";
 import IconRemove from "@/components/IconRemove";
-import { openShared } from "@/utils/tools";
 import styles from "./index.module.scss";
 
 interface GotSharedCardProps {
   item: _Shared.IGotShared;
   onDelete: (id: string, name: string) => void;
+  onItemClick: (item: _Shared.IGotShared) => void;
 }
 
-const Component: FC<GotSharedCardProps> = ({ item, onDelete }) => {
+const Component: FC<GotSharedCardProps> = ({ item, onDelete, onItemClick }) => {
   const { spaceLogo, spaceType } = item;
   const avatar = useMemo(() => {
     if (spaceType === "personal") {
@@ -45,7 +45,7 @@ const Component: FC<GotSharedCardProps> = ({ item, onDelete }) => {
   }, [spaceLogo, spaceType]);
 
   return (
-    <div className={classnames(styles.GotSharedCard, "g-card")} onClick={() => openShared(item.sharedId)}>
+    <div className={classnames(styles.GotSharedCard, "g-card")} onClick={() => onItemClick(item)}>
       <div
         title="删除"
         className="remove"

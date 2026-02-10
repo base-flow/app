@@ -171,18 +171,23 @@ export function messageWrap(message: string): ReactNode {
 // export function isWorkflow(item: { type: string }): item is _Workflow.IWorkflow {
 //   return item.type === "workflow";
 // }
-export function openEntity(entity: _Entity.IEntity, parentDir: boolean, windowKey: "EntityEdit" | "EntityView"): void {
-  const { id, type, spaceType, spaceId, parentId, path } = entity;
-  if (parentDir || type === "directory") {
-    let dir = `?dir="${parentDir ? parentId : id}"`;
-    if (parentDir && path.split("/").length === 3) {
-      dir = "";
-    }
-    window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}${dir}`, windowKey);
-  } else {
-    //window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}?dir="${id}"`, windowKey);
+export function openDirectory(
+  entity: _Entity.IEntity,
+  parentDir: boolean,
+  navigate: (data: { to: string; search: { [key: string]: any } }) => void,
+): void {
+  const { id, spaceType, spaceId, parentId, path } = entity;
+  let dir: string | undefined = parentDir ? parentId : id;
+  if (parentDir && path.split("/").length === 3) {
+    dir = undefined;
   }
+  navigate({ to: `/${spaceType}/${spaceId}`, search: { dir } });
 }
-export function openShared(id: string, windowKey: string = "shared"): void {
-  window.open(`${window.BASE_PATH || ""}/shared/${id}`, windowKey);
+export function openFile(file: _Workflow.IWorkflow | _Node.INode | _Data.IData, windowKey: "EntityEdit" | "EntityView"): void {
+  //window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}${dir}`, windowKey);
+}
+export function showPath(path: string, keepSelf?: boolean): string {
+  //.replace(/\/.+? /g, "/").replace(/^\/.+?\//, "/").replace(/\/[^/]+?$/, "") || "/"
+  const pathname = path.replace(/\/.+? /g, "/");
+  return keepSelf ? pathname : pathname.replace(/\/[^/]+?$/, "") || "/";
 }
