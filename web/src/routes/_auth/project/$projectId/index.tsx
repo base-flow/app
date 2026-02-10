@@ -15,6 +15,13 @@ export const Route = createFileRoute("/_auth/project/$projectId/")({
 
 function RouteComponent() {
   const search = Route.useSearch();
-  const { project } = useProject();
-  return <EntityList rootName="项目文档" rootDir={project.dir} query={{ ...search, dir: search.dir || project.dir }} />;
+  const { project, isMember, setCurrentPath } = useProject();
+  return (
+    <EntityList
+      rootName="项目文档"
+      rootDir={project.dir}
+      setCurrentPath={setCurrentPath}
+      query={{ ...search, dir: search.dir || (isMember ? project.dir : project.publicDir) }}
+    />
+  );
 }

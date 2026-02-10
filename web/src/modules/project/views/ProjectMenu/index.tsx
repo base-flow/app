@@ -1,5 +1,4 @@
 import { useMatchRoute, useNavigate } from "@tanstack/react-router";
-import { ExternalLink } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo, useState } from "react";
 import IconEntity from "@/components/IconEntity";
@@ -9,9 +8,10 @@ import IconTrash from "@/components/IconTrash";
 import type { MenuItem } from "@/components/MenuNav";
 import MenuNav from "@/components/MenuNav";
 import { useEvent, useProject } from "@/utils/hooks";
+import { isPublicDir } from "@/utils/tools";
 
-const Component: FC = () => {
-  const { project } = useProject();
+const Component: FC<{ currentPath: string }> = ({ currentPath }) => {
+  const { project, isMember } = useProject();
   const navigate = useNavigate();
   const matchRoute = useMatchRoute();
   const [openedKey, setOpenedKey] = useState<string | undefined>();
@@ -21,7 +21,11 @@ const Component: FC = () => {
     if (matchRoute({ to: "/project/$projectId/shared" })) {
       return [openedKey, "shared"];
     } else if (matchRoute({ to: "/project/$projectId" })) {
-      return [openedKey, "home"];
+      if (isPublicDir(currentPath)) {
+        return [openedKey, "public"];
+      } else {
+        return [openedKey, "home"];
+      }
     } else {
       return [];
     }
@@ -48,55 +52,68 @@ const Component: FC = () => {
   });
 
   const menuItems = useMemo(() => {
-    if (!project) {
-      return [];
-    }
-    const list: MenuItem[] = [
-      {
-        key: "home",
-        label: (
-          <>
-            <IconEntity type="directory" />
-            <span>
-              项目文档
-              <small>({project.totalItems})</small>
-            </span>
-          </>
-        ),
-      },
-      {
-        key: "public",
-        label: (
-          <>
-            <IconNetwork size={13} />
-            <span>
-              项目共享
-              <small>({project.totalPublics})</small>
-            </span>
-          </>
-        ),
-      },
-      {
-        key: "shared",
-        label: (
-          <>
-            <IconShare size={13} />
-            <span>项目分享</span>
-          </>
-        ),
-      },
-      {
-        key: "trash",
-        label: (
-          <>
-            <IconTrash size={13} />
-            <span>回收站</span>
-          </>
-        ),
-      },
-    ];
+    const list: MenuItem[] = isMember
+      ? [
+          {
+            key: "home",
+            label: (
+              <>
+                <IconEntity type="directory" />
+                <span>
+                  项目文档
+                  <small>({project.totalItems})</small>
+                </span>
+              </>
+            ),
+          },
+          {
+            key: "public",
+            label: (
+              <>
+                <IconNetwork size={13} />
+                <span>
+                  项目共享
+                  <small>({project.totalPublics})</small>
+                </span>
+              </>
+            ),
+          },
+          {
+            key: "shared",
+            label: (
+              <>
+                <IconShare size={13} />
+                <span>项目分享</span>
+              </>
+            ),
+          },
+          {
+            key: "trash",
+            label: (
+              <>
+                <IconTrash size={13} />
+                <span>回收站</span>
+              </>
+            ),
+          },
+        ]
+      : [
+          {
+            key: "public",
+            label: (
+              <>
+                <IconNetwork size={13} />
+                <span>
+                  项目共享
+                  <small>({project.totalPublics})</small>
+                </span>
+              </>
+            ),
+          },
+        ];
+
     return list;
-  }, [project]);
+  }, [project, isMember]);
 
   return <MenuNav items={menuItems} selectedKey={selectedKey} openedKey={openedKey} onOpen={setOpenedKey} onSelect={onSelect} />;
 };

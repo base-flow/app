@@ -109,6 +109,7 @@ export function useMyFavoriteIds() {
   const favoriteUpdater = useMutation({
     mutationFn: FavoriteAPI.batchUpdate,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [FavoriteAPI.listQueryKey] });
       queryClient.invalidateQueries({ queryKey: [FavoriteAPI.idsQueryKey] });
     },
   });
@@ -126,6 +127,7 @@ export function useMyFavoriteList(onChangeSuccess?: () => void) {
     mutationFn: FavoriteAPI.batchUpdate,
     onSuccess: () => {
       onChangeSuccess?.();
+      queryClient.invalidateQueries({ queryKey: [FavoriteAPI.listQueryKey] });
       queryClient.invalidateQueries({ queryKey: [FavoriteAPI.idsQueryKey] });
     },
   });
@@ -158,7 +160,9 @@ export function usePermissions(): IPermissionsContext {
 }
 
 export interface IProjectContext {
+  isMember: boolean;
   project: _Project.IProject;
+  setCurrentPath: (path: string) => void;
 }
 
 export const ProjectContext = createContext<IProjectContext>({} as any);
@@ -168,7 +172,9 @@ export function useProject(): IProjectContext {
 }
 
 export interface IPersonalContext {
+  isOwner: boolean;
   personal: _Personal.IPersonal;
+  setCurrentPath: (path: string) => void;
 }
 
 export const PersonalContext = createContext<IPersonalContext>({} as any);

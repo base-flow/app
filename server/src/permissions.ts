@@ -2,7 +2,6 @@ import { ProjectsMap } from "./data";
 export const SystemRoleConfg: _Permission.SystemRoleConfg = {
   Admin: {
     project_list: "all",
-    project_view: "all",
     project_create: "all",
     project_edit: "all",
     project_delete: "all",
@@ -17,7 +16,6 @@ export const SystemRoleConfg: _Permission.SystemRoleConfg = {
     node_edit: "all",
     node_create: "all",
     node_delete: "all",
-    personal_view: "all",
   },
   Member: {
     project_list: "involved",
@@ -26,14 +24,12 @@ export const SystemRoleConfg: _Permission.SystemRoleConfg = {
     node_create: "all",
     node_edit: "owner",
     node_delete: "owner",
-    personal_view: "owner",
   },
   Guest: {},
 };
 
 export const ProjectRoleConfg: _Permission.ProjectRoleConfg = {
   Owner: {
-    project_view: "all",
     project_edit: "all",
     project_delete: "all",
     project_assignUsers: "admin",
@@ -44,7 +40,6 @@ export const ProjectRoleConfg: _Permission.ProjectRoleConfg = {
     workflow_delete: "all",
   },
   Admin: {
-    project_view: "all",
     project_assignUsers: "dev",
     workflow_list: "all",
     workflow_view: "all",
@@ -53,7 +48,6 @@ export const ProjectRoleConfg: _Permission.ProjectRoleConfg = {
     workflow_delete: "all",
   },
   Developer: {
-    project_view: "all",
     workflow_list: "all",
     workflow_view: "all",
     workflow_edit: "all",
@@ -61,19 +55,17 @@ export const ProjectRoleConfg: _Permission.ProjectRoleConfg = {
     workflow_delete: "all",
   },
   Tester: {
-    project_view: "all",
     workflow_list: "all",
     workflow_view: "all",
   },
   Member: {
-    project_view: "all",
     workflow_list: "all",
     workflow_view: "blockingConfigs",
   },
 };
 export const MyProjectRoles: _Permission.MyProjectRoles = {
   "1": { projectName: ProjectsMap[1].name, projectDir: ProjectsMap[1].dir, projectRole: "Owner" },
-  "2": { projectName: ProjectsMap[2].name, projectDir: ProjectsMap[2].dir, projectRole: "Admin" },
+  // "2": { projectName: ProjectsMap[2].name, projectDir: ProjectsMap[2].dir, projectRole: "Admin" },
 };
 export function getPermissions(user: _App.AuthUser): _Permission.IPermissions {
   const systemPermissions = user.roles.reduce((obj, role) => {

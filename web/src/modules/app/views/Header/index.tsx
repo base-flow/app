@@ -20,8 +20,15 @@ const Header: FC = () => {
   const locale = getLocale();
   const [auth, logout] = useAppStore(useShallow(({ auth, logout }) => [auth, logout]));
   const matchRoute = useMatchRoute();
-  const isPlatform = matchRoute({ to: "/platform", fuzzy: true });
-  // const isPersonal = matchRoute({ to: "/personal/$personalId", fuzzy: true });
+  const channel = (() => {
+    if (matchRoute({ to: "/platform", fuzzy: true })) {
+      return "Platform";
+    } else if (matchRoute({ to: "/personal/$personalId", fuzzy: true })) {
+      return "Personal";
+    } else {
+      return "";
+    }
+  })();
 
   const userMenu: any = useMemo(() => {
     return {
@@ -60,7 +67,7 @@ const Header: FC = () => {
       <Logo className={`${styles.Header}__logo`} />
       <div className="main">
         <nav className={`${styles.Header}__nav`}>
-          <Link disabled={!auth.id} to="/personal/$personalId" params={{ personalId: auth.id }} activeProps={ActiveProps}>
+          <Link disabled={!auth.id} to="/personal/$personalId" params={{ personalId: auth.id }} className={channel === "Personal" ? "on" : undefined}>
             <UserRoundPen size={14} strokeWidth={2.5} />
             <span>个人空间</span>
           </Link>
@@ -68,7 +75,12 @@ const Header: FC = () => {
             <LayoutGrid size={14} strokeWidth={2.5} />
             <span>项目空间</span>
           </Link>
-          <Link disabled={!auth.id} to="/platform/workflow/$runtime" params={{ runtime: "server" }} className={isPlatform ? "on" : undefined}>
+          <Link
+            disabled={!auth.id}
+            to="/platform/workflow/$runtime"
+            params={{ runtime: "server" }}
+            className={channel === "Platform" ? "on" : undefined}
+          >
             <Wifi size={14} strokeWidth={2.5} />
             <span>公共空间</span>
           </Link>

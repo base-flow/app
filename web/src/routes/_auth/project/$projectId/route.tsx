@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Result, Skeleton } from "antd";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import LoadingMask from "@/components/LoadingMask";
 import Nameplate from "@/components/Nameplate";
@@ -17,18 +17,21 @@ export const Route = createFileRoute("/_auth/project/$projectId")({
 
 function RouteComponent() {
   const params = Route.useParams();
-  const [getPermissions, auth] = useAppStore(useShallow(({ getPermissions, auth }) => [getPermissions, auth]));
+  const [getPermissions, myProjectRoles, auth] = useAppStore(
+    useShallow(({ getPermissions, myProjectRoles, auth }) => [getPermissions, myProjectRoles, auth]),
+  );
   const permissions = useMemo(() => getPermissions(params.projectId), [params.projectId, getPermissions]);
   const projectQuery = useQuery(ProjectAPI.queryItem(params.projectId));
   const project = projectQuery.data;
-
-  if (!permissions.project_view || !permissions.workflow_list) {
-    return (
-      <section>
-        <Result status="403" subTitle="您没有访问权限..." />
-      </section>
-    );
-  }
+  const [currentPath, setCurrentPath] = useState("");
+  const permissionsContextValue = useMemo(
+    () => ({ auth, permissions, getPermissionsInProject: getPermissions }),
+    [auth, getPermissions, permissions],
+  );
+  const projectContextValue = useMemo(
+    () => ({ project: project!, isMember: Boolean(project?.id && myProjectRoles[project.id]), setCurrentPath }),
+    [project, myProjectRoles],
+  );
 
   if (projectQuery.isError) {
     return (
@@ -47,12 +50,12 @@ function RouteComponent() {
   }
 
   return (
-    <PermissionsContext.Provider value={{ auth, permissions, getPermissionsInProject: getPermissions }}>
-      <ProjectContext value={{ project }}>
+    <PermissionsContext.Provider value={permissionsContextValue}>
+      <ProjectContext value={projectContextValue}>
         <aside>
           <div>
             <Nameplate type="project" title={project.name} logo={project.logo} />
-            <ProjectMenu />
+            <ProjectMenu currentPath={currentPath} />
           </div>
           <ProjectSettings />
         </aside>

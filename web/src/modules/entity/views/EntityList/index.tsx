@@ -25,10 +25,11 @@ interface EntityListProps {
   rootDir: string;
   rootName: string;
   query: _Entity.Query;
+  setCurrentPath: (path: string) => void;
 }
 
 const Component: FC<EntityListProps> = (props) => {
-  const { rootDir, rootName } = props;
+  const { rootDir, rootName, setCurrentPath } = props;
   const [currentEdit, setCurrentEdit] = useState<{ item: _Entity.IEntity; action: "rename" }>();
   const [batchEdit, setBatchEdit] = useState<{ ids: string[]; file?: string; action: "copy" }>();
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -310,6 +311,8 @@ const Component: FC<EntityListProps> = (props) => {
       </div>
     );
   }
+
+  setCurrentPath(entityListSummary.path);
 
   return (
     <div className={`${styles.EntityList} g-page min-wrap`}>

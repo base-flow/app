@@ -1,5 +1,4 @@
 import { useMatchRoute, useNavigate } from "@tanstack/react-router";
-import { ExternalLink } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo, useState } from "react";
 import IconEntity from "@/components/IconEntity";
@@ -10,9 +9,10 @@ import IconTrash from "@/components/IconTrash";
 import type { MenuItem } from "@/components/MenuNav";
 import MenuNav from "@/components/MenuNav";
 import { useEvent, usePersonal } from "@/utils/hooks";
+import { isPublicDir } from "@/utils/tools";
 
-const Component: FC = () => {
-  const { personal } = usePersonal();
+const Component: FC<{ currentPath: string }> = ({ currentPath }) => {
+  const { personal, isOwner } = usePersonal();
   const navigate = useNavigate();
   const matchRoute = useMatchRoute();
   const [openedKey, setOpenedKey] = useState<string | undefined>();
@@ -24,7 +24,11 @@ const Component: FC = () => {
     } else if (matchRoute({ to: "/personal/$personalId/favorite" })) {
       return [openedKey, "favorite"];
     } else if (matchRoute({ to: "/personal/$personalId" })) {
-      return [openedKey, "home"];
+      if (isPublicDir(currentPath)) {
+        return [openedKey, "public"];
+      } else {
+        return [openedKey, "home"];
+      }
     } else {
       return [];
     }
@@ -54,64 +58,76 @@ const Component: FC = () => {
   });
 
   const menuItems = useMemo(() => {
-    if (!personal) {
-      return [];
-    }
-    const list: MenuItem[] = [
-      {
-        key: "home",
-        label: (
-          <>
-            <IconEntity type="directory" />
-            <span>
-              我的文档
-              <small>({personal.totalItems})</small>
-            </span>
-          </>
-        ),
-      },
-      {
-        key: "public",
-        label: (
-          <>
-            <IconNetwork size={13} />
-            <span>
-              我的共享
-              <small>({personal.totalPublics})</small>
-            </span>
-          </>
-        ),
-      },
-      {
-        key: "shared",
-        label: (
-          <>
-            <IconShare size={13} />
-            <span>我的分享</span>
-          </>
-        ),
-      },
-      {
-        key: "favorite",
-        label: (
-          <>
-            <IconStar size={13} />
-            <span>我的收藏</span>
-          </>
-        ),
-      },
-      {
-        key: "trash",
-        label: (
-          <>
-            <IconTrash size={13} />
-            <span>回收站</span>
-          </>
-        ),
-      },
-    ];
+    const list: MenuItem[] = isOwner
+      ? [
+          {
+            key: "home",
+            label: (
+              <>
+                <IconEntity type="directory" />
+                <span>
+                  我的文档
+                  <small>({personal.totalItems})</small>
+                </span>
+              </>
+            ),
+          },
+          {
+            key: "public",
+            label: (
+              <>
+                <IconNetwork size={13} />
+                <span>
+                  我的共享
+                  <small>({personal.totalPublics})</small>
+                </span>
+              </>
+            ),
+          },
+          {
+            key: "shared",
+            label: (
+              <>
+                <IconShare size={13} />
+                <span>我的分享</span>
+              </>
+            ),
+          },
+          {
+            key: "favorite",
+            label: (
+              <>
+                <IconStar size={13} />
+                <span>我的收藏</span>
+              </>
+            ),
+          },
+          {
+            key: "trash",
+            label: (
+              <>
+                <IconTrash size={13} />
+                <span>回收站</span>
+              </>
+            ),
+          },
+        ]
+      : [
+          {
+            key: "public",
+            label: (
+              <>
+                <IconNetwork size={13} />
+                <span>
+                  我的共享
+                  <small>({personal.totalPublics})</small>
+                </span>
+              </>
+            ),
+          },
+        ];
     return list;
-  }, [personal]);
+  }, [personal, isOwner]);
 
   return <MenuNav items={menuItems} selectedKey={selectedKey} openedKey={openedKey} onOpen={setOpenedKey} onSelect={onSelect} />;
 };

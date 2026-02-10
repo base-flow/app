@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Result, Skeleton } from "antd";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import LoadingMask from "@/components/LoadingMask";
 import Nameplate from "@/components/Nameplate";
@@ -20,6 +20,12 @@ function RouteComponent() {
   const permissions = useMemo(() => getPermissions(), [getPermissions]);
   const personalQuery = useQuery(PersonalAPI.queryItem(params.personalId));
   const personal = personalQuery.data;
+  const [currentPath, setCurrentPath] = useState("");
+  const permissionsContextValue = useMemo(
+    () => ({ auth, permissions, getPermissionsInProject: getPermissions }),
+    [auth, getPermissions, permissions],
+  );
+  const personalContextValue = useMemo(() => ({ personal: personal!, isOwner: personal?.id === auth.id, setCurrentPath }), [personal, auth]);
 
   if (personalQuery.isError) {
     return (
@@ -37,21 +43,13 @@ function RouteComponent() {
     );
   }
 
-  if (!(permissions.personal_view === "all" || (permissions.personal_view === "owner" && personal.id === auth.id))) {
-    return (
-      <section>
-        <Result status="403" subTitle="您没有访问权限..." />
-      </section>
-    );
-  }
-
   return (
-    <PermissionsContext.Provider value={{ auth, permissions, getPermissionsInProject: getPermissions }}>
-      <PersonalContext value={{ personal }}>
+    <PermissionsContext.Provider value={permissionsContextValue}>
+      <PersonalContext value={personalContextValue}>
         <aside>
           <div>
             <Nameplate type="personal" title={personal.nickname} remark={personal.username} logo={personal.avatar} />
-            <PersonalMenu />
+            <PersonalMenu currentPath={currentPath} />
           </div>
         </aside>
         <main className="g-col-paper">

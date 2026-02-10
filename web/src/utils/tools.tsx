@@ -191,3 +191,6 @@ export function showPath(path: string, keepSelf?: boolean): string {
   const pathname = path.replace(/\/.+? /g, "/");
   return keepSelf ? pathname : pathname.replace(/\/[^/]+?$/, "") || "/";
 }
+export function isPublicDir(path: string): boolean {
+  return /^\/[^/]+\/public/.test(path.replace(/\/.+? /g, "/"));
+}

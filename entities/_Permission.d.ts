@@ -6,7 +6,6 @@ declare namespace _Permission {
 
   interface Actions {
     project_list: ProjectListScope;
-    project_view: "all";
     project_edit: "all";
     project_create: "all";
     project_delete: "all";
@@ -21,7 +20,6 @@ declare namespace _Permission {
     node_edit: ResourceOwnerScope;
     node_create: "all";
     node_delete: ResourceOwnerScope;
-    personal_view: ResourceOwnerScope;
   }
 
   type SystemRole = "Admin" | "Member" | "Guest";

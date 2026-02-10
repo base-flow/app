@@ -15,6 +15,13 @@ export const Route = createFileRoute("/_auth/personal/$personalId/")({
 
 function RouteComponent() {
   const search = Route.useSearch();
-  const { personal } = usePersonal();
-  return <EntityList rootName="我的文档" rootDir={personal.dir} query={{ ...search, dir: search.dir || personal.dir }} />;
+  const { personal, isOwner, setCurrentPath } = usePersonal();
+  return (
+    <EntityList
+      rootName="我的文档"
+      rootDir={personal.dir}
+      setCurrentPath={setCurrentPath}
+      query={{ ...search, dir: search.dir || (isOwner ? personal.dir : personal.publicDir) }}
+    />
+  );
 }
