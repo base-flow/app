@@ -254,6 +254,9 @@ export const SharedList: (_Shared.IShared & { content: _Entity.IEntity[] })[] = 
   {
     id: `${uid++}`,
     name: Random.ctitle(5, 10),
+    expiration: "week",
+    password: "abcdef",
+    urlWithPassword: false,
     expiresAt: Date.now(),
     createAt: Random.datetime(),
     viewed: randomInt(10, 100),
@@ -269,6 +272,9 @@ export const SharedList: (_Shared.IShared & { content: _Entity.IEntity[] })[] = 
   {
     id: `${uid++}`,
     name: Random.ctitle(5, 10),
+    expiration: "week",
+    password: "abcdef",
+    urlWithPassword: false,
     expiresAt: Date.now(),
     createAt: Random.datetime(),
     viewed: randomInt(10, 100),
@@ -284,6 +290,9 @@ export const SharedList: (_Shared.IShared & { content: _Entity.IEntity[] })[] = 
   {
     id: `${uid++}`,
     name: Random.ctitle(5, 10),
+    expiration: "week",
+    password: "abcdef",
+    urlWithPassword: false,
     expiresAt: Date.now(),
     createAt: Random.datetime(),
     viewed: randomInt(10, 100),
@@ -298,6 +307,9 @@ export const SharedList: (_Shared.IShared & { content: _Entity.IEntity[] })[] = 
   {
     id: `${uid++}`,
     name: Random.ctitle(5, 10),
+    expiration: "week",
+    password: "abcdef",
+    urlWithPassword: false,
     expiresAt: Date.now(),
     createAt: Random.datetime(),
     viewed: randomInt(10, 100),

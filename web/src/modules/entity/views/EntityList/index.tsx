@@ -2,8 +2,9 @@ import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { MenuProps, TablePaginationConfig, TableProps } from "antd";
-import { Button, Dropdown, Result, Skeleton, Table, Tooltip } from "antd";
-import { ChevronDown, Copy, FolderSymlink, FolderTree, Plus, Trash2 } from "lucide-react";
+import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
+import dayjs from "dayjs";
+import { ChevronDown, Copy, FolderPlus, FolderSymlink, FolderTree, Plus, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Collect from "@/components/Collect";
@@ -13,6 +14,7 @@ import type { LinkItem } from "@/components/LinkTab";
 import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
+import SharedEdit from "@/modules/shared/views/SharedEdit";
 import { useEvent, useMyFavoriteIds, useTableChange, useTablePagination } from "@/utils/hooks";
 import { debounce, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
@@ -22,6 +24,12 @@ import EntityRename from "../EntityRename";
 import styles from "./index.module.scss";
 
 interface EntityListProps {
+  space: {
+    id: string;
+    name: string;
+    type: "personal" | "project";
+  };
+  isMine: boolean;
   rootDir: string;
   rootName: string;
   query: _Entity.Query;
@@ -29,9 +37,10 @@ interface EntityListProps {
 }
 
 const Component: FC<EntityListProps> = (props) => {
-  const { rootDir, rootName, setCurrentPath } = props;
+  const { space, isMine, rootDir, rootName, setCurrentPath } = props;
   const [currentEdit, setCurrentEdit] = useState<{ item: _Entity.IEntity; action: "rename" }>();
   const [batchEdit, setBatchEdit] = useState<{ ids: string[]; file?: string; action: "copy" }>();
+  const [shared, setShared] = useState<Partial<_Shared.IShared>>();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [tableScroll, setTableScroll] = useState({ y: 0 });
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -57,6 +66,7 @@ const Component: FC<EntityListProps> = (props) => {
   const { onTableChange, onDirSearch } = useTableChange(query, setQuery);
   const closeCurrentEdit = useEvent(() => setCurrentEdit(undefined));
   const closeBatchEdit = useEvent(() => setBatchEdit(undefined));
+  const closeShared = useEvent(() => setShared(undefined));
 
   const entityAlter = useMutation({
     mutationFn: EntityAPI.updateItem,
@@ -74,13 +84,14 @@ const Component: FC<EntityListProps> = (props) => {
     },
   });
 
-  const entityMover = useMutation({
-    mutationFn: EntityAPI.batchMove,
-    onSuccess: () => {
-      closeBatchEdit();
-      setSelectedRows([]);
-      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey] });
-    },
+  const onBatchCopySuccess = useEvent(() => {
+    setSelectedRows([]);
+    closeBatchEdit();
+  });
+
+  const onSharedSuccess = useEvent(() => {
+    setSelectedRows([]);
+    closeShared();
   });
 
   // const onCreate = useEvent(() => {
@@ -95,23 +106,34 @@ const Component: FC<EntityListProps> = (props) => {
     });
   });
 
-  const onBatchCopy = useEvent((ids: string[], target: string, action: "copy" | "move") => {
-    entityMover.mutate({ ids, target, action });
-  });
-
   const onRename = useEvent((id: string, name: string) => {
     entityAlter.mutate({ id, name });
   });
 
+  const createShare = useEvent((ids: string[]) => {
+    setShared({
+      ids,
+      name: `${space.name}的分享#${dayjs().format("YYYY-MM-DD~HH:mm")}`,
+      expiration: "day",
+      spaceType: space.type,
+      spaceId: space.id,
+    });
+  });
+
   const batchMenu = useMemo(() => {
     const items: MenuProps["items"] = [
+      {
+        label: "分享",
+        key: "share",
+        icon: <Copy size={13} />,
+      },
       {
         label: "移动/复制",
         key: "copy",
         icon: <Copy size={13} />,
       },
       {
-        label: "批量删除",
+        label: "删除",
         key: "delete",
         icon: <Trash2 size={13} />,
       },
@@ -123,10 +145,12 @@ const Component: FC<EntityListProps> = (props) => {
           onBatchDelete(selectedRows);
         } else if (key === "copy") {
           setBatchEdit({ ids: selectedRows, action: "copy" });
+        } else if (key === "share") {
+          createShare(selectedRows);
         }
       },
     };
-  }, [selectedRows, onBatchDelete]);
+  }, [selectedRows, onBatchDelete, createShare]);
 
   const onToolsClick = useEvent((item: _Entity.IEntity, action: FileToolsAction) => {
     if (action === "rename") {
@@ -139,6 +163,8 @@ const Component: FC<EntityListProps> = (props) => {
       });
     } else if (action === "copy") {
       setBatchEdit({ ids: [item.id], file: item.name, action: "copy" });
+    } else if (action === "share") {
+      createShare([item.id]);
     }
   });
 
@@ -323,13 +349,24 @@ const Component: FC<EntityListProps> = (props) => {
           <SearchInput value={query.keyword} onChange={onDirSearch} placeholder="当前目录下搜索..." />
         </div>
         <div className="row">
-          {!selectedRows.length ? (
-            <Button icon={<Plus size={14} strokeWidth={2.5} className="anticon" />} type="primary">
-              新建流程
-            </Button>
+          {!isMine ? (
+            <div style={{ height: "32px" }} />
+          ) : !selectedRows.length ? (
+            <Space>
+              <Button icon={<Plus size={13} strokeWidth={2.5} className="anticon" />} type="primary">
+                新建流程
+              </Button>
+              <Button icon={<FolderPlus size={13} strokeWidth={2.5} className="anticon" />}>新建文件夹</Button>
+            </Space>
           ) : (
             <Dropdown menu={batchMenu}>
-              <Button loading={entityDeleter.isPending} icon={<ChevronDown size={13} className="anticon" />} iconPlacement="end">
+              <Button
+                loading={entityDeleter.isPending}
+                icon={<ChevronDown size={13} className="anticon" />}
+                type="link"
+                size="small"
+                iconPlacement="end"
+              >
                 批量操作
               </Button>
             </Dropdown>
@@ -351,7 +388,10 @@ const Component: FC<EntityListProps> = (props) => {
         />
       </div>
       {currentEdit?.action === "rename" && <EntityRename item={currentEdit.item} onCancel={closeCurrentEdit} onSubmit={onRename} />}
-      {batchEdit?.action === "copy" && <EntityCopy ids={batchEdit.ids} file={batchEdit.file} onCancel={closeBatchEdit} onSubmit={onBatchCopy} />}
+      {batchEdit?.action === "copy" && (
+        <EntityCopy ids={batchEdit.ids} file={batchEdit.file} onCancel={closeBatchEdit} onSuccess={onBatchCopySuccess} />
+      )}
+      {shared && <SharedEdit item={shared} onCancel={closeShared} onSuccess={onSharedSuccess} />}
       {/* <FlowEdit item={curEdit} setItem={setCurEdit} /> */}
     </div>
   );

@@ -6,13 +6,11 @@ import { Button, Modal, Result, Skeleton, Space, Table, Tooltip } from "antd";
 import { FolderSymlink, FolderTree, Link, ListX, Plus, UserRound } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { useShallow } from "zustand/react/shallow";
 import IconEntity from "@/components/IconEntity";
 import type { LinkItem } from "@/components/LinkTab";
 import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
-import { useAppStore } from "@/modules/app/store";
 import Breadcrumb from "@/modules/entity/views/Breadcrumb";
 import EntitySelector from "@/modules/entity/views/EntitySelector";
 import { useEvent, useTableChange, useTablePagination } from "@/utils/hooks";
@@ -21,17 +19,18 @@ import { SharedAPI } from "../../api";
 import styles from "./index.module.scss";
 
 interface SharedContentProps {
+  isMine: boolean;
+  sharedContentMax: number;
   query: _Entity.Query;
   shared: _Shared.IShared;
 }
 
 const Component: FC<SharedContentProps> = (props) => {
-  const shared = props.shared;
+  const { shared, isMine, sharedContentMax } = props;
   const [showEntitySelector, setShowEntitySelector] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [tableScroll, setTableScroll] = useState({ y: 0 });
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [config] = useAppStore(useShallow(({ config }) => [config]));
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const queryState = useState(props.query);
@@ -41,7 +40,6 @@ const Component: FC<SharedContentProps> = (props) => {
   const entityListQuery = entityQuery.data?.query || query;
   const entityListSummary = entityQuery.data?.summary;
   const entityListTotal = entityListSummary?.total || 0;
-  const sharedContentMax = config!.sharedContentMax;
 
   useMemo(() => {
     queryState[1](props.query);
@@ -147,11 +145,13 @@ const Component: FC<SharedContentProps> = (props) => {
         width: 120,
         render: (_, row) => {
           return (
-            <div className="g-actions-cell">
-              {!entityListQuery.dir && <a onClick={() => onRemove([row.id])}>移除</a>}
-              <a onClick={() => onRemove([row.id])}>转存</a>
-              <a onClick={() => onRemove([row.id])}>下载</a>
-            </div>
+            isMine && (
+              <div className="g-actions-cell">
+                {!entityListQuery.dir && <a onClick={() => onRemove([row.id])}>移除</a>}
+                <a onClick={() => onRemove([row.id])}>转存</a>
+                <a onClick={() => onRemove([row.id])}>下载</a>
+              </div>
+            )
           );
         },
       },
@@ -283,8 +283,16 @@ const Component: FC<SharedContentProps> = (props) => {
             <div className="title">
               {shared.name}
               <div className="user">
-                <UserRound size={12} className="anticon" strokeWidth={2.5} style={{ marginRight: "1px" }} />
-                {shared.createBy}
+                {isMine ? (
+                  <a
+                    onClick={() => navigate({ to: `/${shared.spaceType}/${shared.spaceId}/shared` })}
+                  >{`(${shared.spaceType === "personal" ? "我的分享" : "项目分享"})`}</a>
+                ) : (
+                  <span>
+                    <UserRound size={12} className="anticon" strokeWidth={2.5} style={{ marginRight: "1px" }} />
+                    {shared.createBy}
+                  </span>
+                )}
               </div>
             </div>
             {selectedRows.length ? (
@@ -300,18 +308,17 @@ const Component: FC<SharedContentProps> = (props) => {
             ) : null}
           </Space>
           <div>
-            {/* <small className="g-dot">
-                ({entityListTotal}项<span style={{ margin: "0 2px" }}>/</span>最多{sharedContentMax}项)
-              </small> */}
-            <Button
-              size="small"
-              type="link"
-              disabled={entityListTotal >= sharedContentMax}
-              onClick={() => setShowEntitySelector(true)}
-              icon={<Plus size={13} strokeWidth={2.5} />}
-            >
-              添加文件
-            </Button>
+            {isMine && (
+              <Button
+                size="small"
+                type="link"
+                disabled={entityListTotal >= sharedContentMax}
+                onClick={() => setShowEntitySelector(true)}
+                icon={<Plus size={14} strokeWidth={2.5} />}
+              >
+                添加文件
+              </Button>
+            )}
           </div>
         </div>
       )}

@@ -160,7 +160,7 @@ export function usePermissions(): IPermissionsContext {
 }
 
 export interface IProjectContext {
-  isMember: boolean;
+  isMine: boolean;
   project: _Project.IProject;
   setCurrentPath: (path: string) => void;
 }
@@ -172,7 +172,7 @@ export function useProject(): IProjectContext {
 }
 
 export interface IPersonalContext {
-  isOwner: boolean;
+  isMine: boolean;
   personal: _Personal.IPersonal;
   setCurrentPath: (path: string) => void;
 }

@@ -2,8 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Result, Skeleton } from "antd";
 import { z } from "zod";
+import { useShallow } from "zustand/react/shallow";
 import LoadingMask from "@/components/LoadingMask";
 import Nameplate from "@/components/Nameplate";
+import { useAppStore } from "@/modules/app/store";
 import { SharedAPI } from "@/modules/shared/api";
 import SharedContent from "@/modules/shared/views/SharedContent";
 import SharedInfo from "@/modules/shared/views/SharedInfo";
@@ -24,6 +26,8 @@ function RouteComponent() {
   const params = Route.useParams();
   const sharedQuery = useQuery(SharedAPI.queryItem(params.sharedId));
   const shared = sharedQuery.data;
+  const [config, auth] = useAppStore(useShallow(({ config, auth }) => [config, auth]));
+  const isMine = shared?.createBy === auth.username;
 
   if (sharedQuery.isError) {
     return (
@@ -48,11 +52,11 @@ function RouteComponent() {
           <Nameplate type={shared.spaceType} title={shared.spaceName} logo={shared.spaceLogo} remark={shared.spaceRemark} />
           <SharedInfo info={shared} />
         </div>
-        <SharedSettings />
+        {isMine && <SharedSettings shared={shared} />}
       </aside>
       <main className="g-col-paper">
         <LoadingMask show={sharedQuery.isFetching} />
-        <SharedContent shared={shared} query={search} />
+        <SharedContent shared={shared} query={search} isMine={isMine} sharedContentMax={config!.sharedContentMax} />
       </main>
     </>
   );

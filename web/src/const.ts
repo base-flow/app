@@ -12,6 +12,14 @@ export const API_PROXY: { "/i18n/": string; "/api/": string } = (window.API_PROX
 export const AUTH_TOKEN_KEY = "_baseflow_auth_token_key_";
 export const PAGE_SIZE_OPTIONS = ["20", "50", "100"];
 export const LOCALE_KEY = "_baseflow_locale_key_";
+export const RequiredRule = [{ required: true }];
+export const FileNameRule = [
+  { required: true },
+  {
+    pattern: /^[^\s/]+$/,
+    message: "不能包含空格和/字符",
+  },
+];
 
 export function HomePage(userid: string): string {
   return `/personal/${userid}`;

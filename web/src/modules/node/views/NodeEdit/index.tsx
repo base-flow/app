@@ -51,9 +51,7 @@ const AppEdit: FC<Props> = ({ item, setItem, currentPath }) => {
       <div className={styles.NodeEdit}>
         <LoadingMask show={nodeEdit.isPending} />
         <Form layout="vertical" initialValues={item} onFinish={nodeEdit.mutate}>
-          <FormItem hidden name="id">
-            <Input />
-          </FormItem>
+          <FormItem hidden name="id" />
           <FormItem label="父级目录" required>
             <Input variant="filled" value={currentPath || "/"} readOnly />
           </FormItem>

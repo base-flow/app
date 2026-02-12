@@ -1,6 +1,9 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Put, Request } from "@nestjs/common";
-import { EntityMap, SharedList, SharedMap } from "@/data";
-import { escapeRegExp, sleep } from "@/utils";
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Request } from "@nestjs/common";
+import { EntityMap, PersonalsMap, ProjectsMap, SharedList, SharedMap } from "@/data";
+import { escapeRegExp, randomInt, sleep } from "@/utils";
+
+const Mock = require("mockjs");
+var Random = Mock.Random;
 
 @Controller("shared")
 export class SharedController {
@@ -20,6 +23,72 @@ export class SharedController {
       throw new NotFoundException();
     }
     return SharedMap[param.id];
+  }
+
+  @Post()
+  async createItem(@Request() { user, body }: { user: _App.AuthUser; body: _Shared.IShared }): Promise<_Shared.CreateResult> {
+    await sleep(1000);
+    const { name, expiration, password, urlWithPassword, spaceType, spaceId } = body;
+    const sharedId = `${Date.now()}`;
+    const shared: _Shared.IShared = {
+      id: sharedId,
+      name,
+      expiration,
+      password,
+      urlWithPassword,
+      expiresAt: Date.now(),
+      createAt: Random.datetime(),
+      viewed: randomInt(10, 100),
+      spaceType,
+      spaceId,
+      spaceDir: "",
+      spaceName: "",
+      spaceRemark: "",
+      spaceLogo: "",
+      createBy: user.username,
+    };
+    if (spaceType === "personal") {
+      const space = PersonalsMap[spaceId];
+      shared.spaceDir = space.dir;
+      shared.spaceName = space.nickname;
+      shared.spaceRemark = space.username;
+      shared.spaceLogo = space.avatar;
+    } else {
+      const space = ProjectsMap[spaceId];
+      shared.spaceDir = space.dir;
+      shared.spaceName = space.name;
+      shared.spaceRemark = "";
+      shared.spaceLogo = space.logo;
+    }
+    SharedMap[sharedId] = { ...shared, content: [] };
+    SharedList.push(SharedMap[sharedId]);
+    return { id: sharedId };
+  }
+
+  @Put(":id")
+  async updateItem(
+    @Request() { user, body, params }: { user: _App.AuthUser; body: _Shared.IShared; params: { id: string } },
+  ): Promise<_Entity.UpdateResult> {
+    await sleep(1000);
+    const item = SharedMap[params.id];
+    if (!item) {
+      throw new NotFoundException();
+    }
+    const { name, expiration, password, urlWithPassword } = body;
+    Object.assign(item, { name, expiration, password, urlWithPassword });
+    return { id: params.id };
+  }
+
+  @Delete(":id")
+  async deleteItem(@Request() { params }: { params: { id: string } }): Promise<void> {
+    await sleep(1000);
+    const item = SharedMap[params.id];
+    if (!item) {
+      throw new NotFoundException();
+    }
+    const index = SharedList.findIndex((item) => item.id === params.id);
+    SharedList.splice(index, 1);
+    delete SharedMap[params.id];
   }
 
   @Get(":id/content")
@@ -87,18 +156,6 @@ export class SharedController {
       };
     }
   }
-
-  // @Post()
-  // async createItem(@Request() { user, body }: { user: _App.AuthUser; body: _Entity.IEntity }): Promise<_Entity.CreateResult> {
-  //   //return this.workflowService.createItem(user.id, body);
-  // }
-
-  // @Put(":id")
-  // async updateItem(
-  //   @Request() { user, body, params }: { user: _App.AuthUser; body: _Entity.IEntity; params: { id: string } },
-  // ): Promise<_Entity.UpdateResult> {
-  //   //return this.workflowService.updateItem(user.id, params.id, body);
-  // }
 
   @Put(":id/content")
   async batchPutContentItem(@Request() { params, body }: { params: { id: string }; body: { data: { ids: string[] } } }): Promise<void> {

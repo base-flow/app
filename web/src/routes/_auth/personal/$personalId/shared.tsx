@@ -8,5 +8,5 @@ export const Route = createFileRoute("/_auth/personal/$personalId/shared")({
 
 function RouteComponent() {
   const { personal } = usePersonal();
-  return <SharedList title="我的分享" query={{ spaceType: "personal", spaceId: personal.id }} />;
+  return <SharedList spaceName={personal.nickname} query={{ spaceType: "personal", spaceId: personal.id }} />;
 }

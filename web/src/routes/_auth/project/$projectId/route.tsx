@@ -29,7 +29,7 @@ function RouteComponent() {
     [auth, getPermissions, permissions],
   );
   const projectContextValue = useMemo(
-    () => ({ project: project!, isMember: Boolean(project?.id && myProjectRoles[project.id]), setCurrentPath }),
+    () => ({ project: project!, isMine: Boolean(project?.id && myProjectRoles[project.id]), setCurrentPath }),
     [project, myProjectRoles],
   );
 

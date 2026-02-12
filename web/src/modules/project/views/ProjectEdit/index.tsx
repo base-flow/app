@@ -3,9 +3,10 @@ import { useRouter } from "@tanstack/react-router";
 import { Button, Form, Input, Modal } from "antd";
 import { Pencil, Plus } from "lucide-react";
 import type { FC } from "react";
-import { memo, useCallback } from "react";
+import { memo } from "react";
 import FlagSelector from "@/components/FlagSelector";
 import LoadingMask from "@/components/LoadingMask";
+import { useEvent } from "@/utils/hooks";
 import { ProjectAPI } from "../../api";
 import styles from "./index.module.scss";
 
@@ -33,9 +34,9 @@ const Component: FC<Props> = ({ item, setItem }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const onCloseEdit = useCallback(() => {
+  const closeEdit = useEvent(() => {
     setItem(undefined);
-  }, [setItem]);
+  });
 
   const projectEdit = useMutation({
     mutationFn: ProjectAPI.editItem,
@@ -52,13 +53,11 @@ const Component: FC<Props> = ({ item, setItem }) => {
   });
 
   return item ? (
-    <Modal open title={item.id ? modifyTitle : createrTitle} onCancel={onCloseEdit} maskClosable={false} footer={null}>
+    <Modal open title={item.id ? modifyTitle : createrTitle} onCancel={closeEdit} maskClosable={false} footer={null}>
       <div className={styles.ProjectEdit}>
         <LoadingMask show={projectEdit.isPending} />
         <Form layout="vertical" initialValues={item} onFinish={projectEdit.mutate}>
-          <FormItem hidden name="id">
-            <Input />
-          </FormItem>
+          <FormItem hidden name="id" />
           <FormItem label="名称&图标" name="name" rules={[{ required: true }]} style={{ width: "418px" }}>
             <Input variant="filled" placeholder="请输入项目名称" />
           </FormItem>
@@ -69,7 +68,7 @@ const Component: FC<Props> = ({ item, setItem }) => {
             <Input.TextArea variant="filled" rows={5} placeholder="请输入项目描述" showCount maxLength={100} />
           </FormItem>
           <div className="g-form-footer">
-            <Button onClick={onCloseEdit}>取消</Button>
+            <Button onClick={closeEdit}>取消</Button>
             <Button type="primary" htmlType="submit">
               提交
             </Button>

@@ -12,7 +12,7 @@ import { useEvent, usePersonal } from "@/utils/hooks";
 import { isPublicDir } from "@/utils/tools";
 
 const Component: FC<{ currentPath: string }> = ({ currentPath }) => {
-  const { personal, isOwner } = usePersonal();
+  const { personal, isMine } = usePersonal();
   const navigate = useNavigate();
   const matchRoute = useMatchRoute();
   const [openedKey, setOpenedKey] = useState<string | undefined>();
@@ -58,7 +58,7 @@ const Component: FC<{ currentPath: string }> = ({ currentPath }) => {
   });
 
   const menuItems = useMemo(() => {
-    const list: MenuItem[] = isOwner
+    const list: MenuItem[] = isMine
       ? [
           {
             key: "home",
@@ -127,7 +127,7 @@ const Component: FC<{ currentPath: string }> = ({ currentPath }) => {
           },
         ];
     return list;
-  }, [personal, isOwner]);
+  }, [personal, isMine]);
 
   return <MenuNav items={menuItems} selectedKey={selectedKey} openedKey={openedKey} onOpen={setOpenedKey} onSelect={onSelect} />;
 };

@@ -5,7 +5,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { Button, ConfigProvider, Modal, Segmented, Spin, Switch } from "antd";
+import { Button, ConfigProvider, Modal, message, Segmented, Spin, Switch } from "antd";
 import { useState } from "react";
 import { useAppStore } from "@/modules/app/store";
 import Header from "@/modules/app/views/Header";
@@ -54,8 +54,8 @@ const expressionUtils: SchemaModel = {
 };
 
 function RootComponent() {
-  const [modal, contextHolder] = Modal.useModal();
-  modal.error;
+  const [modalApi, modalContextHolder] = Modal.useModal();
+  const [messageApi, messageContextHolder] = message.useMessage();
   const [widgets] = useState<Partial<IBaseWidgets>>(() => ({
     Button: Button as any,
     Spin: Spin as any,
@@ -68,13 +68,21 @@ function RootComponent() {
     TimePicker,
     DescMD,
     message: {
-      success: (text: string, width?: string) => modal.success({ title: "成功！", content: text, width }),
-      error: (text: string, width?: string) => modal.error({ title: "错误！", content: text, width }),
-      warning: (text: string, width?: string) => modal.warning({ title: "警告！", content: text, width }),
-      info: (text: string, width?: string) => modal.info({ title: "提示！", content: messageWrap(text), width }),
+      success: (text: string, manually?: boolean, width?: string) => {
+        manually ? modalApi.success({ title: "成功！", content: text, width }) : messageApi.success(text);
+      },
+      error: (text: string, manually?: boolean, width?: string) => {
+        manually ? modalApi.error({ title: "错误！", content: text, width }) : messageApi.error(text);
+      },
+      warning: (text: string, manually?: boolean, width?: string) => {
+        manually ? modalApi.warning({ title: "警告！", content: text, width }) : messageApi.warning(text);
+      },
+      info: (text: string, manually?: boolean, width?: string) => {
+        manually ? modalApi.info({ title: "提示！", content: messageWrap(text), width }) : messageApi.info(text);
+      },
     },
     confirm: (message: string, callback: (ok: boolean) => void, props?: { title?: string; okText?: string; cancelText?: string }) => {
-      modal.confirm({
+      modalApi.confirm({
         title: "提示",
         content: message,
         width: 450,
@@ -141,7 +149,8 @@ function RootComponent() {
             <Outlet />
           </article>
         </FlowConfigProvider>
-        {contextHolder}
+        {modalContextHolder}
+        {messageContextHolder}
       </ConfigProvider>
       {/* <ReactQueryDevtools buttonPosition="top-right" />
       <TanStackRouterDevtools position="bottom-right" /> */}

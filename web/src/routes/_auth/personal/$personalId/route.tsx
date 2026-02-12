@@ -25,7 +25,7 @@ function RouteComponent() {
     () => ({ auth, permissions, getPermissionsInProject: getPermissions }),
     [auth, getPermissions, permissions],
   );
-  const personalContextValue = useMemo(() => ({ personal: personal!, isOwner: personal?.id === auth.id, setCurrentPath }), [personal, auth]);
+  const personalContextValue = useMemo(() => ({ personal: personal!, isMine: personal?.id === auth.id, setCurrentPath }), [personal, auth]);
 
   if (personalQuery.isError) {
     return (

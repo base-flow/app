@@ -135,6 +135,7 @@ a {
   > .hd {
     display: flex;
     flex: none;
+    flex-wrap: wrap;
     place-content: flex-start space-between;
     align-items: center;
     padding: 20px 30px;

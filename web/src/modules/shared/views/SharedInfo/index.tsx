@@ -7,6 +7,7 @@ const Component: FC<{ info: _Shared.IShared }> = ({ info }) => {
   return (
     <div className={styles.SharedInfo}>
       <ul>
+        <li className="title"></li>
         <li>
           <Clock size={11} className="anticon" />
           <span>创建时间：</span>

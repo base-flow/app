@@ -20,7 +20,7 @@ export const SharedAPI = {
     return request.get(`/api/shared/${id}`).then((res) => res.data);
   },
   deleteItem(id: string): Promise<void> {
-    return request.delete("/api/shared", { params: { id } });
+    return request.delete(`/api/shared/${id}`);
   },
   deleteGotItem(id: string): Promise<void> {
     return request.delete("/api/gotShared", { params: { id } });
@@ -33,6 +33,13 @@ export const SharedAPI = {
   },
   batchPutContentItem(args: { sharedId: string; entityIds: string[] }): Promise<void> {
     return request.put(`/api/shared/${args.sharedId}/content`, { data: { ids: args.entityIds } });
+  },
+  editItem(item: Partial<_Shared.IShared>): Promise<_Shared.CreateResult | _Shared.UpdateResult> {
+    if (item.id) {
+      return request.put<_Shared.UpdateResult>(`/api/shared/${item.id}`, item).then((res) => res.data);
+    } else {
+      return request.post<_Shared.CreateResult>("/api/shared", item).then((res) => res.data);
+    }
   },
   queryList(query: _Shared.Query) {
     return queryOptions({

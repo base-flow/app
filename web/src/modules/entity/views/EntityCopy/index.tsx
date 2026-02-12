@@ -1,12 +1,13 @@
 import { BaseWidgets, produce } from "@baseflow/react";
 import { StringSelect } from "@baseflow/widgets";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Modal, Tree } from "antd";
 import type { FC } from "react";
 import { memo, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Lang, { formatLang } from "@/assets/Lang";
 import IconEntity from "@/components/IconEntity";
+import LoadingMask from "@/components/LoadingMask";
 import { useAppStore } from "@/modules/app/store";
 import { useEvent } from "@/utils/hooks";
 import { findInTree, showPath } from "@/utils/tools";
@@ -54,11 +55,11 @@ const updateTreeData = (list: TreeData[], key: React.Key, children: TreeData[]):
 export type EntityCopyProps = {
   file?: string;
   ids: string[];
-  onSubmit: (ids: string[], target: string, action: "move" | "copy") => void;
+  onSuccess: () => void;
   onCancel: () => void;
 };
 
-const Component: FC<EntityCopyProps> = ({ file, ids, onCancel, onSubmit }) => {
+const Component: FC<EntityCopyProps> = ({ file, ids, onCancel, onSuccess }) => {
   const subject = file ? formatLang(Lang.letSingleFiles, { name: file }) : formatLang(Lang.letMultipleFiles, { count: `${ids.length}` });
   const queryClient = useQueryClient();
   const [myProjectRoles, auth] = useAppStore(useShallow(({ myProjectRoles, auth }) => [myProjectRoles, auth]));
@@ -76,21 +77,6 @@ const Component: FC<EntityCopyProps> = ({ file, ids, onCancel, onSubmit }) => {
         return { title: item.projectName, key: item.projectDir, path: `/${item.projectName}` };
       }),
   ]);
-
-  const _onSubmit = useEvent(() => {
-    BaseWidgets.confirm(
-      formatLang(Lang.copyConfirm, {
-        file: subject,
-        action: ActionMaps[action],
-        path: selected!.path,
-      }),
-      (ok) => {
-        if (ok) {
-          onSubmit(ids, selected!.key, action);
-        }
-      },
-    );
-  });
 
   const onLoadData = useEvent(({ key, children }: TreeData) => {
     if (children) {
@@ -119,9 +105,33 @@ const Component: FC<EntityCopyProps> = ({ file, ids, onCancel, onSubmit }) => {
     setSelected(info.selectedNodes[0]);
   });
 
+  const entityCopyer = useMutation({
+    mutationFn: EntityAPI.batchMove,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey] });
+      onSuccess();
+    },
+  });
+
+  const onSubmit = useEvent(() => {
+    BaseWidgets.confirm(
+      formatLang(Lang.copyConfirm, {
+        file: subject,
+        action: ActionMaps[action],
+        path: selected!.path,
+      }),
+      (ok) => {
+        if (ok) {
+          entityCopyer.mutate({ ids, target: selected!.key, action });
+        }
+      },
+    );
+  });
+
   return (
     <Modal open={true} width={600} title="移动/复制" onCancel={onCancel} footer={null}>
       <div className={styles.EntityCopy}>
+        <LoadingMask show={entityCopyer.isPending} />
         <div className="hd">
           <div className="subject">{subject}</div>
           <StringSelect variant="filled" block value={action} options={ActionOptions} onChange={setAction as any} />
@@ -131,7 +141,7 @@ const Component: FC<EntityCopyProps> = ({ file, ids, onCancel, onSubmit }) => {
         </div>
         <div className="g-form-footer">
           <Button onClick={onCancel}>取消</Button>
-          <Button type="primary" disabled={!selected} onClick={_onSubmit}>
+          <Button type="primary" disabled={!selected} onClick={onSubmit}>
             {ActionMaps[action]}
           </Button>
         </div>

@@ -1,24 +1,28 @@
-import { useQuery } from "@tanstack/react-query";
+import { BaseWidgets } from "@baseflow/react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { TableProps } from "antd";
-import { Button, Result, Skeleton, Space, Table } from "antd";
-import { Link2Off, Share2 } from "lucide-react";
+import { Button, Result, Skeleton, Table } from "antd";
+import dayjs from "dayjs";
+import { Plus, Share2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import LoadingMask from "@/components/LoadingMask";
 import { useAppStore } from "@/modules/app/store";
+import SharedEdit from "@/modules/shared/views/SharedEdit";
 import { useEvent } from "@/utils/hooks";
 import { debounce, sortList } from "@/utils/tools";
 import { SharedAPI } from "../../api";
 import styles from "./index.module.scss";
 
-const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
+const Component: FC<{ spaceName: string; query: _Shared.Query }> = (props) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [currentEdit, setCurrentEdit] = useState<Partial<_Shared.IShared>>();
   const [tableScroll, setTableScroll] = useState({ y: 0 });
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [config] = useAppStore(useShallow(({ config }) => [config]));
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const sharedQuery = useQuery(SharedAPI.queryList(props.query));
   const [query, setQuery] = useState<{ sorterField?: string; sorterOrder?: "ascend" | "descend" }>({});
   const sharedList = useMemo(() => {
@@ -38,7 +42,23 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
     },
   );
 
-  const columns = useMemo<TableProps<_Entity.IEntity>["columns"]>(() => {
+  const sharedDeleter = useMutation({
+    mutationFn: SharedAPI.deleteItem,
+    onSuccess: () => {
+      BaseWidgets.message.success("操作成功！");
+      queryClient.invalidateQueries({ queryKey: [SharedAPI.listQueryKey] });
+    },
+  });
+
+  const onDelete = useEvent((id: string) => {
+    BaseWidgets.confirm(`确定要取消这个分享吗？`, (ok) => {
+      if (ok) {
+        sharedDeleter.mutate(id);
+      }
+    });
+  });
+
+  const columns = useMemo<TableProps<_Shared.IShared>["columns"]>(() => {
     return [
       {
         title: "名称",
@@ -90,22 +110,25 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
         render: (_, row) => {
           return (
             <div className="g-actions-cell">
-              <a>修改设置</a>
-              <a>取消分享</a>
+              <a onClick={() => setCurrentEdit(row)}>修改设置</a>
+              <a onClick={() => onDelete(row.id)}>取消分享</a>
             </div>
           );
         },
       },
     ];
-  }, [query, navigate]);
+  }, [query, navigate, onDelete]);
 
-  const rowSelection: TableProps<any>["rowSelection"] = useMemo(
-    () => ({
-      selectedRowKeys: selectedRows,
-      onChange: setSelectedRows as any,
-    }),
-    [selectedRows],
-  );
+  const closeCurrentEdit = useEvent(() => setCurrentEdit(undefined));
+
+  const onCreate = useEvent(() => {
+    setCurrentEdit({
+      name: `${props.spaceName}的分享#${dayjs().format("YYYY-MM-DD~HH:mm")}`,
+      expiration: "day",
+      spaceType: props.query.spaceType,
+      spaceId: props.query.spaceId,
+    });
+  });
 
   useEffect(() => {
     setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
@@ -142,21 +165,17 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
 
   return (
     <div className={`${styles.SharedList} g-page min-wrap`}>
-      <LoadingMask show={sharedQuery.isFetching} />
+      <LoadingMask show={sharedQuery.isFetching || sharedDeleter.isPending} />
       <div className="hd">
-        <Space>
-          <div className="title">
-            {props.title}
-            <div className="tips g-dot">
-              （{sharedQuery.data?.length}项<span style={{ margin: "0 2px" }}>/</span>最多{config!.sharedMax}项）
-            </div>
+        <div className="title">
+          {props.query.spaceType === "personal" ? "我的分享" : "项目分享"}
+          <div className="tips">
+            （{sharedQuery.data?.length}项<span style={{ margin: "0 2px" }}>/</span>最多{config!.sharedMax}项）
           </div>
-          {selectedRows.length ? (
-            <Button size="small" color="danger" variant="filled" icon={<Link2Off size={13} strokeWidth={2.5} className="anticon" />}>
-              批量取消
-            </Button>
-          ) : null}
-        </Space>
+        </div>
+        <Button size="small" type="link" icon={<Plus size={14} strokeWidth={2.5} />} onClick={onCreate}>
+          新建分享
+        </Button>
       </div>
       <div className="bd" ref={scrollerRef}>
         <Table<any>
@@ -166,11 +185,11 @@ const Component: FC<{ title: string; query: _Shared.Query }> = (props) => {
           columns={columns}
           dataSource={sharedList}
           pagination={false}
-          rowSelection={rowSelection}
           scroll={tableScroll}
           onChange={onTableChange as any}
         />
       </div>
+      {currentEdit && <SharedEdit item={currentEdit} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
     </div>
   );
 };

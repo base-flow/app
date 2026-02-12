@@ -38,6 +38,20 @@ export function debounce<T extends (...rest: any[]) => any>(callbak: T, delay = 
   }) as any;
 }
 
+export function generateRandomString(length: number) {
+  if (!Number.isInteger(length) || length <= 0) {
+    throw new Error("length 必须是大于 0 的整数");
+  }
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+  const charsLength = chars.length;
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charsLength);
+    result += chars[randomIndex];
+  }
+  return result;
+}
+
 export function logined(token: string, auth: _App.AuthUser, redirect?: string): void {
   localStorage.setItem(AUTH_TOKEN_KEY, token);
   location.href = !redirect || redirect === "/" ? HomePage(auth.id) : redirect;
