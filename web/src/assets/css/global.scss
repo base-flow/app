@@ -176,6 +176,7 @@ a {
     color: #fff;
     background: var(--bf-tx-placeholder);
     border-radius: 20px;
+    opacity: 0.8;
   }
 }
 
@@ -271,6 +272,10 @@ a {
 
 .g-block {
   display: block;
+}
+
+.g-form-modal {
+  padding-top: 10px;
 }
 
 .g-form-compact {

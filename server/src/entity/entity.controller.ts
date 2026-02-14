@@ -58,10 +58,30 @@ export class EntityController {
   //   //return this.workflowService.findOne(param.id);
   // }
 
-  // @Post()
-  // async createItem(@Request() { user, body }: { user: _App.AuthUser; body: _Entity.IEntity }): Promise<_Entity.CreateResult> {
-  //   //return this.workflowService.createItem(user.id, body);
-  // }
+  @Get(":id/checkAlreadyExists")
+  async checkAlreadyExists(@Request() { params, query }: { params: { id: string }; query: { name: string } }): Promise<{ result: boolean }> {
+    await sleep(5000);
+    const entity = EntityMap[params.id] as _App.IDirectory;
+    if (!entity) {
+      throw new NotFoundException();
+    }
+    return { result: entity.children!.some((item) => item.name === query.name) };
+  }
+
+  @Post()
+  async createItem(@Request() { user, body }: { user: _App.AuthUser; body: _Entity.IEntity }): Promise<_Entity.CreateResult> {
+    await sleep(1000);
+    if (body.type === "directory") {
+      const newEntity: _App.IDirectory = { ...body };
+
+      // path: string;
+      // spaceId: string;
+      // spaceType: EntitySpace;
+      // spaceDir: string;};
+    }
+
+    return { id: "123" };
+  }
 
   @Put(":id")
   async updateItem(@Request() { body, params }: { body: _Entity.IEntity; params: { id: string } }): Promise<_Entity.UpdateResult> {
@@ -70,6 +90,7 @@ export class EntityController {
       throw new NotFoundException();
     }
     entity.name = body.name || entity.name;
+    entity.desc = body.desc || entity.desc;
     return { id: params.id };
   }
 

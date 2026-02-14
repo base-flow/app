@@ -200,6 +200,9 @@ export function openDirectory(
 export function openFile(file: _Workflow.IWorkflow | _Node.INode | _Data.IData, windowKey: "EntityEdit" | "EntityView"): void {
   //window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}${dir}`, windowKey);
 }
+export function getSiteBasepath(): string {
+  return `${location.origin}${window.BASE_PATH ? `/${window.BASE_PATH}` : ""}`;
+}
 export function showPath(path: string, keepSelf?: boolean): string {
   //.replace(/\/.+? /g, "/").replace(/^\/.+?\//, "/").replace(/\/[^/]+?$/, "") || "/"
   const pathname = path.replace(/\/.+? /g, "/");

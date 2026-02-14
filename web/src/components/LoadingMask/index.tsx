@@ -7,12 +7,13 @@ import "./index.scss";
 interface Props {
   show: boolean;
   position?: "leftTop" | "center";
+  size?: "small" | "default";
 }
 
-const Component: FC<Props> = ({ show, position }) => {
+const Component: FC<Props> = ({ show, position, size }) => {
   return show ? (
     <div className={classnames("comp-LoadingMask", position)}>
-      <Spin />
+      <Spin size={size} />
     </div>
   ) : null;
 };

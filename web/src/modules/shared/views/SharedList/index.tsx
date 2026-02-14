@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router";
 import type { TableProps } from "antd";
 import { Button, Result, Skeleton, Table } from "antd";
 import dayjs from "dayjs";
-import { Plus, Share2 } from "lucide-react";
+import { Link, Plus, Share2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -12,7 +12,7 @@ import LoadingMask from "@/components/LoadingMask";
 import { useAppStore } from "@/modules/app/store";
 import SharedEdit from "@/modules/shared/views/SharedEdit";
 import { useEvent } from "@/utils/hooks";
-import { debounce, sortList } from "@/utils/tools";
+import { debounce, getSiteBasepath, sortList } from "@/utils/tools";
 import { SharedAPI } from "../../api";
 import styles from "./index.module.scss";
 
@@ -55,6 +55,12 @@ const Component: FC<{ spaceName: string; query: _Shared.Query }> = (props) => {
       if (ok) {
         sharedDeleter.mutate(id);
       }
+    });
+  });
+
+  const copyUrl = useEvent((id: string) => {
+    BaseWidgets.clipboard.write(`${getSiteBasepath()}/shared/${id}`).then(() => {
+      BaseWidgets.message.success("已复制到剪贴版...");
     });
   });
 
@@ -110,14 +116,18 @@ const Component: FC<{ spaceName: string; query: _Shared.Query }> = (props) => {
         render: (_, row) => {
           return (
             <div className="g-actions-cell">
-              <a onClick={() => setCurrentEdit(row)}>修改设置</a>
-              <a onClick={() => onDelete(row.id)}>取消分享</a>
+              <a onClick={() => copyUrl(row.id)}>
+                <Link size={12} className="anticon" style={{ marginRight: "2px" }} />
+                复制链接
+              </a>
+              <a onClick={() => setCurrentEdit(row)}>设置</a>
+              <a onClick={() => onDelete(row.id)}>取消</a>
             </div>
           );
         },
       },
     ];
-  }, [query, navigate, onDelete]);
+  }, [query, navigate, copyUrl, onDelete]);
 
   const closeCurrentEdit = useEvent(() => setCurrentEdit(undefined));
 

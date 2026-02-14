@@ -11,6 +11,9 @@ export const EntityAPI = {
   getItem(id: string): Promise<_Entity.IEntity> {
     return request.get(`/api/entity/${id}`).then((res) => res.data);
   },
+  checkFileName(parentId: string, name: string): Promise<boolean> {
+    return request.get(`/api/entity/${parentId}/checkAlreadyExists`, { params: { name } }).then((res) => res.data.result);
+  },
   deleteItem(id: string): Promise<void> {
     return request.delete(`/api/entity/${id}`);
   },

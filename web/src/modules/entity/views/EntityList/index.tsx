@@ -19,8 +19,8 @@ import { useEvent, useMyFavoriteIds, useTableChange, useTablePagination } from "
 import { debounce, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
+import DirectoryEdit from "../DirectoryEdit";
 import EntityCopy from "../EntityCopy";
-import EntityRename from "../EntityRename";
 import styles from "./index.module.scss";
 
 interface EntityListProps {
@@ -38,7 +38,7 @@ interface EntityListProps {
 
 const Component: FC<EntityListProps> = (props) => {
   const { space, isMine, rootDir, rootName, setCurrentPath } = props;
-  const [currentEdit, setCurrentEdit] = useState<{ item: _Entity.IEntity; action: "rename" }>();
+  const [currentEdit, setCurrentEdit] = useState<Partial<_Entity.IEntity>>();
   const [batchEdit, setBatchEdit] = useState<{ ids: string[]; file?: string; action: "copy" }>();
   const [shared, setShared] = useState<Partial<_Shared.IShared>>();
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -63,18 +63,10 @@ const Component: FC<EntityListProps> = (props) => {
     navigate({ to: ".", search: { ...query, dir: dir === props.rootDir ? undefined : dir, page: page === 1 ? undefined : page } });
   });
 
-  const { onTableChange, onDirSearch } = useTableChange(query, setQuery);
+  const { onTableChange, onDirSearch } = useTableChange(entityListQuery, setQuery);
   const closeCurrentEdit = useEvent(() => setCurrentEdit(undefined));
   const closeBatchEdit = useEvent(() => setBatchEdit(undefined));
   const closeShared = useEvent(() => setShared(undefined));
-
-  const entityAlter = useMutation({
-    mutationFn: EntityAPI.updateItem,
-    onSuccess: () => {
-      closeCurrentEdit();
-      queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey] });
-    },
-  });
 
   const entityDeleter = useMutation({
     mutationFn: EntityAPI.batchDelete,
@@ -104,10 +96,6 @@ const Component: FC<EntityListProps> = (props) => {
         entityDeleter.mutate(ids);
       }
     });
-  });
-
-  const onRename = useEvent((id: string, name: string) => {
-    entityAlter.mutate({ id, name });
   });
 
   const createShare = useEvent((ids: string[]) => {
@@ -153,8 +141,8 @@ const Component: FC<EntityListProps> = (props) => {
   }, [selectedRows, onBatchDelete, createShare]);
 
   const onToolsClick = useEvent((item: _Entity.IEntity, action: FileToolsAction) => {
-    if (action === "rename") {
-      setCurrentEdit({ item, action: "rename" });
+    if (action === "modify") {
+      setCurrentEdit(item);
     } else if (action === "delete") {
       BaseWidgets.confirm(`确定要删除“${item.name}”吗？`, (ok) => {
         if (ok) {
@@ -174,6 +162,8 @@ const Component: FC<EntityListProps> = (props) => {
         title: "名称",
         dataIndex: "name",
         key: "name",
+        sorter: true,
+        sortOrder: (entityListQuery.sorterField === "name" && entityListQuery.sorterOrder) || null,
         className: "g-file-cell",
         render: (name, row) => (
           <>
@@ -211,6 +201,8 @@ const Component: FC<EntityListProps> = (props) => {
         title: "文件类型",
         dataIndex: "type",
         key: "type",
+        sorter: true,
+        sortOrder: (entityListQuery.sorterField === "type" && entityListQuery.sorterOrder) || null,
         width: 100,
         align: "center",
       },
@@ -218,6 +210,8 @@ const Component: FC<EntityListProps> = (props) => {
         title: "运行环境",
         dataIndex: "runtime",
         key: "runtime",
+        sorter: true,
+        sortOrder: (entityListQuery.sorterField === "runtime" && entityListQuery.sorterOrder) || null,
         width: 140,
         align: "center",
       },
@@ -251,13 +245,13 @@ const Component: FC<EntityListProps> = (props) => {
   );
 
   const listTypeLinks = useMemo(() => {
-    const { dir, keyword } = query;
+    const { dir, keyword } = entityListQuery;
     const items: LinkItem[] = [
       {
         key: "all",
         to: ".",
         search: { dir, keyword, type: undefined },
-        className: !query.type ? "on" : undefined,
+        className: !entityListQuery.type ? "on" : undefined,
         children: (
           <>
             <FolderTree size={12} />
@@ -269,7 +263,7 @@ const Component: FC<EntityListProps> = (props) => {
         key: "workflow",
         to: ".",
         search: { dir, keyword, type: "workflow" },
-        className: query.type === "workflow" ? "on" : undefined,
+        className: entityListQuery.type === "workflow" ? "on" : undefined,
         children: (
           <>
             <IconEntity size={12} type="workflow" />
@@ -281,7 +275,7 @@ const Component: FC<EntityListProps> = (props) => {
         key: "node",
         to: ".",
         search: { dir, keyword, type: "node" },
-        className: query.type === "node" ? "on" : undefined,
+        className: entityListQuery.type === "node" ? "on" : undefined,
         children: (
           <>
             <IconEntity size={12} type="node" />
@@ -293,7 +287,7 @@ const Component: FC<EntityListProps> = (props) => {
         key: "data",
         to: ".",
         search: { dir, keyword, type: "data" },
-        className: query.type === "data" ? "on" : undefined,
+        className: entityListQuery.type === "data" ? "on" : undefined,
         children: (
           <>
             <IconEntity size={12} type="data" />
@@ -303,7 +297,7 @@ const Component: FC<EntityListProps> = (props) => {
       },
     ];
     return items;
-  }, [query]);
+  }, [entityListQuery]);
 
   useEffect(() => {
     setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
@@ -342,11 +336,11 @@ const Component: FC<EntityListProps> = (props) => {
 
   return (
     <div className={`${styles.EntityList} g-page min-wrap`}>
-      <LoadingMask show={entityQuery.isFetching || entityAlter.isPending || entityDeleter.isPending || favoriteLoading} />
+      <LoadingMask show={entityQuery.isFetching || entityDeleter.isPending || favoriteLoading} />
       <div className="hd">
         <div className="row">
           <Breadcrumb rootDir={rootDir} rootName={rootName} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
-          <SearchInput value={query.keyword} onChange={onDirSearch} placeholder="当前目录下搜索..." />
+          <SearchInput value={entityListQuery.keyword} onChange={onDirSearch} placeholder="当前目录下搜索..." />
         </div>
         <div className="row">
           {!isMine ? (
@@ -356,7 +350,19 @@ const Component: FC<EntityListProps> = (props) => {
               <Button icon={<Plus size={13} strokeWidth={2.5} className="anticon" />} type="primary">
                 新建流程
               </Button>
-              <Button icon={<FolderPlus size={13} strokeWidth={2.5} className="anticon" />}>新建文件夹</Button>
+              <Button
+                icon={<FolderPlus size={13} strokeWidth={2.5} className="anticon" />}
+                onClick={() =>
+                  setCurrentEdit({
+                    type: "directory",
+                    parentId: entityListQuery.dir!,
+                    spaceType: space.type,
+                    spaceId: space.id,
+                  })
+                }
+              >
+                新建目录
+              </Button>
             </Space>
           ) : (
             <Dropdown menu={batchMenu}>
@@ -387,7 +393,7 @@ const Component: FC<EntityListProps> = (props) => {
           onChange={onTableChange}
         />
       </div>
-      {currentEdit?.action === "rename" && <EntityRename item={currentEdit.item} onCancel={closeCurrentEdit} onSubmit={onRename} />}
+      {currentEdit?.type === "directory" && <DirectoryEdit item={currentEdit} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
       {batchEdit?.action === "copy" && (
         <EntityCopy ids={batchEdit.ids} file={batchEdit.file} onCancel={closeBatchEdit} onSuccess={onBatchCopySuccess} />
       )}

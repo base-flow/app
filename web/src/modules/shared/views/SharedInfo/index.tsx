@@ -1,3 +1,4 @@
+import { BaseWidgets } from "@baseflow/react";
 import { Clock } from "lucide-react";
 import type { FC } from "react";
 import { memo } from "react";
@@ -7,7 +8,16 @@ const Component: FC<{ info: _Shared.IShared }> = ({ info }) => {
   return (
     <div className={styles.SharedInfo}>
       <ul>
-        <li className="title"></li>
+        <li
+          className="copy"
+          onClick={() => {
+            BaseWidgets.clipboard.write(location.href).then(() => {
+              BaseWidgets.message.success("已复制到剪贴版...");
+            });
+          }}
+        >
+          复制分享链接
+        </li>
         <li>
           <Clock size={11} className="anticon" />
           <span>创建时间：</span>
@@ -20,8 +30,8 @@ const Component: FC<{ info: _Shared.IShared }> = ({ info }) => {
         </li>
         <li>
           <Clock size={11} className="anticon" />
-          <span>剩余：</span>
-          <em>24小时15分45秒</em>
+          <span>剩余时间：</span>
+          <em className="expires">24小时15分45秒</em>
         </li>
       </ul>
     </div>

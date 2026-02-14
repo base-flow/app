@@ -76,6 +76,7 @@ const Component: FC<SharedContentProps> = (props) => {
     if (selectedIds.length > n) {
       BaseWidgets.message.error(
         `单次分享最多${sharedContentMax}项，还可以添加${n}项，如果要分享的文件过多，您可以将它们创建一个目录，然后将其添加！`,
+        true,
       );
     } else {
       setShowEntitySelector(false);
@@ -282,18 +283,22 @@ const Component: FC<SharedContentProps> = (props) => {
           <Space>
             <div className="title">
               {shared.name}
-              <div className="user">
-                {isMine ? (
-                  <a
-                    onClick={() => navigate({ to: `/${shared.spaceType}/${shared.spaceId}/shared` })}
-                  >{`(${shared.spaceType === "personal" ? "我的分享" : "项目分享"})`}</a>
-                ) : (
+              {isMine ? (
+                <div className="user">
+                  (
+                  <a className="link" onClick={() => navigate({ to: `/${shared.spaceType}/${shared.spaceId}/shared` })}>
+                    {shared.spaceType === "personal" ? "我的分享" : "项目分享"}
+                  </a>
+                  )
+                </div>
+              ) : (
+                <div className="user">
                   <span>
                     <UserRound size={12} className="anticon" strokeWidth={2.5} style={{ marginRight: "1px" }} />
                     {shared.createBy}
                   </span>
-                )}
-              </div>
+                </div>
+              )}
             </div>
             {selectedRows.length ? (
               <Button

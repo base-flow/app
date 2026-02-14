@@ -17,6 +17,23 @@
       color: var(--bf-tx-summary);
     }
 
+    .copy {
+      margin-bottom: 10px;
+      color: var(--bf-second);
+      text-align: center;
+      cursor: pointer;
+      background: var(--bf-bg-active);
+      border-radius: 10px;
+
+      &:hover {
+        color: var(--bf-primary);
+      }
+    }
+
+    .expires {
+      color: var(--bf-tx-success);
+    }
+
     .anticon {
       margin-right: 3px;
     }
