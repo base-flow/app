@@ -32,7 +32,7 @@ const NodeList: FC<{ query: _Node.Query }> = (props) => {
   const nodeListSummary = nodes.data?.summary;
   const queryClient = useQueryClient();
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const [curEdit, setCurEdit] = useState<_Node.INode | _App.IDirectory>();
+  const [curEdit, setCurEdit] = useState<_Node.INode | _Entity.IDirectory>();
 
   const onStoreChange = useEvent((store?: "remote" | "local") => {
     router.navigate({ to: ".", search: { store, runtime: query.runtime } });
@@ -84,7 +84,7 @@ const NodeList: FC<{ query: _Node.Query }> = (props) => {
     });
   });
 
-  const onItemClick = useEvent((item: _Node.INode | _App.IDirectory) => {
+  const onItemClick = useEvent((item: _Node.INode | _Entity.IDirectory) => {
     if (item.type === "directory") {
       setQuery({ ...query, keyword: undefined, directory: item.id });
     }

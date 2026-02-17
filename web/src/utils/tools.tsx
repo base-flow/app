@@ -179,7 +179,7 @@ export function messageWrap(message: string): ReactNode {
   const arr = message.split("\n");
   return arr.length > 1 ? arr.map((line) => <div key={line}>{line}</div>) : message;
 }
-// export function isDirectory(item: { type: string }): item is _App.IDirectory {
+// export function isDirectory(item: { type: string }): item is _Entity.IDirectory {
 //   return item.type === "directory";
 // }
 // export function isWorkflow(item: { type: string }): item is _Workflow.IWorkflow {
@@ -197,8 +197,8 @@ export function openDirectory(
   }
   navigate({ to: `/${spaceType}/${spaceId}`, search: { dir } });
 }
-export function openFile(file: _Workflow.IWorkflow | _Node.INode | _Data.IData, windowKey: "EntityEdit" | "EntityView"): void {
-  //window.open(`${window.BASE_PATH || ""}/${spaceType}/${spaceId}${dir}`, windowKey);
+export function openFile(item: { id: string; type: _App.EntityFileType }, windowKey: "EntityEdit" | "EntityView"): void {
+  window.open(`${window.BASE_PATH || ""}/${item.type}/${item.id}`, windowKey);
 }
 export function getSiteBasepath(): string {
   return `${location.origin}${window.BASE_PATH ? `/${window.BASE_PATH}` : ""}`;

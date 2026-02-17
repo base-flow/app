@@ -16,6 +16,10 @@
 
 .ant-btn {
   gap: 5px;
+
+  > .ant-btn-icon {
+    line-height: 1;
+  }
 }
 
 .ant-form-item .ant-form-item-explain-error {

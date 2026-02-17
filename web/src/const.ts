@@ -30,6 +30,11 @@ export const DomIds = {
   Button_CreateNodeFolder: "_Button_CreateNodeFolder_",
 };
 
+export const RuntimeOptions: { value: _App.Runtime; label: string }[] = [
+  { value: "server", label: "服务器运行" },
+  { value: "browser", label: "浏览器运行" },
+];
+
 export const ProjectRoleOptions = [
   {
     key: "Owner",

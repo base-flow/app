@@ -3,7 +3,24 @@ declare namespace _Entity {
   // type Repository = "remote" | "local";
   // type NodeType = "executor" | "trigger";
 
-  type IEntity = _App.IDirectory | _Workflow.IWorkflow | _Node.INode | _Data.IData;
+  interface BaseEntity extends _Resource.IItem {
+    type: EntityType;
+    name: string;
+    desc: string;
+    icon?: string;
+    parentId: string;
+    path: string;
+    spaceId: string;
+    spaceType: EntitySpace;
+    spaceDir: string;
+  }
+
+  interface IDirectory extends BaseEntity {
+    type: "directory";
+    children?: IEntity[];
+  }
+
+  type IEntity = IDirectory | _Workflow.IWorkflow | _Node.INode | _Data.IData;
 
   interface Query extends _Resource.IQuery {
     dir?: string;

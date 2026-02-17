@@ -110,7 +110,7 @@ export class SharedController {
         summary: { total: contentList.length, page: 1, pageSize: 100, path: "" },
       };
     } else {
-      const folder = EntityMap[query.dir] as _App.IDirectory;
+      const folder = EntityMap[query.dir] as _Entity.IDirectory;
       if (!folder) {
         throw new NotFoundException();
       }

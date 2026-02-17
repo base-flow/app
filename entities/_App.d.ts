@@ -29,21 +29,4 @@ declare namespace _App {
   type EntitySpace = "personal" | "project" | "platform";
   type EntityType = "directory" | "workflow" | "node" | "data";
   type EntityFileType = "workflow" | "node" | "data";
-
-  interface BaseEntity extends _Resource.IItem {
-    type: EntityType;
-    name: string;
-    desc: string;
-    icon?: string;
-    parentId: string;
-    path: string;
-    spaceId: string;
-    spaceType: EntitySpace;
-    spaceDir: string;
-  }
-
-  interface IDirectory extends BaseEntity {
-    type: "directory";
-    children?: _Entity.IEntity[];
-  }
 }

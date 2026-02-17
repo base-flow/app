@@ -8,7 +8,7 @@ export class EntityController {
   async getList(@Request() { query }: { query: _Entity.Query }): Promise<_Entity.QueryResult> {
     await sleep(1000);
     query.page = Number(query.page) || 1;
-    const folder = EntityMap[query.dir || ""] as _App.IDirectory;
+    const folder = EntityMap[query.dir || ""] as _Entity.IDirectory;
     if (!folder) {
       throw new NotFoundException();
     }
@@ -61,7 +61,7 @@ export class EntityController {
   @Get(":id/checkAlreadyExists")
   async checkAlreadyExists(@Request() { params, query }: { params: { id: string }; query: { name: string } }): Promise<{ result: boolean }> {
     await sleep(5000);
-    const entity = EntityMap[params.id] as _App.IDirectory;
+    const entity = EntityMap[params.id] as _Entity.IDirectory;
     if (!entity) {
       throw new NotFoundException();
     }
@@ -72,12 +72,14 @@ export class EntityController {
   async createItem(@Request() { user, body }: { user: _App.AuthUser; body: _Entity.IEntity }): Promise<_Entity.CreateResult> {
     await sleep(1000);
     if (body.type === "directory") {
-      const newEntity: _App.IDirectory = { ...body };
+      const newEntity: _Entity.IDirectory = { ...body };
 
       // path: string;
       // spaceId: string;
       // spaceType: EntitySpace;
       // spaceDir: string;};
+    } else if (body.type === "workflow") {
+      const newEntity: _Workflow.IWorkflow = { ...body };
     }
 
     return { id: "123" };
@@ -105,7 +107,7 @@ export class EntityController {
     console.log(ids);
     ids.forEach((id) => {
       const item = EntityMap[id];
-      const parent = EntityMap[item.parentId] as _App.IDirectory;
+      const parent = EntityMap[item.parentId] as _Entity.IDirectory;
       parent.children = parent.children!.filter((sub) => sub.id !== id);
       delete EntityMap[id];
     });

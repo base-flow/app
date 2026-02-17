@@ -12,13 +12,13 @@ const DefaultFolderIcon =
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjY0IDY0IDg5NiA4OTYiIHdpZHRoPSI4OTZweCIgaGVpZ2h0PSI4OTZweCIgc3R5bGU9ImZpbGw6IzJiN2JlYSI+PHBhdGggZD0iTTE2MCAxNDRoMzA0YTE2IDE2IDAgMDExNiAxNnYzMDRhMTYgMTYgMCAwMS0xNiAxNkgxNjBhMTYgMTYgMCAwMS0xNi0xNlYxNjBhMTYgMTYgMCAwMTE2LTE2bTU2NC4zMS0yNS4zM2wxODEuMDIgMTgxLjAyYTE2IDE2IDAgMDEwIDIyLjYyTDcyNC4zMSA1MDMuMzNhMTYgMTYgMCAwMS0yMi42MiAwTDUyMC42NyAzMjIuMzFhMTYgMTYgMCAwMTAtMjIuNjJsMTgxLjAyLTE4MS4wMmExNiAxNiAwIDAxMjIuNjIgME0xNjAgNTQ0aDMwNGExNiAxNiAwIDAxMTYgMTZ2MzA0YTE2IDE2IDAgMDEtMTYgMTZIMTYwYTE2IDE2IDAgMDEtMTYtMTZWNTYwYTE2IDE2IDAgMDExNi0xNm00MDAgMGgzMDRhMTYgMTYgMCAwMTE2IDE2djMwNGExNiAxNiAwIDAxLTE2IDE2SDU2MGExNiAxNiAwIDAxLTE2LTE2VjU2MGExNiAxNiAwIDAxMTYtMTYiPjwvcGF0aD48L3N2Zz4=";
 
 interface Props {
-  item: _Node.INode | _App.IDirectory;
+  item: _Node.INode | _Entity.IDirectory;
   permissions: _Permission.IPermissions;
   authId: string;
-  setCurEdit: (item: _Node.INode | _App.IDirectory) => void;
+  setCurEdit: (item: _Node.INode | _Entity.IDirectory) => void;
   onDelete: (id: string, name: string) => void;
   onCollect: (id: string, collected: boolean) => void;
-  onItemClick: (item: _Node.INode | _App.IDirectory) => void;
+  onItemClick: (item: _Node.INode | _Entity.IDirectory) => void;
 }
 
 const Component: FC<Props> = ({ item, permissions, authId, setCurEdit, onDelete, onCollect, onItemClick }) => {

@@ -108,7 +108,7 @@ function createEntities(
 ) {
   const dirs: _Entity.IEntity[] = new Array(3).fill("").map(() => {
     const name = children.shift();
-    const item: _App.IDirectory = {
+    const item: _Entity.IDirectory = {
       id: `${uid++}`,
       type: "directory",
       name: name || Random.ctitle(5, 10),
@@ -190,7 +190,7 @@ function createEntities(
 }
 
 function createRootDir(space: { type: _App.EntitySpace; id: string }, name: string, children?: string[]) {
-  const item: _App.IDirectory = {
+  const item: _Entity.IDirectory = {
     id: `${uid++}`,
     type: "directory",
     name,
@@ -217,7 +217,7 @@ function createRootDir(space: { type: _App.EntitySpace; id: string }, name: stri
 }
 
 function createPlatformEntities() {
-  const drive: _App.IDirectory[] = [];
+  const drive: _Entity.IDirectory[] = [];
   drive.push(createRootDir({ type: "personal", id: Users[0].id }, Users[0].username, ["public"]));
   drive.push(createRootDir({ type: "personal", id: Users[1].id }, Users[1].username, ["public"]));
   drive.push(createRootDir({ type: "project", id: Projects[0].id }, Projects[0].name, ["public"]));
@@ -231,10 +231,10 @@ function createPlatformEntities() {
 
 export const EntityList = createPlatformEntities();
 
-const adminFolder = EntityList.find((item) => item.name === "admin") as _App.IDirectory;
-const mariaFolder = EntityList.find((item) => item.name === "maria") as _App.IDirectory;
-const deepseekFolder = EntityList.find((item) => item.name === "deepseek") as _App.IDirectory;
-const googleFolder = EntityList.find((item) => item.name === "google") as _App.IDirectory;
+const adminFolder = EntityList.find((item) => item.name === "admin") as _Entity.IDirectory;
+const mariaFolder = EntityList.find((item) => item.name === "maria") as _Entity.IDirectory;
+const deepseekFolder = EntityList.find((item) => item.name === "deepseek") as _Entity.IDirectory;
+const googleFolder = EntityList.find((item) => item.name === "google") as _Entity.IDirectory;
 
 Users[0].dir = adminFolder.id;
 Users[1].dir = mariaFolder.id;

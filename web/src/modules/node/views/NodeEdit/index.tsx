@@ -24,8 +24,8 @@ const modifyTitle = (
   </>
 );
 export interface Props {
-  setItem: (item: _Node.INode | _App.IDirectory | undefined) => void;
-  item?: _Node.INode | _App.IDirectory;
+  setItem: (item: _Node.INode | _Entity.IDirectory | undefined) => void;
+  item?: _Node.INode | _Entity.IDirectory;
   currentPath: string;
 }
 

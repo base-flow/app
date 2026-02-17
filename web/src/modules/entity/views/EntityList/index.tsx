@@ -4,7 +4,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import type { MenuProps, TablePaginationConfig, TableProps } from "antd";
 import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
 import dayjs from "dayjs";
-import { ChevronDown, Copy, FolderPlus, FolderSymlink, FolderTree, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, Copy, FolderPlus, FolderSymlink, FolderTree, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Collect from "@/components/Collect";
@@ -21,6 +21,7 @@ import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
 import DirectoryEdit from "../DirectoryEdit";
 import EntityCopy from "../EntityCopy";
+import WorkflowEdit from "../WorkflowEdit";
 import styles from "./index.module.scss";
 
 interface EntityListProps {
@@ -107,6 +108,44 @@ const Component: FC<EntityListProps> = (props) => {
       spaceId: space.id,
     });
   });
+
+  const createDirectory = useEvent(() => {
+    setCurrentEdit({ type: "directory", parentId: entityListQuery.dir!, spaceType: space.type, spaceId: space.id });
+  });
+
+  const createWorkflow = useEvent(() => {
+    setCurrentEdit({ type: "workflow", parentId: entityListQuery.dir!, spaceType: space.type, spaceId: space.id });
+  });
+
+  const createrMenu = useMemo(() => {
+    const items: MenuProps["items"] = [
+      {
+        label: "流程",
+        key: "flow",
+        icon: <IconEntity type="workflow" />,
+      },
+      {
+        label: "节点",
+        key: "node",
+        icon: <IconEntity type="node" />,
+      },
+      {
+        label: "数据",
+        key: "data",
+        icon: <IconEntity type="data" />,
+      },
+    ];
+    return {
+      items,
+      onClick: ({ key }: { key: string }) => {
+        if (key === "flow") {
+          createWorkflow();
+        } else if (key === "node") {
+        } else if (key === "data") {
+        }
+      },
+    };
+  }, [createWorkflow]);
 
   const batchMenu = useMemo(() => {
     const items: MenuProps["items"] = [
@@ -347,32 +386,18 @@ const Component: FC<EntityListProps> = (props) => {
             <div style={{ height: "32px" }} />
           ) : !selectedRows.length ? (
             <Space>
-              <Button icon={<Plus size={13} strokeWidth={2.5} className="anticon" />} type="primary">
-                新建流程
-              </Button>
-              <Button
-                icon={<FolderPlus size={13} strokeWidth={2.5} className="anticon" />}
-                onClick={() =>
-                  setCurrentEdit({
-                    type: "directory",
-                    parentId: entityListQuery.dir!,
-                    spaceType: space.type,
-                    spaceId: space.id,
-                  })
-                }
-              >
+              <Dropdown menu={createrMenu}>
+                <Button icon={<ChevronDown size={13} />} type="primary">
+                  新建文件
+                </Button>
+              </Dropdown>
+              <Button icon={<FolderPlus size={13} strokeWidth={2.5} />} onClick={createDirectory}>
                 新建目录
               </Button>
             </Space>
           ) : (
             <Dropdown menu={batchMenu}>
-              <Button
-                loading={entityDeleter.isPending}
-                icon={<ChevronDown size={13} className="anticon" />}
-                type="link"
-                size="small"
-                iconPlacement="end"
-              >
+              <Button loading={entityDeleter.isPending} icon={<ChevronDown size={13} />} type="link" size="small" iconPlacement="end">
                 批量操作
               </Button>
             </Dropdown>
@@ -394,6 +419,7 @@ const Component: FC<EntityListProps> = (props) => {
         />
       </div>
       {currentEdit?.type === "directory" && <DirectoryEdit item={currentEdit} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
+      {currentEdit?.type === "workflow" && <WorkflowEdit item={currentEdit} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
       {batchEdit?.action === "copy" && (
         <EntityCopy ids={batchEdit.ids} file={batchEdit.file} onCancel={closeBatchEdit} onSuccess={onBatchCopySuccess} />
       )}

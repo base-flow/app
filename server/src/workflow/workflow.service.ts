@@ -4,7 +4,7 @@ import { FlagSrc } from "@/utils";
 // eslint-disable-next-line ts/no-require-imports
 const mockjs = require("mockjs");
 
-const dirList: _App.IDirectory[] = mockjs
+const dirList: _Entity.IDirectory[] = mockjs
   .mock({
     "list|50": [
       {

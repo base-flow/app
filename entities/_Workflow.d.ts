@@ -1,5 +1,5 @@
 declare namespace _Workflow {
-  interface IWorkflow extends _App.BaseEntity {
+  interface IWorkflow extends _Entity.BaseEntity {
     type: "workflow";
     runtime: _App.Runtime;
     likes: number;
