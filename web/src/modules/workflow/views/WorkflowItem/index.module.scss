@@ -1,0 +1,67 @@
+:global {
+  :local(.WorkflowItem) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding-top: 46px;
+    background-color: #fff;
+
+    &:global(__hd) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 996;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      height: 46px;
+      padding: 0 15px;
+      font-size: 14px;
+      background-color: var(--bf-bg-body);
+      border-bottom: 1px solid var(--bf-bd-input);
+      box-shadow: var(--bf-sd-btn);
+
+      .ant-btn {
+        height: 30px;
+      }
+
+      > .left {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+
+        > .title {
+          padding-right: 20px;
+        }
+      }
+
+      > .right {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+
+      .link-btn {
+        cursor: pointer;
+
+        &:hover {
+          color: var(--bf-primary);
+        }
+      }
+
+      .action-btn {
+        margin-left: 6px;
+        color: var(--bf-bd-input);
+        cursor: pointer;
+
+        &:hover {
+          transform: scale(1.3);
+        }
+      }
+    }
+  }
+}

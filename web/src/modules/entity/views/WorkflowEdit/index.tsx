@@ -5,8 +5,8 @@ import { FilePenLine, Plus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useRef, useState } from "react";
 import { FileNameRule, RequiredRule, RuntimeOptions } from "@/const";
-import { useEvent } from "@/utils/hooks";
-import { openFile, verifyFileName } from "@/utils/tools";
+import { useEntityNavigate, useEvent } from "@/utils/hooks";
+import { verifyFileName } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 
 const FormItem = Form.Item;
@@ -36,14 +36,15 @@ const Component: FC<WorkflowEditProps> = ({ item, onCancel, onSuccess }) => {
   const queryClient = useQueryClient();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const { fileNavigate } = useEntityNavigate();
 
   const entityCreater = useMutation({
     mutationFn: EntityAPI.createItem,
     onSuccess: (res) => {
       BaseWidgets.message.success("创建成功！");
       queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey] });
-      openFile({ id: res.id, type: item.type! }, "EntityEdit");
       onSuccess();
+      setTimeout(() => fileNavigate({ id: res.id, type: item.type! }));
     },
   });
 

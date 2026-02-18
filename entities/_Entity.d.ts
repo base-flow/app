@@ -4,14 +4,14 @@ declare namespace _Entity {
   // type NodeType = "executor" | "trigger";
 
   interface BaseEntity extends _Resource.IItem {
-    type: EntityType;
+    type: _App.EntityType;
     name: string;
     desc: string;
     icon?: string;
     parentId: string;
     path: string;
     spaceId: string;
-    spaceType: EntitySpace;
+    spaceType: _App.EntitySpace;
     spaceDir: string;
   }
 

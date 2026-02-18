@@ -13,8 +13,8 @@ import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import Breadcrumb from "@/modules/entity/views/Breadcrumb";
 import EntitySelector from "@/modules/entity/views/EntitySelector";
-import { useEvent, useTableChange, useTablePagination } from "@/utils/hooks";
-import { debounce, openDirectory, openFile, showPath } from "@/utils/tools";
+import { useEntityNavigate, useEvent, useTableChange, useTablePagination } from "@/utils/hooks";
+import { debounce, showPath } from "@/utils/tools";
 import { SharedAPI } from "../../api";
 import styles from "./index.module.scss";
 
@@ -50,6 +50,7 @@ const Component: FC<SharedContentProps> = (props) => {
     navigate({ to: ".", search: { ...query, dir: dir === shared.id ? undefined : dir, page: page === 1 ? undefined : page } });
   });
 
+  const { fileNavigate, directoryNavigate } = useEntityNavigate();
   const { onTableChange, onDirSearch } = useTableChange(query, setQuery);
 
   const entityCreater = useMutation({
@@ -96,7 +97,7 @@ const Component: FC<SharedContentProps> = (props) => {
             <IconEntity className="icon" type={row.type} />
             <a
               onClick={() => {
-                row.type === "directory" ? setQuery({ dir: row.id }) : openFile(row, "EntityView");
+                row.type === "directory" ? setQuery({ dir: row.id }) : fileNavigate(row);
               }}
             >
               {name}
@@ -106,7 +107,7 @@ const Component: FC<SharedContentProps> = (props) => {
                 {entityListQuery.dir ? (
                   <FolderSymlink className="dir anticon" size={13} onClick={() => setQuery({ dir: row.parentId })} />
                 ) : (
-                  <Link className="dir anticon" size={13} onClick={() => openDirectory(row, true, navigate)} />
+                  <Link className="dir anticon" size={13} onClick={() => directoryNavigate(row, true)} />
                 )}
               </Tooltip>
             ) : null}

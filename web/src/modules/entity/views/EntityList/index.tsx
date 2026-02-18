@@ -15,7 +15,7 @@ import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import SharedEdit from "@/modules/shared/views/SharedEdit";
-import { useEvent, useMyFavoriteIds, useTableChange, useTablePagination } from "@/utils/hooks";
+import { useEntityNavigate, useEvent, useMyFavoriteIds, useTableChange, useTablePagination } from "@/utils/hooks";
 import { debounce, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
@@ -64,6 +64,7 @@ const Component: FC<EntityListProps> = (props) => {
     navigate({ to: ".", search: { ...query, dir: dir === props.rootDir ? undefined : dir, page: page === 1 ? undefined : page } });
   });
 
+  const { fileNavigate } = useEntityNavigate();
   const { onTableChange, onDirSearch } = useTableChange(entityListQuery, setQuery);
   const closeCurrentEdit = useEvent(() => setCurrentEdit(undefined));
   const closeBatchEdit = useEvent(() => setBatchEdit(undefined));
@@ -208,23 +209,7 @@ const Component: FC<EntityListProps> = (props) => {
           <>
             <div className="g-entity-cell">
               <IconEntity className="icon" type={row.type} />
-              {row.type === "directory" ? (
-                <Link to="." search={{ dir: row.id }}>
-                  {name}
-                </Link>
-              ) : row.type === "workflow" ? (
-                <Link to="/workflow/$workflowId" params={{ workflowId: row.id }} search={{ dir: 1 }}>
-                  {name}
-                </Link>
-              ) : row.type === "node" ? (
-                <Link to="/node/$nodeId" params={{ nodeId: row.id }}>
-                  {name}
-                </Link>
-              ) : (
-                <Link to="/node/$nodeId" params={{ nodeId: row.id }}>
-                  {name}
-                </Link>
-              )}
+              <a onClick={() => (row.type === "directory" ? setQuery({ dir: row.id }) : fileNavigate(row))}>{name}</a>
               {row.path ? (
                 <Tooltip placement="bottom" title={showPath(row.path)}>
                   <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
@@ -271,7 +256,7 @@ const Component: FC<EntityListProps> = (props) => {
         width: 140,
       },
     ];
-  }, [entityListQuery, favoriteMap, onFavoriteChange, setQuery, onToolsClick]);
+  }, [entityListQuery, favoriteMap, onFavoriteChange, setQuery, onToolsClick, fileNavigate]);
 
   const pagination: TablePaginationConfig = useTablePagination(entityListSummary);
 

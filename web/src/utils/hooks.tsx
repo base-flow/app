@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import type { TablePaginationConfig } from "antd";
 import type { RefObject } from "react";
 import { createContext, useContext, useEffect, useMemo, useRef } from "react";
@@ -20,6 +21,24 @@ export function useEvent<F extends Function>(fn: F): F {
   }
 
   return memoizedFn.current!;
+}
+
+export function useEntityNavigate() {
+  const navigate = useNavigate();
+  const fileNavigate = useEvent((entity: { id: string; type: _App.EntityFileType }) => {
+    if (entity.type === "workflow") {
+      navigate({ to: "/workflow/$workflowId", params: { workflowId: entity.id } });
+    }
+  });
+  const directoryNavigate = useEvent((entity: _Entity.IEntity, openParent?: boolean) => {
+    const { id, spaceType, spaceId, parentId, path } = entity;
+    let dir: string | undefined = openParent ? parentId : id;
+    if (openParent && path.split("/").length === 3) {
+      dir = undefined;
+    }
+    navigate({ to: `/${spaceType}/${spaceId}`, search: { dir } });
+  });
+  return { fileNavigate, directoryNavigate };
 }
 
 export function useInfiniteList(fetchNextPage: () => void): [RefObject<HTMLDivElement | null>, (node?: Element | null | undefined) => void] {

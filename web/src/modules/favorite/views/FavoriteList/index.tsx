@@ -13,8 +13,8 @@ import type { LinkItem } from "@/components/LinkTab";
 import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import { useAppStore } from "@/modules/app/store";
-import { useEvent, useMyFavoriteList } from "@/utils/hooks";
-import { debounce, openDirectory, openFile, showPath, sortList } from "@/utils/tools";
+import { useEntityNavigate, useEvent, useMyFavoriteList } from "@/utils/hooks";
+import { debounce, showPath, sortList } from "@/utils/tools";
 import styles from "./index.module.scss";
 
 const Component: FC = () => {
@@ -89,6 +89,7 @@ const Component: FC = () => {
     return <LinkTab links={items} onTo={onListTypeTo} />;
   }, [query, onListTypeTo]);
 
+  const { fileNavigate, directoryNavigate } = useEntityNavigate();
   const onTableChange = useEvent(
     (_pagination: { current?: number; pageSize?: number }, _filters: any, sorter?: { field: string; order: "ascend" | "descend" }) => {
       if (sorter) {
@@ -106,15 +107,10 @@ const Component: FC = () => {
         render: (name, row) => (
           <div className="g-entity-cell">
             <IconEntity className="icon" type={row.type} />
-            {row.type === "directory" ? (
-              <a onClick={() => openDirectory(row, false, navigate)}>{name}</a>
-            ) : (
-              <a onClick={() => openFile(row, "EntityView")}>{name}</a>
-            )}
-
+            <a onClick={() => (row.type === "directory" ? directoryNavigate(row, false) : fileNavigate(row))}>{name}</a>
             {row.path ? (
               <Tooltip placement="bottom" title={showPath(row.path)}>
-                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => openDirectory(row, true, navigate)} />
+                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => directoryNavigate(row, true)} />
               </Tooltip>
             ) : null}
             <Collect id={row.id} value={true} onChange={onFavoriteChange} />
@@ -160,7 +156,7 @@ const Component: FC = () => {
         },
       },
     ];
-  }, [query, onFavoriteChange, navigate]);
+  }, [query, onFavoriteChange, directoryNavigate, fileNavigate]);
 
   const rowSelection: TableProps<any>["rowSelection"] = useMemo(
     () => ({

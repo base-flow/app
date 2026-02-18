@@ -185,20 +185,8 @@ export function messageWrap(message: string): ReactNode {
 // export function isWorkflow(item: { type: string }): item is _Workflow.IWorkflow {
 //   return item.type === "workflow";
 // }
-export function openDirectory(
-  entity: _Entity.IEntity,
-  parentDir: boolean,
-  navigate: (data: { to: string; search: { [key: string]: any } }) => void,
-): void {
-  const { id, spaceType, spaceId, parentId, path } = entity;
-  let dir: string | undefined = parentDir ? parentId : id;
-  if (parentDir && path.split("/").length === 3) {
-    dir = undefined;
-  }
-  navigate({ to: `/${spaceType}/${spaceId}`, search: { dir } });
-}
-export function openFile(item: { id: string; type: _App.EntityFileType }, windowKey: "EntityEdit" | "EntityView"): void {
-  window.open(`${window.BASE_PATH || ""}/${item.type}/${item.id}`, windowKey);
+export function openFile(item: { id: string; type: _App.EntityFileType }): void {
+  window.open(`${window.BASE_PATH || ""}/${item.type}/${item.id}`, "BaseflowEntityView");
 }
 export function getSiteBasepath(): string {
   return `${location.origin}${window.BASE_PATH ? `/${window.BASE_PATH}` : ""}`;

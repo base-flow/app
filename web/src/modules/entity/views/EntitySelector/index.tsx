@@ -63,9 +63,8 @@ const Component: FC<EntitySelectorProps> = (props) => {
     queryState[1]({ ...query, page: page === 1 ? undefined : page });
   });
 
-  const { onTableChange, onDirSearch } = useTableChange(query, setQuery);
+  const { onTableChange, onDirSearch } = useTableChange(entityListQuery, setQuery);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   const columns = useMemo<TableProps<_Entity.IEntity>["columns"]>(() => {
     return [
       {
@@ -75,11 +74,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
         render: (name, row) => (
           <div className="g-entity-cell">
             <IconEntity className="icon" type={row.type} />
-            {row.type === "directory" ? (
-              <a onClick={() => setQuery({ dir: row.id })}>{name}</a>
-            ) : (
-              <a onClick={() => openFile(row, "EntityView")}>{name}</a>
-            )}
+            {row.type === "directory" ? <a onClick={() => setQuery({ dir: row.id })}>{name}</a> : <a onClick={() => openFile(row)}>{name}</a>}
             {row.path ? (
               <Tooltip placement="bottom" title={showPath(row.path)}>
                 <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
@@ -96,7 +91,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
         width: 140,
         align: "center",
         sorter: !showFavs,
-        sortOrder: (query.sorterField === "runtime" && query.sorterOrder) || null,
+        sortOrder: (entityListQuery.sorterField === "runtime" && entityListQuery.sorterOrder) || null,
       },
       {
         title: "创建时间",
@@ -104,7 +99,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
         key: "createAt",
         width: 140,
         sorter: !showFavs,
-        sortOrder: (query.sorterField === "createAt" && query.sorterOrder) || null,
+        sortOrder: (entityListQuery.sorterField === "createAt" && entityListQuery.sorterOrder) || null,
       },
       {
         title: "更新时间",
@@ -112,10 +107,10 @@ const Component: FC<EntitySelectorProps> = (props) => {
         key: "updateAt",
         width: 140,
         sorter: !showFavs,
-        sortOrder: (query.sorterField === "updateAt" && query.sorterOrder) || null,
+        sortOrder: (entityListQuery.sorterField === "updateAt" && entityListQuery.sorterOrder) || null,
       },
     ];
-  }, [query, favoriteMap, showFavs]);
+  }, [entityListQuery, favoriteMap, showFavs, onFavoriteChange, setQuery]);
 
   const pagination: TablePaginationConfig = useTablePagination(entityListSummary);
 
@@ -131,14 +126,18 @@ const Component: FC<EntitySelectorProps> = (props) => {
   );
 
   const onListTypeTo = useEvent((item: LinkItem) =>
-    setQuery({ dir: query.dir, keyword: query.keyword, type: item.key === "all" ? undefined : (item.key as _App.EntityFileType) }),
+    setQuery({
+      dir: entityListQuery.dir,
+      keyword: entityListQuery.keyword,
+      type: item.key === "all" ? undefined : (item.key as _App.EntityFileType),
+    }),
   );
 
   const listTypeLinks = useMemo(() => {
     const items: LinkItem[] = [
       {
         key: "all",
-        className: !query.type ? "on" : undefined,
+        className: !entityListQuery.type ? "on" : undefined,
         children: (
           <>
             <FolderTree size={12} />
@@ -148,7 +147,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
       },
       {
         key: "workflow",
-        className: query.type === "workflow" ? "on" : undefined,
+        className: entityListQuery.type === "workflow" ? "on" : undefined,
         children: (
           <>
             <IconEntity size={12} type="workflow" />
@@ -158,7 +157,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
       },
       {
         key: "node",
-        className: query.type === "node" ? "on" : undefined,
+        className: entityListQuery.type === "node" ? "on" : undefined,
         children: (
           <>
             <IconEntity size={12} type="node" />
@@ -168,7 +167,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
       },
       {
         key: "data",
-        className: query.type === "data" ? "on" : undefined,
+        className: entityListQuery.type === "data" ? "on" : undefined,
         children: (
           <>
             <IconEntity size={12} type="data" />
@@ -178,7 +177,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
       },
     ];
     return <LinkTab links={items} onTo={onListTypeTo} />;
-  }, [query, onListTypeTo]);
+  }, [entityListQuery, onListTypeTo]);
 
   const tableScroll = useMemo(() => {
     return showFavs ? { y: 500 } : { y: 460 };
@@ -224,7 +223,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
         <div className="hd">
           <div className="row">
             <Breadcrumb rootDir={spaceDir} rootName={spaceName} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
-            <SearchInput value={query.keyword} onChange={onDirSearch} placeholder="当前目录下搜索..." />
+            <SearchInput value={entityListQuery.keyword} onChange={onDirSearch} placeholder="当前目录下搜索..." />
           </div>
           <div className="row">
             <div
