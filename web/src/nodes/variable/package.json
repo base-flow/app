@@ -1,0 +1,13 @@
+{
+  "name": "@baseflow-nodes/variable",
+  "version": "0.0.1",
+  "baseflow": {
+    "type": "Variable",
+    "name": "变量定义",
+    "icon": "",
+    "desc": "变量定义：通过本节点可以定义多个流程变量"
+  },
+  "executor": {
+    "node": "@baseflow-executors/variable@0.0.1"
+  }
+}

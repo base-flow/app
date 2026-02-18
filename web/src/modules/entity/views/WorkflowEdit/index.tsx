@@ -5,6 +5,7 @@ import { FilePenLine, Plus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useRef, useState } from "react";
 import { FileNameRule, RequiredRule, RuntimeOptions } from "@/const";
+import { WorkflowAPI } from "@/modules/workflow/api";
 import { useEntityNavigate, useEvent } from "@/utils/hooks";
 import { verifyFileName } from "@/utils/tools";
 import { EntityAPI } from "../../api";
@@ -53,6 +54,7 @@ const Component: FC<WorkflowEditProps> = ({ item, onCancel, onSuccess }) => {
     onSuccess: () => {
       BaseWidgets.message.success("修改成功！");
       queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey] });
+      queryClient.invalidateQueries({ queryKey: [WorkflowAPI.itemQueryKey] });
       onSuccess();
     },
   });

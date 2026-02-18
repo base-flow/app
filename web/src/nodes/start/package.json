@@ -1,0 +1,19 @@
+{
+  "name": "@baseflow-nodes/start",
+  "version": "0.0.1",
+  "baseflow": {
+    "type": "Start",
+    "icon": "",
+    "name": "Workflow Start",
+    "desc": "Workflow Start：Marks the start of the execution. Use this to define input parameters and the output data structure.",
+    "zh-CN_name": "流程开始",
+    "zh-CN_desc": "流程开始：表示流程开始执行，可以定义流程入参返回数据结构.",
+    "zh-TW_name": "流程開始",
+    "zh-TW_desc": "流程開始：表示流程開始執行，可以定義流程輸入參數與回傳資料結構.",
+    "ja-JP_name": "プロセス開始",
+    "ja-JP_desc": "プロセス開始：実行の開始点です。入力パラメータと出力データ構造を設定します."
+  },
+  "executor": {
+    "node": "@baseflow-executors/start@0.0.1"
+  }
+}

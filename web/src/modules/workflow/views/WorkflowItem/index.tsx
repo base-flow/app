@@ -1,4 +1,4 @@
-import type { IGraph } from "@baseflow/react";
+import type { CreatorPayload, GraphData, IGraph, IGraphOptions, INodeData } from "@baseflow/react";
 import { DefalutGraphHooks, DslTools, Flow, HistoryTools, NodeType } from "@baseflow/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useCanGoBack, useRouter } from "@tanstack/react-router";
@@ -6,10 +6,10 @@ import type { MenuProps } from "antd";
 import { Button, Dropdown, Result, Skeleton } from "antd";
 import { ArrowLeft, PlusCircle, Tag } from "lucide-react";
 import type { FC } from "react";
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import LoadingMask from "@/components/LoadingMask";
-import { EntityAPI } from "@/modules/entity/api";
 import { useEvent } from "@/utils/hooks";
+import { GraphHooks } from "./GraphHooks";
 import Header from "./Header";
 import styles from "./index.module.scss";
 
@@ -49,68 +49,31 @@ const items: MenuProps["items"] = [
 ];
 
 export interface Props {
-  id: string;
+  item: _Workflow.IWorkflowItem;
+  graphData: GraphData;
 }
 
-const WorkflowItem: FC<Props> = ({ id }) => {
+const WorkflowItem: FC<Props> = ({ item, graphData }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const canGoBack = useCanGoBack();
-  const workflowQuery = useQuery(EntityAPI.queryItem(id));
-  const workflowData = workflowQuery.data as _Workflow.IWorkflow;
+  const [initGraphData] = useState(graphData);
+  const [graphOptions] = useState<IGraphOptions>({});
+  const [graphHooks] = useState(new GraphHooks(item));
   const [graph, setGraph] = useState<IGraph>();
-  const [versionsMenu, setVersionsMenu] = useState(() => ({
-    items,
-    selectedKeys: ["v1.0.1-dev"],
-    className: `${styles.Canvas}__ver-menu`,
-    offset: [15, 12],
-  }));
+  const [showNodeCreater, setShowNodeCreater] = useState<CreatorPayload>();
 
-  const onBack = useEvent(() => {
-    if (canGoBack) {
-      router.history.back();
-    } else {
-      router.navigate({ to: "/platform" });
-    }
-  });
-
-  if (workflowQuery.isError) {
-    return (
-      <section>
-        <Result status="warning" title={workflowQuery.error?.message || "错误"} />
-      </section>
-    );
-  }
-
-  if (!workflowData) {
-    return (
-      <section>
-        <Skeleton className="loading" active />
-      </section>
-    );
-  }
+  const onInit = useCallback((graph: IGraph) => {
+    // @ts-expect-error: dev test
+    window.graph = graph;
+    setGraph(graph);
+  }, []);
 
   return (
     <div className={styles.WorkflowItem}>
-      <LoadingMask show={workflowQuery.isFetching} />
-      <div className={`${styles.WorkflowItem}__hd`}>
-        <div className="left">
-          {/* <Link className="link-btn" to="/apps/$appId/flows" params={{ appId: flowData.appId! }}>
-            <MenuOutlined />
-          </Link> */}
-          <Header item={workflowData} />
-          <div className="title">
-            <span>{workflowData.name}</span>
-          </div>
-        </div>
-        <div className="right">
-          {graph && <HistoryTools graph={graph} />}
-          <Dropdown menu={versionsMenu} align={versionsMenu}>
-            <Button type="text" size="small" icon={<Tag size={13} />}>
-              v0.0.1-dev
-            </Button>
-          </Dropdown>
-        </div>
+      <LoadingMask show={false} />
+      <Header item={item} graph={graph} />
+      <div className="bd">
+        <Flow options={graphOptions} initialData={initGraphData} graphHooks={graphHooks} onInit={onInit} onShowCreater={setShowNodeCreater} />
       </div>
     </div>
   );

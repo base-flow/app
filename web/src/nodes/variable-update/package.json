@@ -1,0 +1,15 @@
+{
+  "name": "@baseflow-nodes/variable-update",
+  "version": "0.0.1",
+  "baseflow": {
+    "type": "VariableUpdate",
+    "icon": "",
+    "name": "VariableUpdate",
+    "desc": "VariableUpdate：Modifies variable values in the [Variable Definition] node.",
+    "zh-CN_name": "变量修改",
+    "zh-CN_desc": "变量修改：通过本节点可以修改[变量定义]节点中的变量值."
+  },
+  "executor": {
+    "node": "@baseflow-executors/variable-update@0.0.1"
+  }
+}

@@ -1,3 +1,5 @@
+import type { INodeConfig } from "@baseflow/react";
+import { BaseWidgets } from "@baseflow/react";
 import type { ReactNode } from "react";
 import { API_PROXY, AUTH_TOKEN_KEY, HomePage, LoginPage } from "../const";
 import { router } from "../router";
@@ -14,6 +16,28 @@ export function isEmptyObject(obj: any): boolean {
 
 export function replaceApiBase(url: string): string {
   return url.replace(/^\/(api)\//, (pre) => (API_PROXY as any)[pre]);
+}
+
+function nodeSourceToUrl(source: string) {
+  const arr = source.split(/[/@]/);
+  const name = source.substring(0, source.lastIndexOf("@"));
+  if (arr[1] === "baseflow-nodes") {
+    return `/src/nodes/${arr[2]}/index.js`;
+  }
+  return source;
+}
+
+export function onImportNode(source: string): Promise<INodeConfig> {
+  const url = nodeSourceToUrl(source);
+  return import(/* @vite-ignore */ url).then(
+    (mod) => {
+      return mod.default;
+    },
+    (err) => {
+      BaseWidgets.message.error(err.message);
+      throw err;
+    },
+  );
 }
 
 export function verifyFileName(name: string): string {
@@ -185,6 +209,7 @@ export function messageWrap(message: string): ReactNode {
 // export function isWorkflow(item: { type: string }): item is _Workflow.IWorkflow {
 //   return item.type === "workflow";
 // }
+
 export function openFile(item: { id: string; type: _App.EntityFileType }): void {
   window.open(`${window.BASE_PATH || ""}/${item.type}/${item.id}`, "BaseflowEntityView");
 }

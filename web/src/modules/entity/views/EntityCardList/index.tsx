@@ -107,7 +107,6 @@ const Component: FC<EntityCardListProps> = (props) => {
     mutationFn: EntityAPI.updateItem,
     onSuccess: (result, args) => {
       queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey, { dir }] });
-      queryClient.invalidateQueries({ queryKey: [EntityAPI.itemQueryKey, args.id] });
     },
   });
 

@@ -4,6 +4,13 @@ declare namespace _Workflow {
     runtime: _App.Runtime;
     likes: number;
   }
+
+  interface IWorkflowItem extends IWorkflow {
+    content: string;
+    commitId: string;
+    version: string;
+    released: boolean;
+  }
   interface Query extends _Entity.Query {
     runtime?: _App.Runtime;
   }

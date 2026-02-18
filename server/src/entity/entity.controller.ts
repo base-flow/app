@@ -53,16 +53,6 @@ export class EntityController {
     };
   }
 
-  @Get(":id")
-  async getItem(@Param() param: { id: string }): Promise<_Entity.IEntity> {
-    await sleep(1000);
-    const entity = EntityMap[param.id];
-    if (!entity) {
-      throw new NotFoundException();
-    }
-    return entity;
-  }
-
   @Get(":id/checkAlreadyExists")
   async checkAlreadyExists(@Request() { params, query }: { params: { id: string }; query: { name: string } }): Promise<{ result: boolean }> {
     await sleep(5000);

@@ -1,0 +1,13 @@
+{
+  "name": "@baseflow-nodes/thread",
+  "version": "0.0.1",
+  "baseflow": {
+    "type": "Thread",
+    "name": "并行分支",
+    "icon": "",
+    "desc": "并行分支：放置于[并行执行]中，多个并行分支同时执行"
+  },
+  "executor": {
+    "node": "@baseflow-executors/thread@0.0.1"
+  }
+}

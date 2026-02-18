@@ -1,16 +1,11 @@
 import type { IGraph } from "@baseflow/react";
-import { DefalutGraphHooks, DslTools, Flow, HistoryTools, NodeType } from "@baseflow/react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useCanGoBack, useRouter } from "@tanstack/react-router";
+import { HistoryTools } from "@baseflow/react";
+import { useCanGoBack, useRouter } from "@tanstack/react-router";
 import type { MenuProps } from "antd";
-import { Button, Dropdown, Result, Skeleton } from "antd";
-import { Edit, PlusCircle, Tag } from "lucide-react";
+import { Button, Dropdown } from "antd";
+import { ArrowLeft, Edit, PlusCircle, Tag } from "lucide-react";
 import type { FC } from "react";
-import { memo, useMemo, useState } from "react";
-import { useShallow } from "zustand/react/shallow";
-import Lang from "@/assets/Lang";
-import Pathcrumb from "@/components/Pathcrumb";
-import { useAppStore } from "@/modules/app/store";
+import { memo, useState } from "react";
 import WorkflowEdit from "@/modules/entity/views/WorkflowEdit";
 import { useEvent } from "@/utils/hooks";
 import styles from "./index.module.scss";
@@ -51,44 +46,28 @@ const items: MenuProps["items"] = [
 ];
 
 export interface Props {
-  item: _Workflow.IWorkflow;
+  graph: IGraph | undefined;
+  item: _Workflow.IWorkflowItem;
 }
 
-const WorkflowItemHeader: FC<Props> = ({ item }) => {
+const WorkflowItemHeader: FC<Props> = ({ item, graph }) => {
   const router = useRouter();
-  const [config] = useAppStore(useShallow(({ config }) => [config]));
-  const queryClient = useQueryClient();
+  const canGoBack = useCanGoBack();
   const [currentEdit, setCurrentEdit] = useState(false);
-  const rootName =
-    item.spaceType === "personal" ? "我的文档" : item.spaceType === "project" ? "项目文档" : Lang.entityDirName[`workflow.${item.runtime}`];
 
-  const onBreadcrumbRoute = useEvent((path: string) => {
-    if (path) {
-      const dir = path === "/" ? item.spaceDir : path;
-      const href = `${window.BASE_PATH || ""}/${item.spaceType}/${item.spaceId}${dir === item.spaceDir ? "" : `?dir="${dir}"`}`;
-      window.open(href);
+  const onBack = useEvent(() => {
+    if (canGoBack) {
+      router.history.back();
     } else {
-      setCurrentEdit(true);
+      if (item.spaceType === "personal") {
+        router.navigate({ to: "/personal/$personalId", params: { personalId: item.spaceId } });
+      } else if (item.spaceType === "project") {
+        router.navigate({ to: "/project/$projectId", params: { projectId: item.spaceId } });
+      } else if (item.spaceType === "platform") {
+        router.navigate({ to: `/platform/${item.spaceId}` });
+      }
     }
   });
-
-  const breadcrumb = useMemo(() => {
-    const pathData = item.path
-      ? item.path
-          .split("/")
-          .filter(Boolean)
-          .map((item) => item.split(" "))
-      : [];
-    if (pathData[0]) {
-      pathData[0] = ["/", rootName];
-    }
-    const pathString = pathData.map((item) => item[0]).join(" ");
-
-    const items = pathString ? pathData.map(([id, title]) => ({ path: id, title })) : [];
-    return (
-      <Pathcrumb items={items} showBack={false} refreshIcon={<Edit className="anticon" strokeWidth={2.5} size={12} />} onRoute={onBreadcrumbRoute} />
-    );
-  }, [item.path, rootName, onBreadcrumbRoute]);
 
   const [versionsMenu, setVersionsMenu] = useState(() => ({
     items,
@@ -102,12 +81,13 @@ const WorkflowItemHeader: FC<Props> = ({ item }) => {
   return (
     <div className={styles.WorkflowItemHeader}>
       <div className="left">
-        {/* <Link className="link-btn" to="/apps/$appId/flows" params={{ appId: flowData.appId! }}>
-            <MenuOutlined />
-          </Link> */}
-        {breadcrumb}
+        <Button size="small" type="text" icon={<ArrowLeft size={14} />} onClick={onBack}></Button>
+        <span className="title">{item.name}</span>
+        <span className="type">({item.type})</span>
+        <Edit className="edit" size={13} onClick={() => setCurrentEdit(true)} />
       </div>
       <div className="right">
+        {graph && <HistoryTools graph={graph} />}
         <Dropdown menu={versionsMenu} align={versionsMenu}>
           <Button type="text" size="small" icon={<Tag size={13} />}>
             v0.0.1-dev

@@ -1,0 +1,13 @@
+{
+  "name": "@baseflow-nodes/parallel",
+  "version": "0.0.1",
+  "baseflow": {
+    "type": "Parallel",
+    "name": "并行执行",
+    "icon": "",
+    "desc": "并行执行：可添加多个[并行分支]，多个并行分支同时执行"
+  },
+  "executor": {
+    "node": "@baseflow-executors/parallel@0.0.1"
+  }
+}
