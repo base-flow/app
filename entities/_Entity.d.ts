@@ -1,7 +1,6 @@
 declare namespace _Entity {
   // type Scope = "personal" | "project" | "platform";
   // type Repository = "remote" | "local";
-  // type NodeType = "executor" | "trigger";
 
   interface BaseEntity extends _Resource.IItem {
     type: _App.EntityType;

@@ -3,7 +3,7 @@ import request from "@/utils/request";
 
 export const WorkflowAPI = {
   itemQueryKey: "WorkflowItem",
-  getItem(id: string): Promise<_Workflow.IWorkflowItem> {
+  getItem(id: string): Promise<_Workflow.IWorkflowDetail> {
     return request.get(`/api/workflow/${id}`).then((res) => res.data);
   },
   queryItem(id: string) {

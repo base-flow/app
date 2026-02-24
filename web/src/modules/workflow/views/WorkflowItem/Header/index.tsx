@@ -47,7 +47,7 @@ const items: MenuProps["items"] = [
 
 export interface Props {
   graph: IGraph | undefined;
-  item: _Workflow.IWorkflowItem;
+  item: _Workflow.IWorkflow & _Workflow.IWorkflowDetail;
 }
 
 const WorkflowItemHeader: FC<Props> = ({ item, graph }) => {

@@ -5,7 +5,7 @@ declare namespace _Workflow {
     likes: number;
   }
 
-  interface IWorkflowItem extends IWorkflow {
+  interface IWorkflowDetail {
     content: string;
     commitId: string;
     version: string;

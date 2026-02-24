@@ -1,5 +1,15 @@
 :global {
   :local(.ProjectEdit) {
     position: relative;
+
+    &:global(__name) {
+      width: 400px;
+    }
+
+    &:global(__logo) {
+      position: absolute;
+      top: 17px;
+      right: 0;
+    }
   }
 }

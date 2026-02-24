@@ -5,7 +5,6 @@ import { FilePenLine, Plus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useRef, useState } from "react";
 import { FileNameRule, RequiredRule, RuntimeOptions } from "@/const";
-import { WorkflowAPI } from "@/modules/workflow/api";
 import { useEntityNavigate, useEvent } from "@/utils/hooks";
 import { verifyFileName } from "@/utils/tools";
 import { EntityAPI } from "../../api";
@@ -54,7 +53,7 @@ const Component: FC<WorkflowEditProps> = ({ item, onCancel, onSuccess }) => {
     onSuccess: () => {
       BaseWidgets.message.success("修改成功！");
       queryClient.invalidateQueries({ queryKey: [EntityAPI.listQueryKey] });
-      queryClient.invalidateQueries({ queryKey: [WorkflowAPI.itemQueryKey] });
+      queryClient.invalidateQueries({ queryKey: [EntityAPI.itemQueryKey] });
       onSuccess();
     },
   });
@@ -100,7 +99,7 @@ const Component: FC<WorkflowEditProps> = ({ item, onCancel, onSuccess }) => {
   }, []);
 
   return (
-    <Modal open title={item.id ? modifyTitle : createrTitle} width={500} footer={null} onCancel={onCancel}>
+    <Modal open title={item.id ? modifyTitle : createrTitle} width={500} footer={null} closable={false} onCancel={onCancel}>
       <div>
         <Form layout="vertical" form={form} initialValues={item} onFinish={onFinish}>
           <FormItem hidden name="id" />
@@ -115,7 +114,7 @@ const Component: FC<WorkflowEditProps> = ({ item, onCancel, onSuccess }) => {
             <Select variant="filled" placeholder="请输入运行环境..." options={RuntimeOptions} />
           </FormItem>
           <FormItem label="描述" tooltip="可用于搜索" name="desc">
-            <Input.TextArea variant="filled" rows={4} placeholder="请输入描述..." showCount maxLength={100} />
+            <Input.TextArea variant="filled" rows={2} placeholder="请输入描述..." showCount maxLength={100} />
           </FormItem>
           <div className="g-form-footer">
             <Button onClick={onCancel}>取消</Button>

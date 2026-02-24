@@ -4,8 +4,12 @@ import { filterQuery } from "@/utils/tools";
 
 export const EntityAPI = {
   listQueryKey: "EntityList",
+  itemQueryKey: "EntityItem",
   getList(query: _Entity.Query): Promise<_Entity.QueryResult> {
     return request.get("/api/entity", { params: query }).then((res) => res.data);
+  },
+  getItem(id: string): Promise<_Entity.IEntity> {
+    return request.get(`/api/entity/${id}`).then((res) => res.data);
   },
   checkFileName(parentId: string, name: string): Promise<boolean> {
     return request.get(`/api/entity/${parentId}/checkAlreadyExists`, { params: { name } }).then((res) => res.data.result);
@@ -24,6 +28,15 @@ export const EntityAPI = {
   },
   updateItem(item: Partial<_Entity.IEntity>): Promise<_Entity.UpdateResult> {
     return request.put(`/api/entity/${item.id}`, item).then((res) => res.data);
+  },
+  queryItem(id: string) {
+    return queryOptions({
+      queryKey: [EntityAPI.itemQueryKey, id],
+      queryFn: () => EntityAPI.getItem(id),
+      staleTime: Infinity,
+      retry: 0,
+      refetchOnWindowFocus: false,
+    });
   },
   queryList(query: _Entity.Query) {
     query = filterQuery(query);

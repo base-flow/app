@@ -6,6 +6,7 @@ import type { FC } from "react";
 import { memo } from "react";
 import FlagSelector from "@/components/FlagSelector";
 import LoadingMask from "@/components/LoadingMask";
+import { RequiredRule } from "@/const";
 import { useEvent } from "@/utils/hooks";
 import { ProjectAPI } from "../../api";
 import styles from "./index.module.scss";
@@ -53,18 +54,18 @@ const Component: FC<Props> = ({ item, setItem }) => {
   });
 
   return item ? (
-    <Modal open title={item.id ? modifyTitle : createrTitle} onCancel={closeEdit} maskClosable={false} footer={null}>
+    <Modal open title={item.id ? modifyTitle : createrTitle} width={500} onCancel={closeEdit} maskClosable={false} footer={null}>
       <div className={styles.ProjectEdit}>
         <LoadingMask show={projectEdit.isPending} />
         <Form layout="vertical" initialValues={item} onFinish={projectEdit.mutate}>
           <FormItem hidden name="id" />
-          <FormItem label="名称&图标" name="name" rules={[{ required: true }]} style={{ width: "418px" }}>
+          <FormItem label="名称&图标" name="name" rules={RequiredRule} className={`${styles.ProjectEdit}__name`}>
             <Input variant="filled" placeholder="请输入项目名称" />
           </FormItem>
-          <FormItem name="logo" style={{ position: "absolute", top: "17px", right: "0px" }}>
+          <FormItem name="logo" className={`${styles.ProjectEdit}__logo`}>
             <FlagSelector />
           </FormItem>
-          <FormItem label="项目描述" name="desc" rules={[{ required: true }]}>
+          <FormItem label="项目描述" name="desc" rules={RequiredRule}>
             <Input.TextArea variant="filled" rows={5} placeholder="请输入项目描述" showCount maxLength={100} />
           </FormItem>
           <div className="g-form-footer">

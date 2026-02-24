@@ -3,8 +3,8 @@ import { DefalutGraphHooks, DslTools } from "@baseflow/react";
 import { onImportNode, sleep } from "@/utils/tools";
 
 export class GraphHooks extends DefalutGraphHooks {
-  public doc: _Workflow.IWorkflowItem;
-  constructor(doc: _Workflow.IWorkflowItem) {
+  public doc: _Workflow.IWorkflowDetail;
+  constructor(doc: _Workflow.IWorkflowDetail) {
     super();
     this.doc = doc;
   }

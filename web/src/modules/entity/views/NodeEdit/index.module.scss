@@ -1,0 +1,53 @@
+:global {
+  :local(.NodeEdit) {
+    padding-top: 2px;
+
+    &:global(__name) {
+      width: 456px;
+    }
+
+    &:global(__kind) {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      left: 20px;
+      box-sizing: border-box;
+      text-align: right;
+      border-bottom: 1px solid var(--bf-bd-side);
+
+      > a {
+        position: relative;
+        top: 1px;
+        display: inline-block;
+        padding: 8px 1px;
+        margin-left: 20px;
+        color: var(--bf-tx-summary);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+
+        &:hover {
+          color: var(--bf-primary);
+        }
+
+        &.on {
+          color: var(--bf-primary);
+          border-color: var(--bf-primary);
+        }
+
+        > .icon {
+          margin-right: 3px;
+        }
+      }
+    }
+
+    &:global(__logo) {
+      position: absolute;
+      top: 172px;
+      right: 22px;
+      width: 40px;
+      height: 40px;
+      background: #fff;
+      border-radius: var(--bf-rd-btn);
+    }
+  }
+}

@@ -21,6 +21,7 @@ import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
 import DirectoryEdit from "../DirectoryEdit";
 import EntityCopy from "../EntityCopy";
+import NodeEdit from "../NodeEdit";
 import WorkflowEdit from "../WorkflowEdit";
 import styles from "./index.module.scss";
 
@@ -118,6 +119,10 @@ const Component: FC<EntityListProps> = (props) => {
     setCurrentEdit({ type: "workflow", parentId: entityListQuery.dir!, spaceType: space.type, spaceId: space.id });
   });
 
+  const createNode = useEvent(() => {
+    setCurrentEdit({ type: "node", parentId: entityListQuery.dir!, spaceType: space.type, spaceId: space.id, kind: "executor" });
+  });
+
   const createrMenu = useMemo(() => {
     const items: MenuProps["items"] = [
       {
@@ -142,11 +147,12 @@ const Component: FC<EntityListProps> = (props) => {
         if (key === "flow") {
           createWorkflow();
         } else if (key === "node") {
+          createNode();
         } else if (key === "data") {
         }
       },
     };
-  }, [createWorkflow]);
+  }, [createWorkflow, createNode]);
 
   const batchMenu = useMemo(() => {
     const items: MenuProps["items"] = [
@@ -405,6 +411,7 @@ const Component: FC<EntityListProps> = (props) => {
       </div>
       {currentEdit?.type === "directory" && <DirectoryEdit item={currentEdit} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
       {currentEdit?.type === "workflow" && <WorkflowEdit item={currentEdit} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
+      {currentEdit?.type === "node" && <NodeEdit item={currentEdit} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
       {batchEdit?.action === "copy" && (
         <EntityCopy ids={batchEdit.ids} file={batchEdit.file} onCancel={closeBatchEdit} onSuccess={onBatchCopySuccess} />
       )}

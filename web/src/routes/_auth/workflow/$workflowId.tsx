@@ -2,6 +2,7 @@ import { DslTools, type GraphData } from "@baseflow/react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Result, Skeleton } from "antd";
+import { EntityAPI } from "@/modules/entity/api";
 import { WorkflowAPI } from "@/modules/workflow/api";
 import WorkflowItem from "@/modules/workflow/views/WorkflowItem";
 
@@ -11,18 +12,20 @@ export const Route = createFileRoute("/_auth/workflow/$workflowId")({
 
 function RouteComponent() {
   const params = Route.useParams();
-  const workflowQuery = useQuery(WorkflowAPI.queryItem(params.workflowId));
-  const workflowData = workflowQuery.data;
+  const workflowEntityQuery = useQuery(EntityAPI.queryItem(params.workflowId));
+  const workflowDetailQuery = useQuery(WorkflowAPI.queryItem(params.workflowId));
+  const workflowEntity = workflowEntityQuery.data as _Workflow.IWorkflow;
+  const workflowDetail = workflowDetailQuery.data;
 
-  if (workflowQuery.isError) {
+  if (workflowEntityQuery.isError || workflowDetailQuery.isError) {
     return (
       <section>
-        <Result status="warning" title={workflowQuery.error?.message || "错误"} />
+        <Result status="warning" title={workflowEntityQuery.error?.message || workflowDetailQuery.error?.message || "错误"} />
       </section>
     );
   }
 
-  if (!workflowData) {
+  if (!workflowEntity || !workflowDetail) {
     return (
       <section>
         <Skeleton className="loading" active />
@@ -32,10 +35,10 @@ function RouteComponent() {
 
   let graphData: GraphData<any>;
   try {
-    graphData = DslTools.jsonToGraph(JSON.parse(workflowData.content));
+    graphData = DslTools.jsonToGraph(JSON.parse(workflowDetail.content));
   } catch (e: any) {
     throw new Error(`DSL解析出错：${e.message}`);
   }
 
-  return <WorkflowItem item={workflowData} graphData={graphData} />;
+  return <WorkflowItem item={{ ...workflowEntity, ...workflowDetail }} graphData={graphData} />;
 }

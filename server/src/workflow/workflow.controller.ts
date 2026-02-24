@@ -5,14 +5,13 @@ import { sleep } from "@/utils";
 @Controller("workflow")
 export class WorkflowController {
   @Get(":id")
-  async getItem(@Param() param: { id: string }): Promise<_Workflow.IWorkflowItem> {
+  async getItem(@Param() param: { id: string }): Promise<_Workflow.IWorkflowDetail> {
     await sleep(1000);
     const entity = EntityMap[param.id] as _Workflow.IWorkflow;
     if (!entity) {
       throw new NotFoundException();
     }
     return {
-      ...entity,
       content:
         '{"layout":"dagre","sources":{"@baseflow-nodes/flow":"@baseflow-nodes/flow@1.0.0","@baseflow-nodes/start":"@baseflow-nodes/start@1.0.0","@baseflow-nodes/end":"@baseflow-nodes/end@1.0.0"},"nodes":{"id":"flow","tag":"@baseflow-nodes/flow","meta":{"name":"流程","width":250,"height":68},"props":{},"children":[{"id":"start","tag":"@baseflow-nodes/start","meta":{"name":"流程开始","width":250,"height":68},"props":{}},{"id":"end","tag":"@baseflow-nodes/end","meta":{"name":"流程结束","width":250,"height":68},"props":{}}]},"triggers":[],"extend":{}}',
       version: "0.0.1",

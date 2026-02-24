@@ -49,7 +49,7 @@ const items: MenuProps["items"] = [
 ];
 
 export interface Props {
-  item: _Workflow.IWorkflowItem;
+  item: _Workflow.IWorkflow & _Workflow.IWorkflowDetail;
   graphData: GraphData;
 }
 
