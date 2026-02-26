@@ -1,0 +1,24 @@
+:global {
+  :local(.DataItem) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding-top: 46px;
+    background-color: var(--bf-bg-filled);
+
+    > .bd {
+      height: 100%;
+
+      > .panel {
+        width: 800px;
+        padding: 20px;
+        margin: 20px;
+        background: #fff;
+        border-radius: var(--bf-rd-card);
+      }
+    }
+  }
+}

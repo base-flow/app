@@ -2,12 +2,13 @@ declare namespace _Workflow {
   interface IWorkflow extends _Entity.BaseEntity {
     type: "workflow";
     runtime: _App.Runtime;
-    content: string;
+    version?: string;
+    released?: boolean;
   }
   interface IWorkflowDetail {
+    id: string;
     content: string;
     commitId: string;
-    released: boolean;
   }
   type UpdateResult = _Resource.IUpdateResult;
 }

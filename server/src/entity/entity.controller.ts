@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Request } from "@nestjs/common";
-import { EntityMap } from "@/data";
+import { EntityMap } from "@/database";
 import { sleep } from "@/utils";
 
 @Controller("entity")
@@ -92,6 +92,7 @@ export class EntityController {
 
   @Put(":id")
   async updateItem(@Request() { body, params }: { body: _Entity.IEntity; params: { id: string } }): Promise<_Entity.UpdateResult> {
+    await sleep(1000);
     const entity = EntityMap[params.id];
     if (!entity) {
       throw new NotFoundException();

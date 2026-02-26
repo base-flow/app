@@ -1,5 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
-import { GotSharedList } from "@/data";
+import { GotSharedList } from "@/database";
 import { sleep } from "@/utils";
 
 @Controller("gotShared")

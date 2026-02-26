@@ -9,6 +9,7 @@ import { CacheModule } from "./cache/cache.module";
 import type { JwtConfig } from "./config/jwt.config";
 import jwtConfig from "./config/jwt.config";
 import redisConfig from "./config/redis.config";
+import { DataModule } from "./data/data.module";
 import { EntityModule } from "./entity/entity.module";
 import { FavoriteModule } from "./favorite/favorite.module";
 import { GotSharedModule } from "./gotShared/gotShared.module";
@@ -49,6 +50,7 @@ import { WorkflowModule } from "./workflow/workflow.module";
     GotSharedModule,
     WorkflowModule,
     NodeModule,
+    DataModule,
     PersonalModule,
     CacheModule,
   ],

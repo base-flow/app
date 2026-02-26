@@ -5,13 +5,12 @@ import type { FC, ReactNode } from "react";
 import { memo, useState } from "react";
 import Collect from "@/components/Collect";
 import IconEntity from "@/components/IconEntity";
-import IconNodeKind from "@/components/IconNodeKind";
-import NodeEdit from "@/modules/entity/views/NodeEdit";
+import DataEdit from "@/modules/entity/views/DataEdit";
 import { useEvent, useMyFavoriteIds } from "@/utils/hooks";
 import styles from "./index.module.scss";
 
 export interface Props {
-  item: _Node.INode & _Node.INodeDetail;
+  item: _Data.IData & _Data.IDataDetail;
   children: ReactNode;
 }
 
@@ -38,21 +37,18 @@ const NodeItemHeader: FC<Props> = ({ item, children }) => {
   const closeCurrentEdit = useEvent(() => setCurrentEdit(false));
 
   return (
-    <div className={styles.NodeItemHeader}>
+    <div className={styles.DataItemHeader}>
       <div className="left">
         <Button size="small" type="text" icon={<ArrowLeft size={14} strokeWidth={2.5} />} onClick={onBack}></Button>
         <IconEntity type={item.type} size={14} />
         <span className="title">{item.name}</span>
-        <span className="type">
-          (<span style={{ marginRight: "3px" }}>Node</span>
-          <IconNodeKind className="kind" kind={item.kind} showLabel size={13} />)
-        </span>
+        <span className="type">(Data)</span>
         <Edit className="edit" size={13} onClick={() => setCurrentEdit(true)} />
         <Collect id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
         {favoriteLoading && <Spin size="small" />}
       </div>
       <div className="right">{children}</div>
-      {currentEdit && <NodeEdit item={item} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
+      {currentEdit && <DataEdit item={item} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
     </div>
   );
 };

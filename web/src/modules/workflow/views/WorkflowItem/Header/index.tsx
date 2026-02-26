@@ -7,6 +7,7 @@ import { ArrowLeft, Edit, PlusCircle, Tag } from "lucide-react";
 import type { FC } from "react";
 import { memo, useState } from "react";
 import Collect from "@/components/Collect";
+import IconEntity from "@/components/IconEntity";
 import WorkflowEdit from "@/modules/entity/views/WorkflowEdit";
 import { useEvent, useMyFavoriteIds } from "@/utils/hooks";
 import styles from "./index.module.scss";
@@ -83,7 +84,8 @@ const WorkflowItemHeader: FC<Props> = ({ item, graph }) => {
   return (
     <div className={styles.WorkflowItemHeader}>
       <div className="left">
-        <Button size="small" type="text" icon={<ArrowLeft size={14} />} onClick={onBack}></Button>
+        <Button size="small" type="text" icon={<ArrowLeft size={14} strokeWidth={2.5} />} onClick={onBack}></Button>
+        <IconEntity type={item.type} size={14} />
         <span className="title">{item.name}</span>
         <span className="type">(Workflow)</span>
         <Edit className="edit" size={13} onClick={() => setCurrentEdit(true)} />

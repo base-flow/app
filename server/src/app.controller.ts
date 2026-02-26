@@ -1,5 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
-import { EntityList } from "@/data";
+import { EntityList } from "@/database";
 import { sleep } from "@/utils";
 
 @Controller()

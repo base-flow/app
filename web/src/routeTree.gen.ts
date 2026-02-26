@@ -21,6 +21,7 @@ import { Route as AuthProjectIndexRouteImport } from './routes/_auth/project/ind
 import { Route as AuthExecutorIndexRouteImport } from './routes/_auth/executor/index'
 import { Route as AuthWorkflowWorkflowIdRouteImport } from './routes/_auth/workflow/$workflowId'
 import { Route as AuthNodeNodeIdRouteImport } from './routes/_auth/node/$nodeId'
+import { Route as AuthDataDataIdRouteImport } from './routes/_auth/data/$dataId'
 import { Route as AuthProjectProjectIdRouteRouteImport } from './routes/_auth/project/$projectId/route'
 import { Route as AuthPersonalPersonalIdRouteRouteImport } from './routes/_auth/personal/$personalId/route'
 import { Route as AuthSharedSharedIdIndexRouteImport } from './routes/_auth/shared/$sharedId/index'
@@ -91,6 +92,11 @@ const AuthNodeNodeIdRoute = AuthNodeNodeIdRouteImport.update({
   path: '/node/$nodeId',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthDataDataIdRoute = AuthDataDataIdRouteImport.update({
+  id: '/data/$dataId',
+  path: '/data/$dataId',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthProjectProjectIdRouteRoute =
   AuthProjectProjectIdRouteRouteImport.update({
     id: '/project/$projectId',
@@ -158,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/trigger': typeof AuthTriggerRouteRouteWithChildren
   '/personal/$personalId': typeof AuthPersonalPersonalIdRouteRouteWithChildren
   '/project/$projectId': typeof AuthProjectProjectIdRouteRouteWithChildren
+  '/data/$dataId': typeof AuthDataDataIdRoute
   '/node/$nodeId': typeof AuthNodeNodeIdRoute
   '/workflow/$workflowId': typeof AuthWorkflowWorkflowIdRoute
   '/executor/': typeof AuthExecutorIndexRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/platform': typeof AuthPlatformRouteRouteWithChildren
+  '/data/$dataId': typeof AuthDataDataIdRoute
   '/node/$nodeId': typeof AuthNodeNodeIdRoute
   '/workflow/$workflowId': typeof AuthWorkflowWorkflowIdRoute
   '/executor': typeof AuthExecutorIndexRoute
@@ -202,6 +210,7 @@ export interface FileRoutesById {
   '/_auth/trigger': typeof AuthTriggerRouteRouteWithChildren
   '/_auth/personal/$personalId': typeof AuthPersonalPersonalIdRouteRouteWithChildren
   '/_auth/project/$projectId': typeof AuthProjectProjectIdRouteRouteWithChildren
+  '/_auth/data/$dataId': typeof AuthDataDataIdRoute
   '/_auth/node/$nodeId': typeof AuthNodeNodeIdRoute
   '/_auth/workflow/$workflowId': typeof AuthWorkflowWorkflowIdRoute
   '/_auth/executor/': typeof AuthExecutorIndexRoute
@@ -227,6 +236,7 @@ export interface FileRouteTypes {
     | '/trigger'
     | '/personal/$personalId'
     | '/project/$projectId'
+    | '/data/$dataId'
     | '/node/$nodeId'
     | '/workflow/$workflowId'
     | '/executor/'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/platform'
+    | '/data/$dataId'
     | '/node/$nodeId'
     | '/workflow/$workflowId'
     | '/executor'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/_auth/trigger'
     | '/_auth/personal/$personalId'
     | '/_auth/project/$projectId'
+    | '/_auth/data/$dataId'
     | '/_auth/node/$nodeId'
     | '/_auth/workflow/$workflowId'
     | '/_auth/executor/'
@@ -376,6 +388,13 @@ declare module '@tanstack/react-router' {
       path: '/node/$nodeId'
       fullPath: '/node/$nodeId'
       preLoaderRoute: typeof AuthNodeNodeIdRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/data/$dataId': {
+      id: '/_auth/data/$dataId'
+      path: '/data/$dataId'
+      fullPath: '/data/$dataId'
+      preLoaderRoute: typeof AuthDataDataIdRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/_auth/project/$projectId': {
@@ -526,6 +545,7 @@ interface AuthRouteRouteChildren {
   AuthTriggerRouteRoute: typeof AuthTriggerRouteRouteWithChildren
   AuthPersonalPersonalIdRouteRoute: typeof AuthPersonalPersonalIdRouteRouteWithChildren
   AuthProjectProjectIdRouteRoute: typeof AuthProjectProjectIdRouteRouteWithChildren
+  AuthDataDataIdRoute: typeof AuthDataDataIdRoute
   AuthNodeNodeIdRoute: typeof AuthNodeNodeIdRoute
   AuthWorkflowWorkflowIdRoute: typeof AuthWorkflowWorkflowIdRoute
   AuthProjectIndexRoute: typeof AuthProjectIndexRoute
@@ -540,6 +560,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthPersonalPersonalIdRouteRoute:
     AuthPersonalPersonalIdRouteRouteWithChildren,
   AuthProjectProjectIdRouteRoute: AuthProjectProjectIdRouteRouteWithChildren,
+  AuthDataDataIdRoute: AuthDataDataIdRoute,
   AuthNodeNodeIdRoute: AuthNodeNodeIdRoute,
   AuthWorkflowWorkflowIdRoute: AuthWorkflowWorkflowIdRoute,
   AuthProjectIndexRoute: AuthProjectIndexRoute,

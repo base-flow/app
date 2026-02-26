@@ -6,13 +6,11 @@ declare namespace _Node {
     runtime: _App.Runtime;
     kind: Kind;
     npm?: string;
-    content: string;
   }
 
   interface INodeDetail {
     id: string;
     content: string;
-    released: boolean;
   }
 
   type UpdateResult = _Resource.IUpdateResult;

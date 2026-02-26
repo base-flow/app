@@ -35,15 +35,5 @@
         }
       }
     }
-
-    &:global(__logo) {
-      position: absolute;
-      top: 171px;
-      right: 22px;
-      width: 40px;
-      height: 40px;
-      background: #fff;
-      border-radius: var(--bf-rd-btn);
-    }
   }
 }

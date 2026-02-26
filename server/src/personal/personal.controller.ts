@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from "@nestjs/common";
-import { PersonalsMap } from "@/data";
+import { PersonalsMap } from "@/database";
 import { sleep } from "@/utils";
 
 @Controller("personal")

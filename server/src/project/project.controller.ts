@@ -1,5 +1,5 @@
 import { Controller, Delete, ForbiddenException, Get, Param, Post, Put, Query, Request } from "@nestjs/common";
-import { ProjectsMap } from "@/data";
+import { ProjectsMap } from "@/database";
 import { BaseQueryDto } from "@/dto";
 import { getPermissions } from "@/permissions";
 import { sleep } from "@/utils";

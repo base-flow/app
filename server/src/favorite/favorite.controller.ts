@@ -1,5 +1,5 @@
 import { Controller, Get, Put, Request } from "@nestjs/common";
-import { EntityMap, FavoriteList } from "@/data";
+import { EntityMap, FavoriteList } from "@/database";
 import { sleep } from "@/utils";
 
 @Controller("favorite")

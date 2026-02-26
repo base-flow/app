@@ -1,4 +1,4 @@
-import { ProjectsMap } from "./data";
+import { ProjectsMap } from "./database";
 export const SystemRoleConfg: _Permission.SystemRoleConfg = {
   Admin: {
     project_list: "all",

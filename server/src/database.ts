@@ -158,9 +158,9 @@ function createEntities(
         spaceDir: space.dir,
         likes: 21,
         version: "2.5.12",
+        released: false,
         homepage: Random.pick(["", "http://www.baidu.com"]),
         runtime: Random.pick(["server", "browser"]),
-        content: "",
       };
       item.path = `${parentPath}/${item.id} ${item.name}`;
       EntityMap[item.id] = item;
@@ -178,12 +178,10 @@ function createEntities(
         spaceDir: space.dir,
         icon: "",
         likes: 23,
-        version: "2.5.12",
         homepage: Random.pick(["", "http://www.baidu.com"]),
         runtime: Random.pick(["server", "browser"]),
         kind: Random.pick(["executor", "trigger", "snippet"]),
         npm: "aaa",
-        content: "",
       };
       item.path = `${parentPath}/${item.id} ${item.name}`;
       EntityMap[item.id] = item;

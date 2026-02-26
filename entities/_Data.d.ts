@@ -1,11 +1,12 @@
 declare namespace _Data {
   interface IData extends _Entity.BaseEntity {
     type: "data";
-    likes: number;
   }
-  interface Query extends _Entity.Query {}
 
-  type QueryResult = _Resource.IQueryResult<IData, Query>;
-  type CreateResult = _Resource.ICreateResult;
+  interface IDataDetail {
+    id: string;
+    content: string;
+  }
+
   type UpdateResult = _Resource.IUpdateResult;
 }

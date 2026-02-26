@@ -1,6 +1,6 @@
 import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import type { MenuProps, TablePaginationConfig, TableProps } from "antd";
 import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
 import dayjs from "dayjs";
@@ -19,6 +19,7 @@ import { useEntityNavigate, useEvent, useMyFavoriteIds, useTableChange, useTable
 import { debounce, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
+import DataEdit from "../DataEdit";
 import DirectoryEdit from "../DirectoryEdit";
 import EntityCopy from "../EntityCopy";
 import NodeEdit from "../NodeEdit";
@@ -123,6 +124,10 @@ const Component: FC<EntityListProps> = (props) => {
     setCurrentEdit({ type: "node", parentId: entityListQuery.dir!, spaceType: space.type, spaceId: space.id, kind: "executor" });
   });
 
+  const createData = useEvent(() => {
+    setCurrentEdit({ type: "data", parentId: entityListQuery.dir!, spaceType: space.type, spaceId: space.id });
+  });
+
   const createrMenu = useMemo(() => {
     const items: MenuProps["items"] = [
       {
@@ -149,10 +154,11 @@ const Component: FC<EntityListProps> = (props) => {
         } else if (key === "node") {
           createNode();
         } else if (key === "data") {
+          createData();
         }
       },
     };
-  }, [createWorkflow, createNode]);
+  }, [createWorkflow, createNode, createData]);
 
   const batchMenu = useMemo(() => {
     const items: MenuProps["items"] = [
@@ -218,7 +224,7 @@ const Component: FC<EntityListProps> = (props) => {
               <a onClick={() => (row.type === "directory" ? setQuery({ dir: row.id }) : fileNavigate(row))}>{name}</a>
               {row.path ? (
                 <Tooltip placement="bottom" title={showPath(row.path)}>
-                  <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
+                  <FolderSymlink className="dir" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
                 </Tooltip>
               ) : null}
               <Collect id={row.id} value={favoriteMap[row.id]} onChange={onFavoriteChange} />
@@ -233,8 +239,7 @@ const Component: FC<EntityListProps> = (props) => {
         key: "type",
         sorter: true,
         sortOrder: (entityListQuery.sorterField === "type" && entityListQuery.sorterOrder) || null,
-        width: 100,
-        align: "center",
+        width: 140,
       },
       {
         title: "运行环境",
@@ -243,7 +248,6 @@ const Component: FC<EntityListProps> = (props) => {
         sorter: true,
         sortOrder: (entityListQuery.sorterField === "runtime" && entityListQuery.sorterOrder) || null,
         width: 140,
-        align: "center",
       },
       {
         title: "创建时间",
@@ -412,6 +416,7 @@ const Component: FC<EntityListProps> = (props) => {
       {currentEdit?.type === "directory" && <DirectoryEdit item={currentEdit} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
       {currentEdit?.type === "workflow" && <WorkflowEdit item={currentEdit} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
       {currentEdit?.type === "node" && <NodeEdit item={currentEdit} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
+      {currentEdit?.type === "data" && <DataEdit item={currentEdit} onCancel={closeCurrentEdit} onSuccess={closeCurrentEdit} />}
       {batchEdit?.action === "copy" && (
         <EntityCopy ids={batchEdit.ids} file={batchEdit.file} onCancel={closeBatchEdit} onSuccess={onBatchCopySuccess} />
       )}

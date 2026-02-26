@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { CacheService } from "@/cache/cache.service";
 import { TokenExpiredSecond } from "@/consts";
-import { Users } from "@/data";
+import { Users } from "@/database";
 import type { TokenPayload } from "./index";
 
 @Injectable()

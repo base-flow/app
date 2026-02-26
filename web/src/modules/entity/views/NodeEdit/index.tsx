@@ -5,7 +5,7 @@ import { FilePenLine, Plus } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo, useState } from "react";
 import LoadingMask from "@/components/LoadingMask";
-import { DefaultNodeIcon, FileNameRule, RequiredRule, RuntimeOptions } from "@/const";
+import { FileNameRule, RequiredRule, RuntimeOptions } from "@/const";
 import { NodeAPI } from "@/modules/node/api";
 import { useEntityNavigate, useEvent } from "@/utils/hooks";
 import { verifyFileName } from "@/utils/tools";
@@ -139,33 +139,21 @@ const Component: FC<WorkflowEditProps> = ({ item, onCancel, onSuccess }) => {
           <FormItem hidden name="type" />
           <FormItem hidden name="spaceType" />
           <FormItem hidden name="spaceId" />
+          <FormItem hidden name="icon" />
           <FormItem hidden name="content" />
           <FormItem name="kind" noStyle>
             <KindTab />
           </FormItem>
-          {kindValue === "snippet" ? (
-            <FormItem label="名称" name="name" rules={FileNameRule}>
-              <Input variant="filled" placeholder="请输入名称..." />
+          {kindValue !== "snippet" && (
+            <FormItem label="包地址" name="npm" validateFirst validateTrigger="onBlur" rules={npmRules}>
+              <Input variant="filled" placeholder="请输入名称..." allowClear />
             </FormItem>
-          ) : (
-            <>
-              <FormItem label="包地址" name="npm" validateFirst validateTrigger="onBlur" rules={npmRules}>
-                <Input variant="filled" placeholder="请输入名称..." allowClear />
-              </FormItem>
-              {npmInfo && (
-                <>
-                  <FormItem label="名称&图标" name="name" rules={FileNameRule} className={`${styles.NodeEdit}__name`}>
-                    <Input variant="filled" placeholder="请输入名称..." />
-                  </FormItem>
-                  <FormItem name="icon" noStyle>
-                    <img alt="node" src={DefaultNodeIcon} className={`${styles.NodeEdit}__logo`} />
-                  </FormItem>
-                </>
-              )}
-            </>
           )}
           {(kindValue === "snippet" || npmInfo) && (
             <>
+              <FormItem label="名称" name="name" rules={FileNameRule}>
+                <Input variant="filled" placeholder="请输入名称..." />
+              </FormItem>
               <FormItem label="运行环境" name="runtime" rules={RequiredRule}>
                 <Select variant="filled" placeholder="请输入运行环境..." options={RuntimeOptions} />
               </FormItem>
