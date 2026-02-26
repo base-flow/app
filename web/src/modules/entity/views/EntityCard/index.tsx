@@ -5,6 +5,7 @@ import type { FC } from "react";
 import { memo } from "react";
 import Collect from "@/components/Collect";
 import IconFolder from "@/components/IconFolder";
+import IconNodeKind from "@/components/IconNodeKind";
 import Likes from "@/components/Likes";
 import { showPath } from "@/utils/tools";
 import styles from "./index.module.scss";
@@ -37,7 +38,7 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap
         ) : null}
         <Collect absolute id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
         <div className="head-icon">
-          <IconFolder className="icon" size={30} />
+          <IconFolder className="icon" size={32} />
           <h4 className="title">{item.name}</h4>
           <div className="info g-dot">
             <span>xxx</span>
@@ -83,134 +84,73 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap
         )}
       </div>
     );
-  } else if (item.type === "workflow") {
-    return (
-      <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}>
-        {item.path ? (
-          <Tooltip placement="bottom" title={showPath(item.path)}>
-            <span className="path">
-              <FolderSymlink size={12} strokeWidth={2.5} />
-            </span>
-          </Tooltip>
-        ) : null}
-        <Collect absolute id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
-        <div className="head-icon">
-          <img className="icon" alt="node" src={item.icon || DefaultIcon} />
-          <h4 className="title">{item.name}</h4>
-          <div className={classnames("info", `${styles.EntityCard}__package`)}>
-            <ExternalLink className="icon" size={10} />
-            <a className="link">xxx</a>
-          </div>
-        </div>
-        <div className="summary" title={item.desc}>
-          {item.desc}
-        </div>
-        <div className="footer">
-          <Likes likesNum={item.likes} />
-          <div>v1.0.0</div>
-        </div>
-        {(permissions.node_edit === "all" ||
-          (permissions.node_edit === "owner" && item.createBy === authId) ||
-          permissions.node_delete === "all" ||
-          (permissions.node_delete === "owner" && item.createBy === authId)) && (
-          <div className="tools">
-            {permissions.node_edit === "all" ||
-              (permissions.node_edit === "owner" && item.createBy === authId && (
-                <div
-                  title="编辑"
-                  className="btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setCurEdit(item);
-                  }}
-                >
-                  <SquarePen size={13} />
-                </div>
-              ))}
-            {permissions.node_delete === "all" ||
-              (permissions.node_delete === "owner" && item.createBy === authId && (
-                <div
-                  title="删除"
-                  className="btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    onDelete(item.id, item.name);
-                  }}
-                >
-                  <Trash2 size={13} />
-                </div>
-              ))}
-          </div>
-        )}
-      </div>
-    );
-  } else if (item.type === "node") {
-    return (
-      <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}>
-        {item.path ? (
-          <Tooltip placement="bottom" title={showPath(item.path)}>
-            <span className="path">
-              <FolderSymlink size={12} strokeWidth={2.5} />
-            </span>
-          </Tooltip>
-        ) : null}
-        <Collect absolute id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
-        <div className="head-icon">
-          <img className="icon" alt="node" src={item.icon || DefaultIcon} />
-          <h4 className="title">{item.name}</h4>
-          <div className={classnames("info", `${styles.EntityCard}__package`)}>
-            <ExternalLink className="icon" size={10} />
-            <a className="link">{item.package}</a>
-          </div>
-        </div>
-        <div className="summary" title={item.desc}>
-          {item.desc}
-        </div>
-        <div className="footer">
-          <Likes likesNum={item.likes} />
-          <div>v1.0.0</div>
-        </div>
-        {(permissions.node_edit === "all" ||
-          (permissions.node_edit === "owner" && item.createBy === authId) ||
-          permissions.node_delete === "all" ||
-          (permissions.node_delete === "owner" && item.createBy === authId)) && (
-          <div className="tools">
-            {permissions.node_edit === "all" ||
-              (permissions.node_edit === "owner" && item.createBy === authId && (
-                <div
-                  title="编辑"
-                  className="btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setCurEdit(item);
-                  }}
-                >
-                  <SquarePen size={13} />
-                </div>
-              ))}
-            {permissions.node_delete === "all" ||
-              (permissions.node_delete === "owner" && item.createBy === authId && (
-                <div
-                  title="删除"
-                  className="btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    onDelete(item.id, item.name);
-                  }}
-                >
-                  <Trash2 size={13} />
-                </div>
-              ))}
-          </div>
-        )}
-      </div>
-    );
   } else {
-    return <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}></div>;
+    return (
+      <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}>
+        {item.path ? (
+          <Tooltip placement="bottom" title={showPath(item.path)}>
+            <span className="path">
+              <FolderSymlink size={12} strokeWidth={2.5} />
+            </span>
+          </Tooltip>
+        ) : null}
+        <Collect absolute id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
+        <div className="head-icon">
+          <img className="icon" alt="node" src={item.icon || DefaultIcon} />
+          <h4 className="title">{item.name}</h4>
+          <div className={classnames("info", `${styles.EntityCard}__info`)}>
+            {`v${item.version}`}
+            {item.homepage && (
+              <a href={item.homepage} target="_blank">
+                <ExternalLink className="anticon" size={10} />
+              </a>
+            )}
+          </div>
+        </div>
+        <div className="summary" title={item.desc}>
+          {item.desc}
+        </div>
+        <div className="footer">
+          <Likes likesNum={item.likes} />
+          {item.type === "node" ? <IconNodeKind kind={item.kind} showLabel size={11} /> : null}
+        </div>
+        {(permissions.node_edit === "all" ||
+          (permissions.node_edit === "owner" && item.createBy === authId) ||
+          permissions.node_delete === "all" ||
+          (permissions.node_delete === "owner" && item.createBy === authId)) && (
+          <div className="tools">
+            {permissions.node_edit === "all" ||
+              (permissions.node_edit === "owner" && item.createBy === authId && (
+                <div
+                  title="编辑"
+                  className="btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setCurEdit(item);
+                  }}
+                >
+                  <SquarePen size={13} />
+                </div>
+              ))}
+            {permissions.node_delete === "all" ||
+              (permissions.node_delete === "owner" && item.createBy === authId && (
+                <div
+                  title="删除"
+                  className="btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onDelete(item.id, item.name);
+                  }}
+                >
+                  <Trash2 size={13} />
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
+    );
   }
 };
 

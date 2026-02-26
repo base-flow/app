@@ -16,6 +16,14 @@ interface Window {
     baseflow: any;
     app: any;
   };
+  MonacoEditor: {
+    dom: HTMLIFrameElement;
+    setModel: (lang: "json") => void;
+    setValue: (value: string) => void;
+    getValue: () => string;
+    format: () => void;
+    onChange: (callback: (value: string) => void) => { dispose: () => void };
+  };
   BASE_PATH?: string;
   API_PROXY?: string;
 }

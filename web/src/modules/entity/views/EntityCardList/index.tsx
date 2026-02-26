@@ -9,7 +9,7 @@ import FieldSorter, { type SortField } from "@/components/FieldSorter";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import SkeletonCardList from "@/components/SkeletonCardList";
-import { ShowTotal, useEvent, useMyFavoriteIds, usePermissions } from "@/utils/hooks";
+import { ShowTotal, useEntityNavigate, useEvent, useMyFavoriteIds, usePermissions } from "@/utils/hooks";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
 import EntityCard from "../EntityCard";
@@ -72,6 +72,16 @@ const Component: FC<EntityCardListProps> = (props) => {
     });
   });
 
+  const { fileNavigate } = useEntityNavigate();
+
+  const onItemClick = useEvent((item: _Entity.IEntity) => {
+    if (item.type === "directory") {
+      setQuery({ dir: item.id });
+    } else {
+      fileNavigate(item);
+    }
+  });
+
   const onListTypeChange = useEvent((listType: ListType) => {
     const { dir, keyword } = query;
     if (listType === "file") {
@@ -95,12 +105,6 @@ const Component: FC<EntityCardListProps> = (props) => {
 
   const onSearch = useEvent((keyword?: string) => {
     setQuery({ dir, keyword, type: query.type });
-  });
-
-  const onItemClick = useEvent((item: _Entity.IEntity) => {
-    if (item.type === "directory") {
-      setQuery({ dir: item.id });
-    }
   });
 
   const entityAlter = useMutation({

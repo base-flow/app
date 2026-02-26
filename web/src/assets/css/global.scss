@@ -42,10 +42,9 @@ body {
   color: var(--bf-tx-placeholder);
 }
 
-input:-internal-autofill-selected {
+.ant-input-filled > input:-internal-autofill-selected {
+  box-shadow: 0 0 0 1000px #f3f5f7 inset !important;
   transition: background-color 9999s ease-in-out 0s !important;
-
-  /* box-shadow: 0 0 0 1000px transparent inset !important; */
 }
 
 a {
@@ -375,13 +374,13 @@ a {
     > .icon {
       position: absolute;
       left: 0;
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       border-radius: var(--bf-rd-btn);
     }
 
     > .title {
-      margin: 0 5px 5px 0;
+      margin: 1px 5px 6px 0;
       overflow: hidden;
       text-overflow: ellipsis;
       font-weight: 600;

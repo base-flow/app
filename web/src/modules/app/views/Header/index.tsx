@@ -20,7 +20,6 @@ const Header: FC = () => {
   const locale = getLocale();
   const [auth, logout] = useAppStore(useShallow(({ auth, logout }) => [auth, logout]));
   const matchRoute = useMatchRoute();
-  const isEdit = matchRoute({ to: "/workflow/$workflowId" });
   const channel = (() => {
     if (matchRoute({ to: "/platform", fuzzy: true })) {
       return "Platform";
@@ -62,10 +61,6 @@ const Header: FC = () => {
       },
     };
   }, [auth, logout]);
-
-  if (isEdit) {
-    return null;
-  }
 
   return (
     <div className={styles.Header}>

@@ -2,12 +2,13 @@ import type { IGraph } from "@baseflow/react";
 import { HistoryTools } from "@baseflow/react";
 import { useCanGoBack, useRouter } from "@tanstack/react-router";
 import type { MenuProps } from "antd";
-import { Button, Dropdown } from "antd";
+import { Button, Dropdown, Spin } from "antd";
 import { ArrowLeft, Edit, PlusCircle, Tag } from "lucide-react";
 import type { FC } from "react";
 import { memo, useState } from "react";
+import Collect from "@/components/Collect";
 import WorkflowEdit from "@/modules/entity/views/WorkflowEdit";
-import { useEvent } from "@/utils/hooks";
+import { useEvent, useMyFavoriteIds } from "@/utils/hooks";
 import styles from "./index.module.scss";
 
 const items: MenuProps["items"] = [
@@ -54,6 +55,7 @@ const WorkflowItemHeader: FC<Props> = ({ item, graph }) => {
   const router = useRouter();
   const canGoBack = useCanGoBack();
   const [currentEdit, setCurrentEdit] = useState(false);
+  const { favoriteMap, onFavoriteChange, favoriteLoading } = useMyFavoriteIds();
 
   const onBack = useEvent(() => {
     if (canGoBack) {
@@ -83,8 +85,10 @@ const WorkflowItemHeader: FC<Props> = ({ item, graph }) => {
       <div className="left">
         <Button size="small" type="text" icon={<ArrowLeft size={14} />} onClick={onBack}></Button>
         <span className="title">{item.name}</span>
-        <span className="type">({item.type})</span>
+        <span className="type">(Workflow)</span>
         <Edit className="edit" size={13} onClick={() => setCurrentEdit(true)} />
+        <Collect id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
+        {favoriteLoading && <Spin size="small" />}
       </div>
       <div className="right">
         {graph && <HistoryTools graph={graph} />}

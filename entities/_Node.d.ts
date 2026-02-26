@@ -5,20 +5,16 @@ declare namespace _Node {
     type: "node";
     runtime: _App.Runtime;
     kind: Kind;
-    content: string;
-    package: string;
-    version: string;
-    likes: number;
     npm?: string;
+    content: string;
   }
 
-  interface Query extends _Entity.Query {
-    runtime?: _App.Runtime;
-    kind?: Kind;
+  interface INodeDetail {
+    id: string;
+    content: string;
+    released: boolean;
   }
 
-  type QueryResult = _Resource.IQueryResult<INode, Query>;
-  type CreateResult = _Resource.ICreateResult;
   type UpdateResult = _Resource.IUpdateResult;
 
   type NpmInfo = Pick<INode, "name" | "runtime" | "kind" | "icon" | "desc">;

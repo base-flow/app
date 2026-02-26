@@ -14,7 +14,6 @@ export class WorkflowController {
     return {
       content:
         '{"layout":"dagre","sources":{"@baseflow-nodes/flow":"@baseflow-nodes/flow@1.0.0","@baseflow-nodes/start":"@baseflow-nodes/start@1.0.0","@baseflow-nodes/end":"@baseflow-nodes/end@1.0.0"},"nodes":{"id":"flow","tag":"@baseflow-nodes/flow","meta":{"name":"流程","width":250,"height":68},"props":{},"children":[{"id":"start","tag":"@baseflow-nodes/start","meta":{"name":"流程开始","width":250,"height":68},"props":{}},{"id":"end","tag":"@baseflow-nodes/end","meta":{"name":"流程结束","width":250,"height":68},"props":{}}]},"triggers":[],"extend":{}}',
-      version: "0.0.1",
       commitId: "123e4567-e89b-12d3-a456-426614174000",
       released: false,
     };

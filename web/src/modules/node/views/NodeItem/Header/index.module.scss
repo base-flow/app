@@ -1,5 +1,5 @@
 :global {
-  :local(.WorkflowItemHeader) {
+  :local(.NodeItemHeader) {
     position: absolute;
     top: 0;
     left: 0;
@@ -23,6 +23,11 @@
       gap: 3px;
       align-items: center;
 
+      > .icon {
+        margin-right: 3px;
+        border-radius: var(--bf-rd-btn);
+      }
+
       > .title {
         font-size: 14px;
         font-weight: 500;
@@ -33,7 +38,7 @@
       }
 
       > .edit {
-        margin-left: 2px;
+        margin-left: 3px;
         color: var(--bf-tx-placeholder);
         cursor: pointer;
 
@@ -49,8 +54,19 @@
 
     > .right {
       display: flex;
-      gap: 5px;
+      gap: 10px;
       align-items: center;
+    }
+
+    &:global(__ver-menu) {
+      .btn {
+        font-style: normal;
+        color: var(--bf-tx-body) !important;
+      }
+
+      .pub {
+        color: var(--bf-tx-success) !important;
+      }
     }
   }
 }

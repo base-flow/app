@@ -42,32 +42,12 @@ const list: _Workflow.IWorkflow[] = mockjs
 
 @Injectable()
 export class WorkflowService {
-  async findAll(query: _Workflow.Query): Promise<_Workflow.QueryResult> {
-    let result = list;
-    if (query.keyword) {
-      result = result.filter((item) => item.id === query.keyword || item.name.includes(query.keyword!));
-    }
-    const { page = 1 } = query;
-    const pageSize = 20;
-    return {
-      query,
-      list: result.slice((page - 1) * pageSize, page * pageSize),
-      summary: { total: result.length, page, pageSize },
-    };
-  }
-
   async findOne(id: string): Promise<_Workflow.IWorkflow> {
     const item = list.find((item) => item.id === id);
     if (!item) {
       throw new NotFoundException(`Flow[${id}]不存在`);
     }
     return item;
-  }
-
-  async createItem(userId: string, data: _Workflow.IWorkflow): Promise<_Workflow.CreateResult> {
-    const newItem: _Workflow.IWorkflow = { ...data, id: `${Date.now()}`, updateAt: `${Date.now()}` };
-    list.unshift(newItem);
-    return { id: newItem.id };
   }
 
   async updateItem(userId: string, id: string, data: _Workflow.IWorkflow): Promise<_Workflow.UpdateResult> {

@@ -13,6 +13,7 @@ import { EntityModule } from "./entity/entity.module";
 import { FavoriteModule } from "./favorite/favorite.module";
 import { GotSharedModule } from "./gotShared/gotShared.module";
 import { AuthGuard } from "./guards/auth.guard";
+import { NodeModule } from "./node/node.module";
 import { PersonalModule } from "./personal/personal.module";
 import { ProjectModule } from "./project/project.module";
 import { SharedModule } from "./shared/shared.module";
@@ -47,6 +48,7 @@ import { WorkflowModule } from "./workflow/workflow.module";
     SharedModule,
     GotSharedModule,
     WorkflowModule,
+    NodeModule,
     PersonalModule,
     CacheModule,
   ],

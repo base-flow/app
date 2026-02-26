@@ -7,6 +7,9 @@ declare namespace _Entity {
     name: string;
     desc: string;
     icon?: string;
+    version?: string;
+    homepage?: string;
+    likes?: number;
     parentId: string;
     path: string;
     spaceId: string;

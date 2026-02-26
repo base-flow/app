@@ -11,6 +11,11 @@ export default {
     project: "项目",
     platform: "公共",
   },
+  nodeKind: {
+    executor: "执行器",
+    trigger: "触发器",
+    snippet: "组合片段",
+  },
   letMultipleFiles: "将${count}个文件",
   letSingleFiles: "将文件“${name}”",
   copyConfirm: "${file}：${action} “${path}” 吗？",

@@ -1,6 +1,7 @@
 :global {
   :local(.EntityCard) {
-    height: 140px;
+    height: 142px;
+    cursor: pointer;
 
     > .path {
       position: absolute;
@@ -15,20 +16,11 @@
       border-radius: 50px;
     }
 
-    &:global(__package) {
-      padding-left: 12px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    &:global(__info) {
+      padding-left: 2px;
 
-      > .icon {
-        position: absolute;
-        z-index: 1;
-        margin-left: -12px;
-      }
-
-      > .link {
-        cursor: pointer;
+      > a {
+        margin-left: 3px;
 
         &:hover {
           color: var(--bf-primary);

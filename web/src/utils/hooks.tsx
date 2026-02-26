@@ -28,6 +28,8 @@ export function useEntityNavigate() {
   const fileNavigate = useEvent((entity: { id: string; type: _App.EntityFileType }) => {
     if (entity.type === "workflow") {
       navigate({ to: "/workflow/$workflowId", params: { workflowId: entity.id } });
+    } else if (entity.type === "node") {
+      navigate({ to: "/node/$nodeId", params: { nodeId: entity.id } });
     }
   });
   const directoryNavigate = useEvent((entity: _Entity.IEntity, openParent?: boolean) => {

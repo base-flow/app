@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <style type="text/css">
+        html,
+        body,
+        #_MonacoEditor_ {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <script src="./monaco-editor/min/vs/loader.js"></script>
+
+</head>
+
+<body>
+    <div id="_MonacoEditor_" />
+    <script>
+        require.config({
+            paths: {
+                vs: window.location.origin + '/monaco/monaco-editor/min/vs',
+                'vs/nls': {
+                    availableLanguages: {
+                        '*': 'zh-cn',
+                    },
+                },
+            },
+        });
+        require(['vs/editor/editor.main'], function (monaco) {
+            monaco.editor.defineTheme('baseflow', {
+                base: 'vs',
+                inherit: true,
+                rules: [],
+                colors: {
+                    "editor.background": "#F3F5F7"
+                }
+            });
+            const editor = monaco.editor.create(document.getElementById('_MonacoEditor_'), {
+                theme: "baseflow",
+                automaticLayout: true,
+                minimap: { enabled: false },
+                accessibilitySupport: "off",
+                codeLens: false,
+                quickSuggestions: false,
+            });
+
+            const models = {
+                json: monaco.editor.createModel("", "json", monaco.Uri.parse("file:///json.json")),
+            };
+
+
+            Object.assign(window.parent.MonacoEditor, {
+                setModel: (language) => editor.setModel(models[language]),
+                setValue: (value) => editor.setValue(value),
+                getValue: () => editor.getValue(),
+                format: () => editor.getAction("editor.action.formatDocument").run(),
+                onChange: (callback) => editor.onDidChangeModelContent(() => callback(editor.getValue()))
+            })
+
+
+
+            // window.onresize = function () {
+            //     editor.layout();
+            // };
+        });
+    </script>
+</body>
+
+</html>
