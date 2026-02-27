@@ -20,6 +20,7 @@ import { Route as AuthSharedIndexRouteImport } from './routes/_auth/shared/index
 import { Route as AuthProjectIndexRouteImport } from './routes/_auth/project/index'
 import { Route as AuthExecutorIndexRouteImport } from './routes/_auth/executor/index'
 import { Route as AuthWorkflowWorkflowIdRouteImport } from './routes/_auth/workflow/$workflowId'
+import { Route as AuthPlatformDataRouteImport } from './routes/_auth/platform/data'
 import { Route as AuthNodeNodeIdRouteImport } from './routes/_auth/node/$nodeId'
 import { Route as AuthDataDataIdRouteImport } from './routes/_auth/data/$dataId'
 import { Route as AuthProjectProjectIdRouteRouteImport } from './routes/_auth/project/$projectId/route'
@@ -86,6 +87,11 @@ const AuthWorkflowWorkflowIdRoute = AuthWorkflowWorkflowIdRouteImport.update({
   id: '/workflow/$workflowId',
   path: '/workflow/$workflowId',
   getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthPlatformDataRoute = AuthPlatformDataRouteImport.update({
+  id: '/data',
+  path: '/data',
+  getParentRoute: () => AuthPlatformRouteRoute,
 } as any)
 const AuthNodeNodeIdRoute = AuthNodeNodeIdRouteImport.update({
   id: '/node/$nodeId',
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/project/$projectId': typeof AuthProjectProjectIdRouteRouteWithChildren
   '/data/$dataId': typeof AuthDataDataIdRoute
   '/node/$nodeId': typeof AuthNodeNodeIdRoute
+  '/platform/data': typeof AuthPlatformDataRoute
   '/workflow/$workflowId': typeof AuthWorkflowWorkflowIdRoute
   '/executor/': typeof AuthExecutorIndexRoute
   '/project': typeof AuthProjectIndexRoute
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/platform': typeof AuthPlatformRouteRouteWithChildren
   '/data/$dataId': typeof AuthDataDataIdRoute
   '/node/$nodeId': typeof AuthNodeNodeIdRoute
+  '/platform/data': typeof AuthPlatformDataRoute
   '/workflow/$workflowId': typeof AuthWorkflowWorkflowIdRoute
   '/executor': typeof AuthExecutorIndexRoute
   '/project': typeof AuthProjectIndexRoute
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/_auth/project/$projectId': typeof AuthProjectProjectIdRouteRouteWithChildren
   '/_auth/data/$dataId': typeof AuthDataDataIdRoute
   '/_auth/node/$nodeId': typeof AuthNodeNodeIdRoute
+  '/_auth/platform/data': typeof AuthPlatformDataRoute
   '/_auth/workflow/$workflowId': typeof AuthWorkflowWorkflowIdRoute
   '/_auth/executor/': typeof AuthExecutorIndexRoute
   '/_auth/project/': typeof AuthProjectIndexRoute
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
     | '/project/$projectId'
     | '/data/$dataId'
     | '/node/$nodeId'
+    | '/platform/data'
     | '/workflow/$workflowId'
     | '/executor/'
     | '/project'
@@ -258,6 +268,7 @@ export interface FileRouteTypes {
     | '/platform'
     | '/data/$dataId'
     | '/node/$nodeId'
+    | '/platform/data'
     | '/workflow/$workflowId'
     | '/executor'
     | '/project'
@@ -283,6 +294,7 @@ export interface FileRouteTypes {
     | '/_auth/project/$projectId'
     | '/_auth/data/$dataId'
     | '/_auth/node/$nodeId'
+    | '/_auth/platform/data'
     | '/_auth/workflow/$workflowId'
     | '/_auth/executor/'
     | '/_auth/project/'
@@ -383,6 +395,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthWorkflowWorkflowIdRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/platform/data': {
+      id: '/_auth/platform/data'
+      path: '/data'
+      fullPath: '/platform/data'
+      preLoaderRoute: typeof AuthPlatformDataRouteImport
+      parentRoute: typeof AuthPlatformRouteRoute
+    }
     '/_auth/node/$nodeId': {
       id: '/_auth/node/$nodeId'
       path: '/node/$nodeId'
@@ -482,11 +501,13 @@ const AuthExecutorRouteRouteWithChildren =
   AuthExecutorRouteRoute._addFileChildren(AuthExecutorRouteRouteChildren)
 
 interface AuthPlatformRouteRouteChildren {
+  AuthPlatformDataRoute: typeof AuthPlatformDataRoute
   AuthPlatformNodeRuntimeRoute: typeof AuthPlatformNodeRuntimeRoute
   AuthPlatformWorkflowRuntimeRoute: typeof AuthPlatformWorkflowRuntimeRoute
 }
 
 const AuthPlatformRouteRouteChildren: AuthPlatformRouteRouteChildren = {
+  AuthPlatformDataRoute: AuthPlatformDataRoute,
   AuthPlatformNodeRuntimeRoute: AuthPlatformNodeRuntimeRoute,
   AuthPlatformWorkflowRuntimeRoute: AuthPlatformWorkflowRuntimeRoute,
 }

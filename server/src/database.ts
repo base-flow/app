@@ -182,6 +182,7 @@ function createEntities(
         runtime: Random.pick(["server", "browser"]),
         kind: Random.pick(["executor", "trigger", "snippet"]),
         npm: "aaa",
+        updateAt: "2025-01-05",
       };
       item.path = `${parentPath}/${item.id} ${item.name}`;
       EntityMap[item.id] = item;

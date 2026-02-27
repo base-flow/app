@@ -1,7 +1,7 @@
 import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Pagination, Result, Segmented } from "antd";
+import { Pagination, Result, Segmented, Select } from "antd";
 import { FolderTree, List } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo, useRef, useState } from "react";
@@ -9,6 +9,7 @@ import FieldSorter, { type SortField } from "@/components/FieldSorter";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import SkeletonCardList from "@/components/SkeletonCardList";
+import { NodeKindOptions } from "@/const";
 import { ShowTotal, useEntityNavigate, useEvent, useMyFavoriteIds, usePermissions } from "@/utils/hooks";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
@@ -25,14 +26,9 @@ const StoreOptions: { label: string; value: string }[] = [
 const SorterOptions: SortField[] = ["updateAt", "createAt", "likes"];
 
 const ListTypeOptions: { label: any; value: ListType; tooltip: string }[] = [
-  { label: <FolderTree className="anticon" size={14} />, value: "dir", tooltip: "目录层级" },
-  { label: <List className="anticon" size={14} />, value: "file", tooltip: "文件平铺" },
+  { label: <FolderTree className="g-vertical" size={14} />, value: "dir", tooltip: "目录层级" },
+  { label: <List className="g-vertical" size={14} />, value: "file", tooltip: "文件平铺" },
 ];
-
-// const ListTypeOptions: { label: any; value: string }[] = [
-//   { label: "目录", value: "dir" },
-//   { label: "文件", value: "file" },
-// ];
 
 interface EntityCardListProps {
   rootName: string;
@@ -190,6 +186,7 @@ const Component: FC<EntityCardListProps> = (props) => {
         </div>
         <div className="space">
           <SearchInput variant="filled" onChange={onSearch} value={query.keyword} placeholder="当前目录下搜索..." />
+          <Select value={query.kind || ""} options={NodeKindOptions} />
           <Segmented value={listType} options={ListTypeOptions} onChange={onListTypeChange} />
           <div>
             <span style={{ marginRight: 2 }}>排序：</span>

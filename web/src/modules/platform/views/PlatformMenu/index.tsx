@@ -1,6 +1,6 @@
 import type { LinkProps } from "@tanstack/react-router";
 import { Link, useLocation, useMatchRoute, useNavigate } from "@tanstack/react-router";
-import { Settings2, TextAlignJustify } from "lucide-react";
+import { Braces, Settings2, TextAlignJustify } from "lucide-react";
 import type { FC } from "react";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import IconEntity from "@/components/IconEntity";
@@ -30,6 +30,8 @@ const Component: FC = () => {
       return ["node", "node/server"];
     } else if (matchRoute({ to: "/platform/node/$runtime", params: { runtime: "browser" } })) {
       return ["node", "node/browser"];
+    } else if (matchRoute({ to: "/platform/data" })) {
+      return ["data", "data"];
     } else {
       return [];
     }
@@ -56,6 +58,9 @@ const Component: FC = () => {
         break;
       case "node/browser":
         navigate({ to: "/platform/node/$runtime", params: { runtime: "browser" } });
+        break;
+      case "data":
+        navigate({ to: "/platform/data" });
         break;
     }
   });
@@ -139,6 +144,17 @@ const Component: FC = () => {
             ),
           },
         ],
+      },
+      {
+        key: "data",
+        label: (
+          <>
+            <span className={`${styles.PlatformMenu}__menuIcon`}>
+              <Braces strokeWidth={2.5} size={10} />
+            </span>
+            <span>数据</span>
+          </>
+        ),
       },
     ];
     return list;

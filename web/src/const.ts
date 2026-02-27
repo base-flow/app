@@ -35,6 +35,13 @@ export const RuntimeOptions: { value: _App.Runtime; label: string }[] = [
   { value: "browser", label: "浏览器运行" },
 ];
 
+export const NodeKindOptions: { value: string; label: string }[] = [
+  { label: "所有种类", value: "" },
+  { label: "执行器", value: "executor" },
+  { label: "触发器", value: "trigger" },
+  { label: "组合片段", value: "snippet" },
+];
+
 export const ProjectRoleOptions = [
   {
     key: "Owner",

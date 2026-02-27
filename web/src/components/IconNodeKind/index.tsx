@@ -18,11 +18,11 @@ const Component: FC<Props> = ({ kind, className, size = 13, showLabel, onClick }
   return (
     <span className={className} onClick={_onClick}>
       {kind === "executor" ? (
-        <CirclePlay size={size} className="anticon" />
+        <CirclePlay size={size} className="g-vertical" />
       ) : kind === "trigger" ? (
-        <AlarmClockPlus size={size} className="anticon" />
+        <AlarmClockPlus size={size} className="g-vertical" />
       ) : (
-        <LayoutList size={size} className="anticon" />
+        <LayoutList size={size} className="g-vertical" />
       )}
 
       {showLabel && <span style={{ marginLeft: "3px", fontSize: size }}>{Lang.nodeKind[kind]}</span>}

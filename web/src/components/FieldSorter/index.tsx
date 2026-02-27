@@ -8,9 +8,9 @@ import { useEvent } from "@/utils/hooks";
 export type SortField = "createAt" | "updateAt" | "likes";
 
 const SortOptions: { [key in SortField]: { value: string; icon: ReactNode; tooltip: string } } = {
-  createAt: { value: "createAt", tooltip: "创建时间", icon: <FilePlusCorner className="anticon" size={14} /> },
-  updateAt: { value: "updateAt", tooltip: "更新时间", icon: <FilePen className="anticon" size={14} /> },
-  likes: { value: "likes", tooltip: "点赞数量", icon: <ThumbsUp className="anticon" size={14} /> },
+  createAt: { value: "createAt", tooltip: "创建时间", icon: <FilePlusCorner className="g-vertical" size={14} /> },
+  updateAt: { value: "updateAt", tooltip: "更新时间", icon: <FilePen className="g-vertical" size={14} /> },
+  likes: { value: "likes", tooltip: "点赞数量", icon: <ThumbsUp className="g-vertical" size={14} /> },
 };
 
 export interface FieldSorterProps {

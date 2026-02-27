@@ -99,7 +99,7 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap
           <img className="icon" alt="node" src={item.icon || DefaultIcon} />
           <h4 className="title">{item.name}</h4>
           <div className={classnames("info", `${styles.EntityCard}__info`)}>
-            {`v${item.version}`}
+            {item.type === "workflow" ? `v${item.version}` : item.updateAt}
             {item.homepage && (
               <a href={item.homepage} target="_blank">
                 <ExternalLink className="anticon" size={10} />
