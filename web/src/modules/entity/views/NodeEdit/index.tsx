@@ -158,10 +158,10 @@ const Component: FC<WorkflowEditProps> = ({ item, onCancel, onSuccess }) => {
                 <Select variant="filled" placeholder="请输入运行环境..." options={RuntimeOptions} />
               </FormItem>
               <FormItem label="描述" name="desc" tooltip="可用于搜索">
-                <Input.TextArea variant="filled" rows={4} placeholder="请输入描述..." showCount maxLength={100} />
+                <Input.TextArea variant="filled" rows={2} placeholder="请输入描述..." showCount maxLength={100} />
               </FormItem>
-              <FormItem label="主页" name="url" tooltip="开发者主页">
-                <Input variant="filled" placeholder="https://" />
+              <FormItem label="Readme" tooltip="支持Markdown" name="readme">
+                <Input.TextArea variant="filled" rows={5} placeholder="请输入描述..." showCount maxLength={100} />
               </FormItem>
             </>
           )}

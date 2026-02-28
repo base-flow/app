@@ -346,7 +346,7 @@ const Component: FC<EntityListProps> = (props) => {
 
   if (entityQuery.isError) {
     return (
-      <div className={`${styles.EntityList} g-page min-wrap`}>
+      <div className={`${styles.EntityList} g-page`}>
         <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Result status="warning" title={entityQuery.error?.message || "错误"} />
@@ -357,7 +357,7 @@ const Component: FC<EntityListProps> = (props) => {
 
   if (!entityList || !entityListSummary) {
     return (
-      <div className={`${styles.EntityList} g-page min-wrap`}>
+      <div className={`${styles.EntityList} g-page`}>
         <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Skeleton active />
@@ -369,7 +369,7 @@ const Component: FC<EntityListProps> = (props) => {
   setCurrentPath(entityListSummary.path);
 
   return (
-    <div className={`${styles.EntityList} g-page min-wrap`}>
+    <div className={`${styles.EntityList} g-page`}>
       <LoadingMask show={entityQuery.isFetching || entityDeleter.isPending || favoriteLoading} />
       <div className="hd">
         <div className="row">

@@ -248,7 +248,7 @@ const Component: FC<SharedContentProps> = (props) => {
 
   if (entityQuery.isError) {
     return (
-      <div className={`${styles.SharedContent} g-page min-wrap`}>
+      <div className={`${styles.SharedContent} g-page`}>
         <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Result status="warning" title={entityQuery.error?.message || "错误"} />
@@ -259,7 +259,7 @@ const Component: FC<SharedContentProps> = (props) => {
 
   if (!entityList || !entityListSummary) {
     return (
-      <div className={`${styles.SharedContent} g-page min-wrap`}>
+      <div className={`${styles.SharedContent} g-page`}>
         <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Skeleton active />
@@ -269,7 +269,7 @@ const Component: FC<SharedContentProps> = (props) => {
   }
 
   return (
-    <div className={`${styles.SharedContent} g-page min-wrap`}>
+    <div className={`${styles.SharedContent} g-page`}>
       <LoadingMask show={entityQuery.isFetching || entityDeleter.isPending || entityCreater.isPending} />
       {entityListQuery.dir ? (
         <div className="hd">

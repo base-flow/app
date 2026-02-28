@@ -30,6 +30,7 @@ declare namespace _Entity {
     //当keyword存在时：有type类型：搜索子孙后按type过滤；无type类型：搜索子孙后全部列表
     type?: _App.EntityType;
     kind?: string;
+    runtime?: _App.Runtime;
   }
 
   interface QueryFile extends _Resource.IQuery {

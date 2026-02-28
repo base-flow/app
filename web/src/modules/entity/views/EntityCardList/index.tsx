@@ -5,11 +5,12 @@ import { Pagination, Result, Segmented, Select } from "antd";
 import { FolderTree, List } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo, useRef, useState } from "react";
-import FieldSorter, { type SortField } from "@/components/FieldSorter";
+import type { SortField } from "@/components/FieldSorter";
+import FieldSorter from "@/components/FieldSorter";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import SkeletonCardList from "@/components/SkeletonCardList";
-import { NodeKindOptions } from "@/const";
+import { NodeKindOptions, StoreOptions } from "@/const";
 import { ShowTotal, useEntityNavigate, useEvent, useMyFavoriteIds, usePermissions } from "@/utils/hooks";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
@@ -17,11 +18,6 @@ import EntityCard from "../EntityCard";
 import styles from "./index.module.scss";
 
 type ListType = "dir" | "file";
-
-const StoreOptions: { label: string; value: string }[] = [
-  { label: "开放平台", value: "remote" },
-  { label: "当前系统", value: "local" },
-];
 
 const SorterOptions: SortField[] = ["updateAt", "createAt", "likes"];
 
@@ -35,7 +31,6 @@ interface EntityCardListProps {
   rootDir: string;
   query: _Entity.Query;
   entity: _App.EntityFileType;
-  runtime: _App.Runtime;
 }
 
 const Component: FC<EntityCardListProps> = (props) => {
@@ -85,10 +80,6 @@ const Component: FC<EntityCardListProps> = (props) => {
     } else {
       setQuery({ dir, keyword, type: undefined });
     }
-  });
-
-  const onStoreChange = useEvent((store?: "remote" | "local") => {
-    //_setQuery({ to: ".", search: { store } });
   });
 
   const onSort = useEvent((sorter: { sorterField?: string; sorterOrder?: "ascend" | "descend" }) => {
@@ -181,7 +172,7 @@ const Component: FC<EntityCardListProps> = (props) => {
       <LoadingMask show={entityQuery.isFetching || entityAlter.isPending || entityDeleter.isPending || favoriteLoading} />
       <div className="hd">
         <div className="space">
-          <Segmented options={StoreOptions} onChange={onStoreChange as any} />
+          <Segmented options={StoreOptions} />
           <Breadcrumb rootDir={rootDir} rootName={rootName} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
         </div>
         <div className="space">
@@ -201,8 +192,6 @@ const Component: FC<EntityCardListProps> = (props) => {
               <EntityCard
                 key={item.id}
                 item={item}
-                permissions={permissions}
-                authId={auth.id}
                 favoriteMap={favoriteMap}
                 onDelete={onDelete}
                 setCurEdit={setCurEdit}

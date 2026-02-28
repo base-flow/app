@@ -22,7 +22,7 @@ declare namespace _Permission {
     node_delete: ResourceOwnerScope;
   }
 
-  type SystemRole = "Admin" | "Member" | "Guest";
+  type SystemRole = "SuperAdmin" | "Admin" | "Member" | "Guest";
   type ProjectRole = "Owner" | "Admin" | "Developer" | "Tester" | "Member";
 
   interface MyProjectRoles {

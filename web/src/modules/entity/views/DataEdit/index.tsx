@@ -111,7 +111,10 @@ const Component: FC<DataEditProps> = ({ item, onCancel, onSuccess }) => {
             <Input variant="filled" placeholder="请输入名称..." />
           </FormItem>
           <FormItem label="描述" tooltip="可用于搜索" name="desc">
-            <Input.TextArea variant="filled" rows={4} placeholder="请输入描述..." showCount maxLength={100} />
+            <Input.TextArea variant="filled" rows={2} placeholder="请输入描述..." showCount maxLength={100} />
+          </FormItem>
+          <FormItem label="Readme" tooltip="支持Markdown" name="readme">
+            <Input.TextArea variant="filled" rows={5} placeholder="请输入描述..." showCount maxLength={100} />
           </FormItem>
           <div className="g-form-footer">
             <Button onClick={onCancel}>取消</Button>

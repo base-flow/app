@@ -16,19 +16,18 @@ const DefaultIcon =
 
 interface EntityCardProps {
   item: _Entity.IEntity;
-  permissions: _Permission.IPermissions;
-  authId: string;
   favoriteMap: { [id: string]: boolean };
-  setCurEdit: (item: _Entity.IEntity) => void;
-  onDelete: (id: string, name: string) => void;
   onFavoriteChange: (id: string, collected: boolean) => void;
   onItemClick: (item: _Entity.IEntity) => void;
+  selector?: boolean;
+  setCurEdit?: (item: _Entity.IEntity) => void;
+  onDelete?: (id: string, name: string) => void;
 }
 
-const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap, setCurEdit, onDelete, onFavoriteChange, onItemClick }) => {
+const Component: FC<EntityCardProps> = ({ item, selector, favoriteMap, setCurEdit, onDelete, onFavoriteChange, onItemClick }) => {
   if (item.type === "directory") {
     return (
-      <div className={classnames(styles.EntityCard, "g-card folder")} onClick={() => onItemClick(item)}>
+      <div className={classnames(styles.EntityCard, { st: selector }, "g-card folder")} onClick={() => onItemClick(item)}>
         {item.path ? (
           <Tooltip placement="bottom" title={showPath(item.path)}>
             <span className="path">
@@ -47,46 +46,37 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap
         <div className="summary" title={item.desc}>
           {item.desc}
         </div>
-        {(permissions.node_edit === "all" ||
-          (permissions.node_edit === "owner" && item.createBy === authId) ||
-          permissions.node_delete === "all" ||
-          (permissions.node_delete === "owner" && item.createBy === authId)) && (
+        {!selector && (
           <div className="tools">
-            {permissions.node_edit === "all" ||
-              (permissions.node_edit === "owner" && item.createBy === authId && (
-                <div
-                  title="编辑"
-                  className="btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setCurEdit(item);
-                  }}
-                >
-                  <SquarePen size={13} />
-                </div>
-              ))}
-            {permissions.node_delete === "all" ||
-              (permissions.node_delete === "owner" && item.createBy === authId && (
-                <div
-                  title="删除"
-                  className="btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    onDelete(item.id, item.name);
-                  }}
-                >
-                  <Trash2 size={13} />
-                </div>
-              ))}
+            <div
+              title="编辑"
+              className="btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setCurEdit?.(item);
+              }}
+            >
+              <SquarePen size={13} />
+            </div>
+            <div
+              title="删除"
+              className="btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                onDelete?.(item.id, item.name);
+              }}
+            >
+              <Trash2 size={13} />
+            </div>
           </div>
         )}
       </div>
     );
   } else {
     return (
-      <div className={classnames(styles.EntityCard, "g-card")} onClick={() => onItemClick(item)}>
+      <div className={classnames(styles.EntityCard, { st: selector }, "g-card")} onClick={() => onItemClick(item)}>
         {item.path ? (
           <Tooltip placement="bottom" title={showPath(item.path)}>
             <span className="path">
@@ -114,39 +104,30 @@ const Component: FC<EntityCardProps> = ({ item, permissions, authId, favoriteMap
           <Likes likesNum={item.likes} />
           {item.type === "node" ? <IconNodeKind kind={item.kind} showLabel size={11} /> : null}
         </div>
-        {(permissions.node_edit === "all" ||
-          (permissions.node_edit === "owner" && item.createBy === authId) ||
-          permissions.node_delete === "all" ||
-          (permissions.node_delete === "owner" && item.createBy === authId)) && (
+        {!selector && (
           <div className="tools">
-            {permissions.node_edit === "all" ||
-              (permissions.node_edit === "owner" && item.createBy === authId && (
-                <div
-                  title="编辑"
-                  className="btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setCurEdit(item);
-                  }}
-                >
-                  <SquarePen size={13} />
-                </div>
-              ))}
-            {permissions.node_delete === "all" ||
-              (permissions.node_delete === "owner" && item.createBy === authId && (
-                <div
-                  title="删除"
-                  className="btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    onDelete(item.id, item.name);
-                  }}
-                >
-                  <Trash2 size={13} />
-                </div>
-              ))}
+            <div
+              title="编辑"
+              className="btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setCurEdit?.(item);
+              }}
+            >
+              <SquarePen size={13} />
+            </div>
+            <div
+              title="删除"
+              className="btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                onDelete?.(item.id, item.name);
+              }}
+            >
+              <Trash2 size={13} />
+            </div>
           </div>
         )}
       </div>

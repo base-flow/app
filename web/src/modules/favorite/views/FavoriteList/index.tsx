@@ -179,7 +179,7 @@ const Component: FC = () => {
 
   if (favoriteQuery.isError) {
     return (
-      <div className={`${styles.FavoriteList} g-page min-wrap`}>
+      <div className={`${styles.FavoriteList} g-page`}>
         <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Result status="warning" title={favoriteQuery.error?.message || "错误"} />
@@ -190,7 +190,7 @@ const Component: FC = () => {
 
   if (!favoriteList) {
     return (
-      <div className={`${styles.FavoriteList} g-page min-wrap`}>
+      <div className={`${styles.FavoriteList} g-page`}>
         <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Skeleton active />
@@ -200,7 +200,7 @@ const Component: FC = () => {
   }
 
   return (
-    <div className={`${styles.FavoriteList} g-page min-wrap`}>
+    <div className={`${styles.FavoriteList} g-page`}>
       <LoadingMask show={favoriteQuery.isFetching} />
       <div className="hd">
         <Space>

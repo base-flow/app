@@ -153,7 +153,7 @@ const Component: FC<{ spaceName: string; query: _Shared.Query }> = (props) => {
 
   if (sharedQuery.isError) {
     return (
-      <div className={`${styles.SharedList} g-page min-wrap`}>
+      <div className={`${styles.SharedList} g-page`}>
         <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Result status="warning" title={sharedQuery.error?.message || "错误"} />
@@ -164,7 +164,7 @@ const Component: FC<{ spaceName: string; query: _Shared.Query }> = (props) => {
 
   if (!sharedList) {
     return (
-      <div className={`${styles.SharedList} g-page min-wrap`}>
+      <div className={`${styles.SharedList} g-page`}>
         <div className="hd" />
         <div className="bd" ref={scrollerRef}>
           <Skeleton active />
@@ -174,7 +174,7 @@ const Component: FC<{ spaceName: string; query: _Shared.Query }> = (props) => {
   }
 
   return (
-    <div className={`${styles.SharedList} g-page min-wrap`}>
+    <div className={`${styles.SharedList} g-page`}>
       <LoadingMask show={sharedQuery.isFetching || sharedDeleter.isPending} />
       <div className="hd">
         <div className="title">

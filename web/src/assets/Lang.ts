@@ -6,6 +6,10 @@ export default {
     "node.server": "节点-服务器运行",
     "node.browser": "节点-浏览器运行",
   } as { [key: string]: string },
+  runtime: {
+    server: "服务器运行",
+    browser: "浏览器运行",
+  },
   spaceType: {
     personal: "个人",
     project: "项目",

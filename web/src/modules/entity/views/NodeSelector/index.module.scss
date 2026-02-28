@@ -1,0 +1,78 @@
+:global {
+  :local(.NodeSelector) {
+    box-sizing: border-box;
+    height: 710px;
+    line-height: 1.15;
+
+    > .clipboard {
+      position: absolute;
+      top: 25px;
+      left: 25px;
+      color: var(--bf-tx-lesser);
+      cursor: pointer;
+
+      > span {
+        display: inline-block;
+        margin-left: 3px;
+      }
+
+      &:hover {
+        color: var(--bf-primary);
+      }
+    }
+
+    > .hd {
+      display: flex;
+      place-content: flex-start space-between;
+      align-items: center;
+      height: 32px;
+      padding-top: 15px;
+      padding-bottom: 12px;
+      overflow: hidden;
+
+      > .space {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+    }
+
+    > .bd {
+      position: absolute;
+      right: 1px;
+      left: 5px;
+      height: 600px;
+      padding: 6px 22px 0 20px;
+      overflow: auto;
+    }
+
+    .comp-Pathcrumb .current.root {
+      font-size: 13px;
+    }
+
+    &:global(__cate) {
+      text-align: center;
+      border-bottom: 1px solid var(--bf-bd-input);
+
+      > span {
+        position: relative;
+        top: 1px;
+        display: inline-block;
+        padding: 5px 1px 10px;
+        margin: 0 10px;
+        font-weight: 500;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+
+        &:hover {
+          color: var(--bf-primary);
+        }
+
+        &.on {
+          color: var(--bf-primary);
+          border-color: var(--bf-primary);
+        }
+      }
+    }
+  }
+}

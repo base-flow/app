@@ -20,7 +20,6 @@ function RouteComponent() {
   return (
     <EntityCardList
       entity="node"
-      runtime={runtime}
       rootDir={config.dirs.node[runtime]}
       rootName={Lang.entityDirName[`node.${runtime}`]}
       query={{ ...search, dir: search.dir || config.dirs.node[runtime] }}

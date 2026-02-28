@@ -42,6 +42,11 @@ export const NodeKindOptions: { value: string; label: string }[] = [
   { label: "组合片段", value: "snippet" },
 ];
 
+export const StoreOptions: { label: string; value: string }[] = [
+  { label: "开放平台", value: "remote" },
+  { label: "当前系统", value: "local" },
+];
+
 export const ProjectRoleOptions = [
   {
     key: "Owner",

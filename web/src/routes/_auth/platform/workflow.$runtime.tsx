@@ -20,7 +20,6 @@ function RouteComponent() {
   return (
     <EntityCardList
       entity="workflow"
-      runtime={runtime}
       rootDir={config.dirs.workflow[runtime]}
       rootName={Lang.entityDirName[`workflow.${runtime}`]}
       query={{ ...search, dir: search.dir || config.dirs.workflow[runtime] }}
