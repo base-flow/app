@@ -162,6 +162,9 @@ export function useMyFavoriteList(onChangeSuccess?: () => void) {
 
 export interface IConfigContext {
   config: _App.Config;
+  auth: _App.AuthUser;
+  login: (args: _App.AuthLogin) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 export const ConfigContext = createContext<IConfigContext>({} as any);
@@ -169,22 +172,9 @@ export const ConfigContext = createContext<IConfigContext>({} as any);
 export function useConfig(): IConfigContext {
   return useContext(ConfigContext);
 }
-
-export interface IPermissionsContext {
-  auth: _App.AuthUser;
-  permissions: _Permission.IPermissions;
-  getPermissionsInProject: (appId: string) => _Permission.IPermissions;
-}
-
-export const PermissionsContext = createContext<IPermissionsContext>({} as any);
-
-export function usePermissions(): IPermissionsContext {
-  return useContext(PermissionsContext);
-}
-
 export interface IProjectContext {
-  isMine: boolean;
   project: _Project.IProject;
+  projectRole?: _App.ProjectRole;
   setCurrentPath: (path: string) => void;
 }
 

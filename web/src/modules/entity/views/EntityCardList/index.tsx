@@ -11,7 +11,7 @@ import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import SkeletonCardList from "@/components/SkeletonCardList";
 import { NodeKindOptions, StoreOptions } from "@/const";
-import { ShowTotal, useEntityNavigate, useEvent, useMyFavoriteIds, usePermissions } from "@/utils/hooks";
+import { ShowTotal, useEntityNavigate, useEvent, useMyFavoriteIds } from "@/utils/hooks";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
 import EntityCard from "../EntityCard";
@@ -35,7 +35,6 @@ interface EntityCardListProps {
 
 const Component: FC<EntityCardListProps> = (props) => {
   const { rootName, rootDir } = props;
-  const { permissions, auth } = usePermissions();
   const { favoriteMap, favoriteLoading, onFavoriteChange } = useMyFavoriteIds();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const queryState = useState(props.query);

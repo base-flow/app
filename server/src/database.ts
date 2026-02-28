@@ -4,29 +4,34 @@ const Mock = require("mockjs");
 var Random = Mock.Random;
 let uid = 1;
 
-export const Users: Array<_App.AuthUser & { password: string }> = [
+export const Users: Array<_App.AuthUser & { password: string; nickname: string; myProjects: _App.MyProjects }> = [
   {
     id: "1",
     username: "admin",
-    nickname: "小布丁",
-    password: "123456",
     dir: "",
-    roles: ["Admin"],
+    role: "Admin",
+    password: "123456",
+    nickname: "小布丁",
+    myProjects: {},
   },
   {
     id: "2",
     username: "maria",
-    nickname: "多啦啊嘛",
-    password: "123456",
     dir: "",
-    roles: ["Member"],
+    role: "Member",
+    password: "123456",
+    nickname: "多啦啊嘛",
+    myProjects: {},
   },
 ];
 
-export const UsersMap: { [id: string]: _App.AuthUser & { password: string } } = Users.reduce((obj, cur) => {
-  obj[cur.id] = cur;
-  return obj;
-}, {} as any);
+export const UsersMap: { [id: string]: _App.AuthUser & { password: string; nickname: string; myProjects: _App.MyProjects } } = Users.reduce(
+  (obj, cur) => {
+    obj[cur.id] = cur;
+    return obj;
+  },
+  {} as any,
+);
 
 export const Personals: _Personal.IPersonal[] = Users.map(({ id, username, nickname }) => ({
   id,
@@ -95,6 +100,11 @@ export const ProjectsMap: { [id: string]: _Project.IProject } = Projects.reduce(
   obj[cur.id] = cur;
   return obj;
 }, {} as any);
+
+UsersMap["1"].myProjects = {
+  "1": { projectName: ProjectsMap[1].name, projectDir: ProjectsMap[1].dir, projectRole: "Owner" },
+  // "2": { projectName: ProjectsMap[2].name, projectDir: ProjectsMap[2].dir, projectRole: "Tester" },
+};
 
 export const EntityMap: { [id: string]: _Entity.IEntity } = {};
 

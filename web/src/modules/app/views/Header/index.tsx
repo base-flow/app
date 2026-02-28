@@ -10,6 +10,7 @@ import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
 import { LOCALE_KEY } from "@/const";
 import { useAppStore } from "@/modules/app/store";
+import { useConfig } from "@/utils/hooks";
 import styles from "./index.module.scss";
 
 const ActiveProps = {
@@ -18,7 +19,8 @@ const ActiveProps = {
 
 const Header: FC = () => {
   const locale = getLocale();
-  const [auth, logout] = useAppStore(useShallow(({ auth, logout }) => [auth, logout]));
+  const { auth, logout } = useConfig();
+  const [nickname] = useAppStore(useShallow(({ nickname }) => [nickname]));
   const matchRoute = useMatchRoute();
   const channel = (() => {
     if (matchRoute({ to: "/platform", fuzzy: true })) {
@@ -37,7 +39,7 @@ const Header: FC = () => {
           key: "user",
           label: (
             <Button block size="small" type="text">
-              {`${auth.nickname} (${auth.username}) (${auth.roles})`}
+              {`${nickname} (${auth.username}) (${auth.role})`}
             </Button>
           ),
           type: "group",
@@ -60,7 +62,7 @@ const Header: FC = () => {
         }
       },
     };
-  }, [auth, logout]);
+  }, [nickname, auth, logout]);
 
   return (
     <div className={styles.Header}>

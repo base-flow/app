@@ -1,7 +1,6 @@
-import { Controller, Delete, ForbiddenException, Get, Param, Post, Put, Query, Request } from "@nestjs/common";
-import { ProjectsMap } from "@/database";
+import { Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Request } from "@nestjs/common";
+import { ProjectsMap, UsersMap } from "@/database";
 import { BaseQueryDto } from "@/dto";
-import { getPermissions } from "@/permissions";
 import { sleep } from "@/utils";
 import { ProjectService } from "./project.service";
 
@@ -12,11 +11,14 @@ export class ProjectController {
   @Get()
   async getList(@Request() { user, query }: { user: _App.AuthUser; query: BaseQueryDto }): Promise<_Project.QueryResult> {
     await sleep(1000);
-    const permissions = getPermissions(user);
-    if (!permissions.project_list) {
-      throw new ForbiddenException();
-    }
-    return this.projectService.findAll(query, permissions.project_list);
+    const list = Object.keys(UsersMap[user.id].myProjects).map((id) => ProjectsMap[id]);
+    const { page = 1 } = query;
+    const pageSize = 20;
+    return {
+      query,
+      list: list.slice((page - 1) * pageSize, page * pageSize),
+      summary: { total: list.length, page, pageSize },
+    };
   }
 
   @Get(":id")
@@ -28,11 +30,7 @@ export class ProjectController {
   @Post()
   async createItem(@Request() { user, body }: { user: _App.AuthUser; body: _Project.IProject }): Promise<_Project.CreateResult> {
     await sleep(1000);
-    const permissions = getPermissions(user);
-    if (!permissions.project_create) {
-      throw new ForbiddenException();
-    }
-    return this.projectService.createItem(user.id, body);
+    return { id: "123" };
   }
 
   @Put(":id")
@@ -40,13 +38,16 @@ export class ProjectController {
     @Request() { user, body, params }: { user: _App.AuthUser; body: _Project.IProject; params: { id: string } },
   ): Promise<_Project.UpdateResult> {
     await sleep(1000);
-    return this.projectService.updateItem(user.id, params.id, body);
+    const item = ProjectsMap[params.id];
+    if (!item) {
+      throw new NotFoundException();
+    }
+    Object.assign(item, body, { updateAt: `${Date.now()}` });
+    return { id: params.id };
   }
 
   @Delete()
-  async deleteItem(@Query() { id }: { id: string }): Promise<void> {
-    return this.projectService.deleteItem(id);
-  }
+  async deleteItem(@Query() { id }: { id: string }): Promise<void> {}
 
   @Get(":id/member")
   async getMemberList(@Param() param: { id: string }): Promise<_Project.IMember[]> {

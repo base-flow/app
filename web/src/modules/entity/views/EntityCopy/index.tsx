@@ -9,7 +9,7 @@ import Lang, { formatLang } from "@/assets/Lang";
 import IconEntity from "@/components/IconEntity";
 import LoadingMask from "@/components/LoadingMask";
 import { useAppStore } from "@/modules/app/store";
-import { useEvent } from "@/utils/hooks";
+import { useConfig, useEvent } from "@/utils/hooks";
 import { findInTree, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import styles from "./index.module.scss";
@@ -62,18 +62,19 @@ export type EntityCopyProps = {
 const Component: FC<EntityCopyProps> = ({ file, ids, onCancel, onSuccess }) => {
   const subject = file ? formatLang(Lang.letSingleFiles, { name: file }) : formatLang(Lang.letMultipleFiles, { count: `${ids.length}` });
   const queryClient = useQueryClient();
-  const [myProjectRoles, auth] = useAppStore(useShallow(({ myProjectRoles, auth }) => [myProjectRoles, auth]));
+  const { auth } = useConfig();
+  const [myProjects] = useAppStore(useShallow(({ myProjects }) => [myProjects]));
   const [action, setAction] = useState<"move" | "copy">("move");
   const [selected, setSelected] = useState<TreeData>();
   const [treeData, setTreeData] = useState<TreeData[]>(() => [
     { title: "我的文档", key: auth.dir, path: `/${auth.username}` },
-    ...Object.keys(myProjectRoles)
+    ...Object.keys(myProjects)
       .filter((id) => {
-        const projectRole = myProjectRoles[id].projectRole;
+        const projectRole = myProjects[id].projectRole;
         return projectRole === "Owner" || projectRole === "Admin" || projectRole === "Developer";
       })
       .map((id) => {
-        const item = myProjectRoles[id];
+        const item = myProjects[id];
         return { title: item.projectName, key: item.projectDir, path: `/${item.projectName}` };
       }),
   ]);

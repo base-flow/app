@@ -11,7 +11,7 @@ import SearchInput from "@/components/SearchInput";
 import SkeletonCardList from "@/components/SkeletonCardList";
 import { FlagSrc } from "@/components/utils";
 import { useAppStore } from "@/modules/app/store";
-import { useEvent, usePermissions } from "@/utils/hooks";
+import { useEvent } from "@/utils/hooks";
 import { ProjectAPI } from "../../api";
 import ProjectEdit from "../ProjectEdit";
 import ProjectItem from "../ProjectItem";
@@ -21,8 +21,7 @@ interface ProjectListProps {
 }
 
 const Component: FC<ProjectListProps> = (props) => {
-  const { permissions, getPermissionsInProject } = usePermissions();
-  const [myProjectRoles] = useAppStore(useShallow(({ myProjectRoles }) => [myProjectRoles]));
+  const [myProjects] = useAppStore(useShallow(({ myProjects }) => [myProjects]));
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState(props.query);
   const projectQuery = useQuery(ProjectAPI.queryList(query));
@@ -98,11 +97,9 @@ const Component: FC<ProjectListProps> = (props) => {
       <LoadingMask show={projectQuery.isFetching || projectDeleter.isPending} />
       <div className="hd">
         <div>
-          {permissions.project_create && (
-            <Button color="primary" variant="text" icon={<SquarePlus size={14} />} onClick={onCreate}>
-              创建项目
-            </Button>
-          )}
+          <Button color="primary" variant="text" icon={<SquarePlus size={14} />} onClick={onCreate}>
+            创建项目
+          </Button>
         </div>
         <div className="space">
           <SearchInput variant="filled" onChange={onSearch} value={query.keyword} />
@@ -116,14 +113,7 @@ const Component: FC<ProjectListProps> = (props) => {
         <div className="g-grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 2k:grid-cols-6">
           {projectList.map((item) => {
             return (
-              <ProjectItem
-                key={item.id}
-                getPermissionsInProject={getPermissionsInProject}
-                projectRole={myProjectRoles[item.id]?.projectRole}
-                item={item}
-                onDelete={onDelete}
-                setCurEdit={setCurEdit}
-              />
+              <ProjectItem key={item.id} projectRole={myProjects[item.id]?.projectRole} item={item} onDelete={onDelete} setCurEdit={setCurEdit} />
             );
           })}
         </div>

@@ -9,7 +9,8 @@ import { useAppStore } from "@/modules/app/store";
 import { ProjectAPI } from "@/modules/project/api";
 import ProjectMenu from "@/modules/project/views/ProjectMenu";
 import ProjectSettings from "@/modules/project/views/ProjectSettings";
-import { PermissionsContext, ProjectContext } from "@/utils/hooks";
+import type { IProjectContext } from "@/utils/hooks";
+import { ProjectContext } from "@/utils/hooks";
 
 export const Route = createFileRoute("/_auth/project/$projectId")({
   component: RouteComponent,
@@ -17,20 +18,14 @@ export const Route = createFileRoute("/_auth/project/$projectId")({
 
 function RouteComponent() {
   const params = Route.useParams();
-  const [getPermissions, myProjectRoles, auth] = useAppStore(
-    useShallow(({ getPermissions, myProjectRoles, auth }) => [getPermissions, myProjectRoles, auth]),
-  );
-  const permissions = useMemo(() => getPermissions(params.projectId), [params.projectId, getPermissions]);
+  const [myProjects] = useAppStore(useShallow(({ myProjects }) => [myProjects]));
   const projectQuery = useQuery(ProjectAPI.queryItem(params.projectId));
   const project = projectQuery.data;
   const [currentPath, setCurrentPath] = useState("");
-  const permissionsContextValue = useMemo(
-    () => ({ auth, permissions, getPermissionsInProject: getPermissions }),
-    [auth, getPermissions, permissions],
-  );
-  const projectContextValue = useMemo(
-    () => ({ project: project!, isMine: Boolean(project?.id && myProjectRoles[project.id]), setCurrentPath }),
-    [project, myProjectRoles],
+
+  const projectContextValue: IProjectContext = useMemo(
+    () => ({ project: project!, projectRole: myProjects[project?.id || ""]?.projectRole, setCurrentPath }),
+    [project, myProjects],
   );
 
   if (projectQuery.isError) {
@@ -50,20 +45,18 @@ function RouteComponent() {
   }
 
   return (
-    <PermissionsContext.Provider value={permissionsContextValue}>
-      <ProjectContext value={projectContextValue}>
-        <aside>
-          <div>
-            <Nameplate type="project" title={project.name} logo={project.logo} />
-            <ProjectMenu currentPath={currentPath} />
-          </div>
-          <ProjectSettings />
-        </aside>
-        <main className="g-col-paper">
-          <LoadingMask show={projectQuery.isFetching} />
-          <Outlet />
-        </main>
-      </ProjectContext>
-    </PermissionsContext.Provider>
+    <ProjectContext value={projectContextValue}>
+      <aside>
+        <div>
+          <Nameplate type="project" title={project.name} logo={project.logo} />
+          <ProjectMenu currentPath={currentPath} />
+        </div>
+        <ProjectSettings />
+      </aside>
+      <main className="g-col-paper">
+        <LoadingMask show={projectQuery.isFetching} />
+        <Outlet />
+      </main>
+    </ProjectContext>
   );
 }

@@ -18,6 +18,6 @@ export class RolesGuard implements CanActivate {
     const user = request.user;
 
     // 假设 user.roles 是数组，比如 ['admin']
-    return requiredRoles.some((role) => user.roles?.includes(role as _Permission.SystemRole));
+    return requiredRoles.some((role) => user.role === role);
   }
 }

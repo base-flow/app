@@ -28,8 +28,8 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException("用户名或密码错误");
     }
-    const { id, nickname, dir, roles } = user;
-    const payload: TokenPayload = { sub: id, username, nickname, dir, roles };
+    const { id, dir, role } = user;
+    const payload: TokenPayload = { sub: id, username, dir, role };
     const token = await this.jwtService.signAsync(payload);
     const tokenHash = createHash("md5").update(token).digest("hex");
     this.cacheService.set(tokenHash, Date.now(), TokenExpiredSecond);

@@ -1,21 +1,14 @@
-import type { LinkProps } from "@tanstack/react-router";
-import { Link, useLocation, useMatchRoute, useNavigate } from "@tanstack/react-router";
+import { useMatchRoute, useNavigate } from "@tanstack/react-router";
 import { Braces, Settings2, TextAlignJustify } from "lucide-react";
 import type { FC } from "react";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import IconEntity from "@/components/IconEntity";
-import IconNetwork from "@/components/IconNetwork";
+import { memo, useMemo, useState } from "react";
 import IconRuntime from "@/components/IconRuntime";
-import IconShare from "@/components/IconShare";
-import IconStar from "@/components/IconStar";
 import type { MenuItem } from "@/components/MenuNav";
 import MenuNav from "@/components/MenuNav";
-import { useConfig, useEvent, usePermissions } from "@/utils/hooks";
+import { useEvent } from "@/utils/hooks";
 import styles from "./index.module.scss";
 
 const Component: FC = () => {
-  const { auth } = usePermissions();
-  const { config } = useConfig();
   const navigate = useNavigate();
   const matchRoute = useMatchRoute();
   const [openedKey, setOpenedKey] = useState<string | undefined>();

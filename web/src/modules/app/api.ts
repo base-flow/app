@@ -1,6 +1,6 @@
 import request from "@/utils/request";
 
-export const GuestUser: _App.AuthUser = { id: "", username: "guest", nickname: "guest", roles: ["Guest"] };
+export const GuestUser: _App.AuthUser = { id: "", username: "", role: "Guest", dir: "" };
 
 export const AppAPI = {
   login(args: _App.AuthLogin): Promise<_App.AuthUser & { token: string }> {
@@ -18,16 +18,7 @@ export const AppAPI = {
       .then((res) => res.data)
       .catch(() => GuestUser);
   },
-  getPermissions(): Promise<_Permission.QueryPermissionsResult> {
-    return request.get("/api/auth/permissions").then((res) => res.data);
+  getProfile(): Promise<_App.MyProfile> {
+    return request.get("/api/auth/profile").then((res) => res.data);
   },
-  // getFavorites(query: _Favorite.Query): Promise<_Entity.IEntity[]> {
-  //   return request.get("/api/favorite", { params: query }).then((res) => res.data);
-  // },
-  // addToFavorites(type: "node", id: string): Promise<void> {
-  //   return Promise.resolve();
-  // },
-  // removeFromFavorites(type: "node", id: string): Promise<void> {
-  //   return Promise.resolve();
-  // },
 };

@@ -9,7 +9,6 @@ import Lang from "@/assets/Lang";
 import type { ValueType } from "@/components/FetchSelect";
 import FetchSelect from "@/components/FetchSelect";
 import LoadingMask from "@/components/LoadingMask";
-import { GetProjectRoleOptions, ProjectRoleLowerThan } from "@/const";
 import { UserAPI } from "@/modules/user/api";
 import { useEvent } from "@/utils/hooks";
 import { ProjectAPI } from "../../api";
@@ -26,11 +25,9 @@ const UserFetchTitle = (
 
 export interface Props {
   projectId: string;
-  myRoleScope: _Permission.ProjectAssignUserScope;
-  myId: string;
 }
 
-const Component: FC<Props> = ({ projectId, myId, myRoleScope }) => {
+const Component: FC<Props> = ({ projectId }) => {
   const members = useQuery(ProjectAPI.queryMemberList(projectId));
   const memberList = members.data;
   const memberMaps = useMemo(

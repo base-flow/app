@@ -21,11 +21,11 @@ declare namespace _Project {
     id: string;
     username: string;
     nickname: string;
-    projectRole: _Permission.ProjectRole;
+    projectRole: _App.ProjectRole;
   }
 
   interface CreateMemberData {
     id: string;
-    projectRole: _Permission.ProjectRole;
+    projectRole: _App.ProjectRole;
   }
 }

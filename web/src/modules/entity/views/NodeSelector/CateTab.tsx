@@ -15,7 +15,7 @@ interface Props {
 }
 
 const Component: FC<Props> = ({ value, onChange }) => {
-  const [myProjectRoles, auth] = useAppStore(useShallow(({ myProjectRoles, auth }) => [myProjectRoles, auth]));
+  //const [myProjectRoles, auth] = useAppStore(useShallow(({ myProjectRoles, auth }) => [myProjectRoles, auth]));
   const [versionsMenu] = useState(() => ({
     items: [
       {

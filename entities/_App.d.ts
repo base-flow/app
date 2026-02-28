@@ -11,19 +11,27 @@ declare namespace _App {
   interface AuthUser {
     id: string;
     username: string;
-    nickname: string;
     dir: string;
-    roles: _Permission.SystemRole[];
+    role: SystemRole;
   }
 
-  interface ProfileUser {
-    age?: number;
+  interface MyProjects {
+    [projectId: string]: { projectName: string; projectDir: string; projectRole: ProjectRole };
   }
+
+  interface MyProfile {
+    nickname: string;
+    myProjects: MyProjects;
+  }
+
   interface AuthLogin {
     username: string;
     password: string;
     redirect?: string;
   }
+
+  type SystemRole = "SuperAdmin" | "Admin" | "Member" | "Guest";
+  type ProjectRole = "Owner" | "Admin" | "Developer" | "Tester" | "Member";
 
   type Runtime = "server" | "browser";
   type EntitySpace = "personal" | "project" | "platform";

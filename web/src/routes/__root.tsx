@@ -7,8 +7,10 @@ import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Button, ConfigProvider, Modal, message, Segmented, Spin, Switch } from "antd";
 import { useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { useAppStore } from "@/modules/app/store";
 import Header from "@/modules/app/views/Header";
+import { ConfigContext } from "@/utils/hooks";
 import { messageWrap } from "@/utils/tools";
 
 export const Route = createRootRouteWithContext<{
@@ -54,6 +56,7 @@ const expressionUtils: SchemaModel = {
 };
 
 function RootComponent() {
+  const [auth, config, login, logout] = useAppStore(useShallow(({ auth, config, login, logout }) => [auth, config, login, logout]));
   const [modalApi, modalContextHolder] = Modal.useModal();
   const [messageApi, messageContextHolder] = message.useMessage();
   const [widgets] = useState<Partial<IBaseWidgets>>(() => ({
@@ -98,7 +101,7 @@ function RootComponent() {
   }));
 
   return (
-    <>
+    <ConfigContext.Provider value={{ auth, config: config!, login, logout }}>
       <ConfigProvider
         locale={window.Locale.antd}
         theme={{
@@ -154,6 +157,6 @@ function RootComponent() {
       </ConfigProvider>
       {/* <ReactQueryDevtools buttonPosition="top-right" />
       <TanStackRouterDevtools position="bottom-right" /> */}
-    </>
+    </ConfigContext.Provider>
   );
 }

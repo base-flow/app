@@ -16,16 +16,16 @@ export const Route = createFileRoute("/_auth/project/$projectId/")({
 
 function RouteComponent() {
   const search = Route.useSearch();
-  const { project, isMine, setCurrentPath } = useProject();
+  const { project, projectRole, setCurrentPath } = useProject();
   const space = useMemo(() => ({ id: project.id, name: project.name, type: "project" as "personal" | "project" }), [project]);
   return (
     <EntityList
-      isMine={isMine}
+      isMine={projectRole === "Owner" || projectRole === "Admin" || projectRole === "Developer"}
       space={space}
       rootName="项目文档"
       rootDir={project.dir}
       setCurrentPath={setCurrentPath}
-      query={{ ...search, dir: search.dir || (isMine ? project.dir : project.publicDir) }}
+      query={{ ...search, dir: search.dir || (projectRole ? project.dir : project.publicDir) }}
     />
   );
 }

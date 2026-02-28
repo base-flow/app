@@ -7,14 +7,12 @@ import styles from "./index.module.scss";
 
 interface Props {
   item: _Project.IProject;
-  getPermissionsInProject: (projectId: string) => _Permission.IPermissions;
   setCurEdit: (item: _Project.IProject) => void;
   onDelete: (id: string, name: string) => void;
-  projectRole?: _Permission.ProjectRole;
+  projectRole?: _App.ProjectRole;
 }
 
-const Component: FC<Props> = ({ item, getPermissionsInProject, setCurEdit, onDelete, projectRole }) => {
-  const permissions = getPermissionsInProject(item.id);
+const Component: FC<Props> = ({ item, setCurEdit, onDelete, projectRole }) => {
   return (
     <Link className={`${styles.ProjectItem} g-card`} to="/project/$projectId" params={{ projectId: item.id }}>
       <div className="head-icon">
@@ -37,34 +35,30 @@ const Component: FC<Props> = ({ item, getPermissionsInProject, setCurEdit, onDel
           </div>
         )}
       </div>
-      {(permissions.project_edit || permissions.project_delete) && (
+      {projectRole === "Owner" && (
         <div className="tools">
-          {permissions.project_edit && (
-            <div
-              title="编辑"
-              className="btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                setCurEdit(item);
-              }}
-            >
-              <SquarePen size={13} />
-            </div>
-          )}
-          {permissions.project_delete && (
-            <div
-              title="删除"
-              className="btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                onDelete(item.id, item.name);
-              }}
-            >
-              <Trash2 size={13} />
-            </div>
-          )}
+          <div
+            title="编辑"
+            className="btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setCurEdit(item);
+            }}
+          >
+            <SquarePen size={13} />
+          </div>
+          <div
+            title="删除"
+            className="btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              onDelete(item.id, item.name);
+            }}
+          >
+            <Trash2 size={13} />
+          </div>
         </div>
       )}
     </Link>

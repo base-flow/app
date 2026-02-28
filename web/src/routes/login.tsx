@@ -1,10 +1,9 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
-import { useShallow } from "zustand/react/shallow";
 import { HomePage } from "@/const";
 import { useAppStore } from "@/modules/app/store";
 import LoginForm from "@/modules/app/views/LoginForm";
-import { useEvent } from "@/utils/hooks";
+import { useConfig, useEvent } from "@/utils/hooks";
 
 export const Route = createFileRoute("/login")({
   validateSearch: z.object({
@@ -22,7 +21,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginComponent() {
   const search = Route.useSearch();
-  const [auth, login] = useAppStore(useShallow(({ auth, login }) => [auth, login]));
+  const { auth, login } = useConfig();
 
   const onLogin = useEvent((data: _App.AuthLogin) => {
     login({ ...data, redirect: search.redirect });

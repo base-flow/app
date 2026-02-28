@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { MyProjectRoles } from "@/permissions";
 import { extendAssign, FlagSrc } from "@/utils";
 
 const mockjs = require("mockjs");
@@ -49,30 +48,6 @@ memberList.unshift(
 );
 @Injectable()
 export class ProjectService {
-  async findAll(query: _Project.Query, permission: _Permission.ProjectListScope): Promise<_Project.QueryResult> {
-    const result = permission === "involved" ? list.filter((item) => MyProjectRoles[item.id]) : list;
-    // if (query.keyword) {
-    //   result = result.filter((item) => item.name.includes(query.keyword!));
-    // }
-    const { page = 1, pageSize = 20 } = query;
-    return { query, list: result.slice((page - 1) * pageSize, page * pageSize), summary: { total: result.length, page, pageSize } };
-  }
-
-  async createItem(userId: string, data: _Project.IProject): Promise<_Project.CreateResult> {
-    const newItem: _Project.IProject = { ...data, id: `${Date.now()}`, updateAt: `${Date.now()}` };
-    list.unshift(newItem);
-    return { id: newItem.id };
-  }
-
-  async updateItem(userId: string, id: string, data: _Project.IProject): Promise<_Project.UpdateResult> {
-    const item = list.find((item) => item.id === id);
-    if (!item) {
-      throw new NotFoundException(`App[${id}]不存在`);
-    }
-    Object.assign(item, data, { updateAt: `${Date.now()}` });
-    return { id };
-  }
-
   async deleteItem(id: string): Promise<void> {
     list.splice(
       list.findIndex((item) => item.id === id),

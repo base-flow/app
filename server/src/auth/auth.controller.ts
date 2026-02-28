@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Put, Request } from "@nestjs/common";
+import { UsersMap } from "../database";
 import { Public } from "../decorators";
-import { MyProjectRoles, ProjectRoleConfg, SystemRoleConfg } from "../permissions";
 import { AuthService } from "./auth.service";
 
 @Controller("auth")
@@ -18,12 +18,12 @@ export class AuthController {
     return this.authService.login(body);
   }
 
-  @Get("permissions")
-  async getPermissions(@Request() req: { user: _App.AuthUser }): Promise<_Permission.QueryPermissionsResult> {
+  @Get("profile")
+  async getProfile(@Request() req: { user: _App.AuthUser }): Promise<_App.MyProfile> {
+    const { nickname, myProjects } = UsersMap[req.user.id];
     return {
-      systemRoleConfg: SystemRoleConfg,
-      projectRoleConfg: ProjectRoleConfg,
-      myProjectRoles: MyProjectRoles,
+      nickname,
+      myProjects,
     };
   }
 }
