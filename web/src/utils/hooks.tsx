@@ -94,7 +94,7 @@ export function useTablePagination(listSummary: _Resource.IQuerySummary | undefi
   return pagination;
 }
 
-export function useTableChange<Q extends _Resource.IQuery>(query: Q, setQuery: (query: Q) => void) {
+export function useEntityTableChange<Q extends _Resource.IQuery>(query: Q, setQuery: (query: Q) => void) {
   const onTableChange = useEvent(
     (paginate: { current?: number; pageSize?: number }, _filters: any, sort: any, extra: { action: "paginate" | "sort" | "filter" }) => {
       if (extra.action === "paginate") {
@@ -105,10 +105,36 @@ export function useTableChange<Q extends _Resource.IQuery>(query: Q, setQuery: (
     },
   );
   const onDirSearch = useEvent((keyword?: string) => {
-    const { dir, type } = query as any;
-    setQuery({ dir, type, keyword } as any);
+    const { dir, type, kind, runtime } = query as _Entity.Query;
+    setQuery({ dir, type, keyword, kind, runtime } as any);
   });
   return { onTableChange, onDirSearch };
+}
+
+export function useEntityListChange(query: _Entity.Query, setQuery: (query: _Entity.Query) => void, entityType: _App.EntityType) {
+  const onPageChange = useEvent((page: number) => {
+    setQuery({ ...query, page });
+  });
+
+  const onSort = useEvent((sorter: { sorterField?: string; sorterOrder?: "ascend" | "descend" }) => {
+    setQuery({ ...query, page: undefined, ...sorter });
+  });
+
+  const onKeywordSearch = useEvent((keyword?: string) => {
+    const { dir, type, kind, runtime } = query;
+    setQuery({ dir, type, kind, runtime, keyword });
+  });
+
+  const onListTypeChange = useEvent((listType: "dir" | "file") => {
+    const { dir, kind, runtime, keyword } = query;
+    if (listType === "file") {
+      setQuery({ dir, kind, runtime, keyword, type: entityType });
+    } else {
+      setQuery({ dir, kind, runtime, keyword, type: undefined });
+    }
+  });
+
+  return { onPageChange, onSort, onKeywordSearch, onListTypeChange };
 }
 
 export function useMyFavoriteIds() {

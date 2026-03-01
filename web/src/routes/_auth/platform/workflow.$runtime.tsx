@@ -20,9 +20,9 @@ function RouteComponent() {
   return (
     <EntityCardList
       entity="workflow"
-      rootDir={config.dirs.workflow[runtime]}
+      rootDir={config.platformDirs.workflow[runtime]}
       rootName={Lang.entityDirName[`workflow.${runtime}`]}
-      query={{ ...search, dir: search.dir || config.dirs.workflow[runtime] }}
+      query={{ ...search, dir: search.dir || config.platformDirs.workflow[runtime] }}
     />
   );
 }

@@ -75,7 +75,7 @@ const Component: FC = () => {
             key: "workflow/server",
             label: (
               <>
-                <IconRuntime type="server" />
+                <IconRuntime runtime="server" />
                 <span>
                   服务器运行
                   <small>(10)</small>
@@ -87,7 +87,7 @@ const Component: FC = () => {
             key: "workflow/browser",
             label: (
               <>
-                <IconRuntime type="browser" />
+                <IconRuntime runtime="browser" />
                 <span>
                   浏览器运行
                   <small>(30)</small>
@@ -112,7 +112,7 @@ const Component: FC = () => {
             key: "node/server",
             label: (
               <>
-                <IconRuntime type="server" />
+                <IconRuntime runtime="server" />
                 <span>
                   服务器运行
                   <small>
@@ -126,7 +126,7 @@ const Component: FC = () => {
             key: "node/browser",
             label: (
               <>
-                <IconRuntime type="browser" />
+                <IconRuntime runtime="browser" />
                 <span>
                   浏览器运行
                   <small>

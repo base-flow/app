@@ -7,7 +7,7 @@ import { Button, Modal, Result, Skeleton } from "antd";
 import { ArrowLeft, PlusCircle, Tag } from "lucide-react";
 import type { FC } from "react";
 import { memo, useCallback, useState } from "react";
-import Lang from "@/assets/Lang";
+
 import LoadingMask from "@/components/LoadingMask";
 import NodeSelector from "@/modules/entity/views/NodeSelector";
 import { useConfig, useEvent } from "@/utils/hooks";
@@ -82,11 +82,7 @@ const WorkflowItem: FC<Props> = ({ item, graphData }) => {
       </div>
       {showNodeCreater && (
         <Modal open={true} width={1200} title={null} footer={null} onCancel={closeNodeCreater}>
-          <NodeSelector
-            rootDir={config!.dirs.node[item.runtime]}
-            rootName={Lang.runtime[item.runtime]}
-            query={{ dir: config!.dirs.node[item.runtime] }}
-          />
+          <NodeSelector kind="executor" runtime={item.runtime} />
         </Modal>
       )}
     </div>

@@ -1,4 +1,4 @@
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Tooltip } from "antd";
 import classnames from "classnames";
 import { ArrowLeft, FolderOpen, RefreshCcw } from "lucide-react";
 import type { FC, MouseEvent, ReactNode } from "react";
@@ -39,15 +39,19 @@ const Component: FC<Props> = ({ items, onRoute, onBack, showBack, refreshIcon })
             {item.title}
           </span>
           <a className={classnames("refresh", { root: item.path === "/" })} data-id="">
-            {refreshIcon || <RefreshCcw className="anticon" size={11} strokeWidth={2.5} />}
+            {refreshIcon || <RefreshCcw className="g-vertical" size={11} strokeWidth={2.5} />}
           </a>
         </>
       ) : null;
     } else {
-      return (
-        <a data-id={item.path} className={classnames({ root: item.path === "/" })}>
-          {item.path === "/" ? <FolderOpen className="anticon" size={13} /> : item.title}
-        </a>
+      return item.path === "/" ? (
+        <Tooltip title={item.title}>
+          <a data-id={item.path} className="root">
+            <FolderOpen className="g-vertical" size={13} />
+          </a>
+        </Tooltip>
+      ) : (
+        <a data-id={item.path}>{item.title}</a>
       );
     }
   });

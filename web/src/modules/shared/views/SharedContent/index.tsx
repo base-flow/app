@@ -13,7 +13,7 @@ import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import Breadcrumb from "@/modules/entity/views/Breadcrumb";
 import EntitySelector from "@/modules/entity/views/EntitySelector";
-import { useEntityNavigate, useEvent, useTableChange, useTablePagination } from "@/utils/hooks";
+import { useEntityNavigate, useEntityTableChange, useEvent, useTablePagination } from "@/utils/hooks";
 import { debounce, showPath } from "@/utils/tools";
 import { SharedAPI } from "../../api";
 import styles from "./index.module.scss";
@@ -51,7 +51,7 @@ const Component: FC<SharedContentProps> = (props) => {
   });
 
   const { fileNavigate, directoryNavigate } = useEntityNavigate();
-  const { onTableChange, onDirSearch } = useTableChange(query, setQuery);
+  const { onTableChange, onDirSearch } = useEntityTableChange(entityListQuery, setQuery);
 
   const entityCreater = useMutation({
     mutationFn: SharedAPI.batchPutContentItem,
@@ -181,13 +181,13 @@ const Component: FC<SharedContentProps> = (props) => {
   }, [entityList]);
 
   const listTypeLinks = useMemo(() => {
-    const { dir, keyword } = query;
+    const { dir, keyword } = entityListQuery;
     const items: LinkItem[] = [
       {
         key: "all",
         to: ".",
         search: { dir, keyword, type: undefined },
-        className: !query.type ? "on" : undefined,
+        className: !entityListQuery.type ? "on" : undefined,
         children: (
           <>
             <FolderTree size={12} />
@@ -199,7 +199,7 @@ const Component: FC<SharedContentProps> = (props) => {
         key: "workflow",
         to: ".",
         search: { dir, keyword, type: "workflow" },
-        className: query.type === "workflow" ? "on" : undefined,
+        className: entityListQuery.type === "workflow" ? "on" : undefined,
         children: (
           <>
             <IconEntity size={12} type="workflow" />
@@ -211,7 +211,7 @@ const Component: FC<SharedContentProps> = (props) => {
         key: "node",
         to: ".",
         search: { dir, keyword, type: "node" },
-        className: query.type === "node" ? "on" : undefined,
+        className: entityListQuery.type === "node" ? "on" : undefined,
         children: (
           <>
             <IconEntity size={12} type="node" />
@@ -223,7 +223,7 @@ const Component: FC<SharedContentProps> = (props) => {
         key: "data",
         to: ".",
         search: { dir, keyword, type: "data" },
-        className: query.type === "data" ? "on" : undefined,
+        className: entityListQuery.type === "data" ? "on" : undefined,
         children: (
           <>
             <IconEntity size={12} type="data" />
@@ -233,7 +233,7 @@ const Component: FC<SharedContentProps> = (props) => {
       },
     ];
     return items;
-  }, [query]);
+  }, [entityListQuery]);
 
   useEffect(() => {
     setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
@@ -275,7 +275,7 @@ const Component: FC<SharedContentProps> = (props) => {
         <div className="hd">
           <Breadcrumb rootDir={shared.id} rootName={shared.name} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
           <div className="search">
-            <SearchInput value={query.keyword} placeholder="当前目录下搜索..." onChange={onDirSearch} />
+            <SearchInput value={entityListQuery.keyword} placeholder="当前目录下搜索..." onChange={onDirSearch} />
             <LinkTab links={listTypeLinks} />
           </div>
         </div>

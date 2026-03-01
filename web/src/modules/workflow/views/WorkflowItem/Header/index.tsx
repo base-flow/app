@@ -8,6 +8,7 @@ import type { FC } from "react";
 import { memo, useState } from "react";
 import Collect from "@/components/Collect";
 import IconEntity from "@/components/IconEntity";
+import IconRuntime from "@/components/IconRuntime";
 import WorkflowEdit from "@/modules/entity/views/WorkflowEdit";
 import { useEvent, useMyFavoriteIds } from "@/utils/hooks";
 import styles from "./index.module.scss";
@@ -87,7 +88,10 @@ const WorkflowItemHeader: FC<Props> = ({ item, graph }) => {
         <Button size="small" type="text" icon={<ArrowLeft size={14} strokeWidth={2.5} />} onClick={onBack}></Button>
         <IconEntity type={item.type} size={14} />
         <span className="title">{item.name}</span>
-        <span className="type">(Workflow)</span>
+        <span className="type">
+          (<span style={{ marginRight: "3px" }}>Workflow</span>
+          <IconRuntime showLabel className="kind" runtime={item.runtime} size={13} />)
+        </span>
         <Edit className="edit" size={13} onClick={() => setCurrentEdit(true)} />
         <Collect id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
         {favoriteLoading && <Spin size="small" />}

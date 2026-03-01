@@ -11,7 +11,7 @@ import type { LinkItem } from "@/components/LinkTab";
 import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
-import { useEvent, useMyFavoriteList, useTableChange, useTablePagination } from "@/utils/hooks";
+import { useEntityTableChange, useEvent, useMyFavoriteList, useTablePagination } from "@/utils/hooks";
 import { openFile, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
@@ -63,7 +63,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
     queryState[1]({ ...query, page: page === 1 ? undefined : page });
   });
 
-  const { onTableChange, onDirSearch } = useTableChange(entityListQuery, setQuery);
+  const { onTableChange, onDirSearch } = useEntityTableChange(entityListQuery, setQuery);
 
   const columns = useMemo<TableProps<_Entity.IEntity>["columns"]>(() => {
     return [

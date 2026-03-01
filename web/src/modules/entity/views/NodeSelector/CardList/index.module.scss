@@ -1,0 +1,27 @@
+:global {
+  :local(.NodeSelectorCardList) {
+    > .hd {
+      display: flex;
+      place-content: flex-start space-between;
+      align-items: center;
+      height: 32px;
+      padding-top: 15px;
+      padding-bottom: 12px;
+
+      > .space {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+    }
+
+    > .bd {
+      position: absolute;
+      right: 1px;
+      left: 5px;
+      height: 600px;
+      padding: 6px 22px 0 20px;
+      overflow: auto;
+    }
+  }
+}

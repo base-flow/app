@@ -3,7 +3,7 @@ declare namespace _App {
     favMax: number;
     sharedMax: number;
     sharedContentMax: number;
-    dirs: {
+    platformDirs: {
       workflow: { [key in Runtime]: string };
       node: { [key in Runtime]: string };
     };
@@ -30,7 +30,7 @@ declare namespace _App {
     redirect?: string;
   }
 
-  type SystemRole = "SuperAdmin" | "Admin" | "Member" | "Guest";
+  type SystemRole = "Owner" | "Admin" | "Member" | "Guest";
   type ProjectRole = "Owner" | "Admin" | "Developer" | "Tester" | "Member";
 
   type Runtime = "server" | "browser";

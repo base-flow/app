@@ -15,7 +15,7 @@ import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import SharedEdit from "@/modules/shared/views/SharedEdit";
-import { useEntityNavigate, useEvent, useMyFavoriteIds, useTableChange, useTablePagination } from "@/utils/hooks";
+import { useEntityNavigate, useEntityTableChange, useEvent, useMyFavoriteIds, useTablePagination } from "@/utils/hooks";
 import { debounce, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
@@ -67,7 +67,7 @@ const Component: FC<EntityListProps> = (props) => {
   });
 
   const { fileNavigate } = useEntityNavigate();
-  const { onTableChange, onDirSearch } = useTableChange(entityListQuery, setQuery);
+  const { onTableChange, onDirSearch } = useEntityTableChange(entityListQuery, setQuery);
   const closeCurrentEdit = useEvent(() => setCurrentEdit(undefined));
   const closeBatchEdit = useEvent(() => setBatchEdit(undefined));
   const closeShared = useEvent(() => setShared(undefined));

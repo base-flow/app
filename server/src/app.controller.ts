@@ -11,7 +11,7 @@ export class AppController {
       favMax: 100,
       sharedMax: 50,
       sharedContentMax: 10,
-      dirs: {
+      platformDirs: {
         workflow: {
           server: EntityList.find((item) => item.name === "workflow-server")!.id,
           browser: EntityList.find((item) => item.name === "workflow-browser")!.id,

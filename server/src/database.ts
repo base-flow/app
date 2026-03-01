@@ -101,11 +101,6 @@ export const ProjectsMap: { [id: string]: _Project.IProject } = Projects.reduce(
   return obj;
 }, {} as any);
 
-UsersMap["1"].myProjects = {
-  "1": { projectName: ProjectsMap[1].name, projectDir: ProjectsMap[1].dir, projectRole: "Owner" },
-  // "2": { projectName: ProjectsMap[2].name, projectDir: ProjectsMap[2].dir, projectRole: "Tester" },
-};
-
 export const EntityMap: { [id: string]: _Entity.IEntity } = {};
 
 function createEntities(
@@ -342,3 +337,8 @@ export const SharedMap: { [id: string]: _Shared.IShared & { content: _Entity.IEn
 }, {} as any);
 
 export const GotSharedList: _Shared.IGotShared[] = SharedList.map((item) => ({ ...item, sharedId: item.id, id: `${uid++}` }));
+
+UsersMap["1"].myProjects = {
+  "1": { projectName: ProjectsMap[1].name, projectDir: ProjectsMap[1].dir, projectRole: "Owner" },
+  "2": { projectName: ProjectsMap[2].name, projectDir: ProjectsMap[2].dir, projectRole: "Tester" },
+};

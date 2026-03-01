@@ -18,7 +18,6 @@ import { debounce, showPath, sortList } from "@/utils/tools";
 import styles from "./index.module.scss";
 
 const Component: FC = () => {
-  const navigate = useNavigate();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [tableScroll, setTableScroll] = useState({ y: 0 });
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -110,7 +109,7 @@ const Component: FC = () => {
             <a onClick={() => (row.type === "directory" ? directoryNavigate(row, false) : fileNavigate(row))}>{name}</a>
             {row.path ? (
               <Tooltip placement="bottom" title={showPath(row.path)}>
-                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => directoryNavigate(row, true)} />
+                <FolderSymlink className="dir" type="directory" size={13} onClick={() => directoryNavigate(row, true)} />
               </Tooltip>
             ) : null}
             <Collect id={row.id} value={true} onChange={onFavoriteChange} />
@@ -121,15 +120,13 @@ const Component: FC = () => {
         title: "文件类型",
         dataIndex: "type",
         key: "type",
-        width: 100,
-        align: "center",
+        width: 120,
       },
       {
         title: "运行环境",
         dataIndex: "runtime",
         key: "runtime",
         width: 120,
-        align: "center",
         sorter: true,
         sortOrder: (query.sorterField === "runtime" && query.sorterOrder) || null,
       },
@@ -215,7 +212,7 @@ const Component: FC = () => {
               size="small"
               color="danger"
               variant="filled"
-              icon={<StarOff size={13} strokeWidth={2.5} className="anticon" />}
+              icon={<StarOff size={13} strokeWidth={2.5} />}
               onClick={() => onFavoriteRemove(selectedRows)}
             >
               批量取消

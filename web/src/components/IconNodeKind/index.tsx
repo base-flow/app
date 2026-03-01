@@ -24,7 +24,6 @@ const Component: FC<Props> = ({ kind, className, size = 13, showLabel, onClick }
       ) : (
         <LayoutList size={size} className="g-vertical" />
       )}
-
       {showLabel && <span style={{ marginLeft: "3px", fontSize: size }}>{Lang.nodeKind[kind]}</span>}
     </span>
   );
