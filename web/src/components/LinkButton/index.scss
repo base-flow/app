@@ -1,0 +1,7 @@
+.comp-LinkButton {
+  cursor: pointer;
+
+  &:hover {
+    color: var(--bf-primary);
+  }
+}

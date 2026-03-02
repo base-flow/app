@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Request } from "@nestjs/common";
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Request } from "@nestjs/common";
 import { EntityMap } from "@/database";
 import { sleep } from "@/utils";
 
@@ -7,47 +7,44 @@ export class EntityController {
   @Get()
   async getList(@Request() { query }: { query: _Entity.Query }): Promise<_Entity.QueryResult> {
     await sleep(1000);
-    query.page = Number(query.page) || 1;
     const folder = EntityMap[query.dir || ""] as _Entity.IDirectory;
     if (!folder) {
       throw new NotFoundException();
     }
-    const { spaceType, spaceId } = folder;
-    const path = folder.path;
-    let showPath = false;
-    let list = folder.children!;
-    if (query.type === "directory") {
-      showPath = true;
-      list = list.filter((item) => item.type === "directory");
-    } else if (query.type) {
-      showPath = true;
+    query.page = Number(query.page) || 1;
+    const { dir, type, runtime, kind, keyword, scope, page } = query;
+    const { spaceType, spaceId, path } = folder;
+    let list: _Entity.IEntity[];
+    if (scope) {
       list = Object.keys(EntityMap)
         .filter((id) => {
           const item = EntityMap[id];
           return (
             item.parentId &&
-            item.type === query.type &&
-            item.path.includes(`/${query.dir} `) &&
-            (query.keyword ? item.name.includes(query.keyword) : true)
+            item.path.includes(`/${dir} `) &&
+            item.type !== "directory" && //不展示目录
+            (type ? item.type === type : true) &&
+            (runtime ? item.runtime === runtime : true) &&
+            (kind ? item.kind === kind : true) &&
+            (keyword ? item.name.includes(keyword) : true)
           );
         })
         .map((id) => EntityMap[id]);
-    } else if (query.keyword) {
-      showPath = true;
-      list = Object.keys(EntityMap)
-        .filter((id) => {
-          const item = EntityMap[id];
-          return item.parentId && item.path.includes(`/${query.dir} `) && (query.keyword ? item.name.includes(query.keyword) : true);
-        })
-        .map((id) => EntityMap[id]);
+    } else {
+      list = folder.children!.filter((item) => {
+        return (
+          (item.type === "directory" ||
+            ((type ? item.type === type : true) && (runtime ? item.runtime === runtime : true) && (kind ? item.kind === kind : true))) &&
+          (keyword ? item.name.includes(keyword) : true)
+        );
+      });
     }
-
-    const { page = 1 } = query;
+    //type === "directory"用于复制文件时搜索目录树，其path仅用于确认提示
     const pageSize = 20;
     return {
       query,
       list: list.slice((page - 1) * pageSize, page * pageSize).map((item) => {
-        return { ...item, children: undefined, path: showPath ? item.path : "" };
+        return { ...item, children: undefined, path: scope || type === "directory" ? item.path : "" };
       }),
       summary: { total: list.length, page, pageSize, path }, //spaceType, spaceId
     };

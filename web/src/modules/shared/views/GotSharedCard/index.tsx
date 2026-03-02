@@ -61,13 +61,13 @@ const Component: FC<GotSharedCardProps> = ({ item, onDelete, onItemClick }) => {
         {avatar}
         <h4 className="title">{item.name}</h4>
         <div className="info">
-          <Clock size="10" className="anticon" style={{ marginRight: "2px" }} />
+          <Clock size="10" className="g-vertical" style={{ marginRight: "2px" }} />
           2026-03-23 22:12:34
         </div>
       </div>
       <div className="footer">
         <div className="user">
-          <UserRound size={12} strokeWidth={2.5} className="anticon" style={{ marginRight: "2px" }} />
+          <UserRound size={12} strokeWidth={2.5} className="g-vertical" style={{ marginRight: "2px" }} />
           {item.spaceName}
         </div>
         <div className="expires">24小时后过期</div>

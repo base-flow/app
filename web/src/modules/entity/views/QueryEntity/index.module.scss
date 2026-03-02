@@ -1,0 +1,26 @@
+:global {
+  :local(.QueryEntity) {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    > .split {
+      width: 0;
+      height: 0.9em;
+      overflow: hidden;
+      border-left: 1px solid var(--bf-tx-placeholder);
+    }
+
+    > .item {
+      cursor: pointer;
+
+      &.on {
+        color: var(--bf-primary);
+      }
+
+      &:hover {
+        color: var(--bf-primary);
+      }
+    }
+  }
+}

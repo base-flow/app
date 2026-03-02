@@ -141,7 +141,7 @@ a {
 
     > .space {
       display: flex;
-      gap: 20px;
+      gap: 15px;
       align-items: center;
     }
   }
@@ -220,7 +220,6 @@ a {
 
   > .comp-Collect {
     margin-left: 5px;
-    font-size: 13px;
     vertical-align: middle;
   }
 }
@@ -258,10 +257,7 @@ a {
 //   }
 // }
 
-.g-icon {
-  position: relative;
-  display: inline-block;
-  font-size: 0;
+.g-icon-wrap {
   line-height: 0;
 
   > svg {
@@ -271,10 +267,6 @@ a {
 
 .g-vertical {
   vertical-align: -0.14em;
-
-  > svg {
-    pointer-events: none;
-  }
 }
 
 .g-block {

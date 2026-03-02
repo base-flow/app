@@ -1,14 +1,13 @@
 :global {
   :local(.SharedContent) {
     > .hd {
-      flex-wrap: wrap;
       height: 42px;
       padding: 25px 27px 0;
       overflow: hidden;
 
       > .search {
         display: flex;
-        gap: 13px;
+        gap: 15px;
         align-items: center;
       }
 

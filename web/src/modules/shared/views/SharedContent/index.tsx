@@ -3,18 +3,19 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { TablePaginationConfig, TableProps } from "antd";
 import { Button, Modal, Result, Skeleton, Space, Table, Tooltip } from "antd";
-import { FolderSymlink, FolderTree, Link, ListX, Plus, UserRound } from "lucide-react";
+import { FolderSymlink, Link, ListX, Plus, UserRound } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
+import Collect from "@/components/Collect";
 import IconEntity from "@/components/IconEntity";
-import type { LinkItem } from "@/components/LinkTab";
-import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import Breadcrumb from "@/modules/entity/views/Breadcrumb";
 import EntitySelector from "@/modules/entity/views/EntitySelector";
-import { useEntityNavigate, useEntityTableChange, useEvent, useTablePagination } from "@/utils/hooks";
-import { debounce, showPath } from "@/utils/tools";
+import QueryEntity from "@/modules/entity/views/QueryEntity";
+import QueryScope from "@/modules/entity/views/QueryScope";
+import { useEntityNavigate, useEntityTableChange, useEvent, useMyFavoriteIds, useTablePagination } from "@/utils/hooks";
+import { debounce, normalizeEntityQuery, showPath } from "@/utils/tools";
 import { SharedAPI } from "../../api";
 import styles from "./index.module.scss";
 
@@ -33,6 +34,7 @@ const Component: FC<SharedContentProps> = (props) => {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { favoriteMap, favoriteLoading, onFavoriteChange } = useMyFavoriteIds();
   const queryState = useState(props.query);
   const query = queryState[0];
   const entityQuery = useQuery(SharedAPI.queryContentList(shared.id, query));
@@ -45,13 +47,13 @@ const Component: FC<SharedContentProps> = (props) => {
     queryState[1](props.query);
   }, [props.query, queryState[1]]);
 
-  const setQuery = useEvent((query: _Entity.Query) => {
-    const { dir, page } = query;
-    navigate({ to: ".", search: { ...query, dir: dir === shared.id ? undefined : dir, page: page === 1 ? undefined : page } });
+  const setQuery = useEvent((newQuery: _Entity.Query) => {
+    navigate({ to: ".", search: normalizeEntityQuery(newQuery, {}, shared.id) });
   });
 
+  const { onTableChange, onKeywordChange, onTypeChange, onScopeChange } = useEntityTableChange(entityListQuery, setQuery);
+
   const { fileNavigate, directoryNavigate } = useEntityNavigate();
-  const { onTableChange, onDirSearch } = useEntityTableChange(entityListQuery, setQuery);
 
   const entityCreater = useMutation({
     mutationFn: SharedAPI.batchPutContentItem,
@@ -85,7 +87,6 @@ const Component: FC<SharedContentProps> = (props) => {
     }
   });
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   const columns = useMemo<TableProps<_Entity.IEntity>["columns"]>(() => {
     return [
       {
@@ -95,31 +96,33 @@ const Component: FC<SharedContentProps> = (props) => {
         render: (name, row) => (
           <div className="g-entity-cell">
             <IconEntity className="icon" type={row.type} />
-            <a
-              onClick={() => {
-                row.type === "directory" ? setQuery({ dir: row.id }) : fileNavigate(row);
-              }}
-            >
-              {name}
-            </a>
+            <a onClick={() => (row.type === "directory" ? setQuery({ dir: row.id }) : fileNavigate(row))}>{name}</a>
             {row.path ? (
               <Tooltip placement="bottom" title={showPath(row.path)}>
                 {entityListQuery.dir ? (
-                  <FolderSymlink className="dir anticon" size={13} onClick={() => setQuery({ dir: row.parentId })} />
+                  <FolderSymlink className="dir" size={13} onClick={() => setQuery({ dir: row.parentId })} />
                 ) : (
-                  <Link className="dir anticon" size={13} onClick={() => directoryNavigate(row, true)} />
+                  <Link className="dir" size={13} onClick={() => directoryNavigate(row, true)} />
                 )}
               </Tooltip>
             ) : null}
+            <Collect id={row.id} value={favoriteMap[row.id]} onChange={onFavoriteChange} />
           </div>
         ),
+      },
+      {
+        title: "文件类型",
+        dataIndex: "type",
+        key: "type",
+        sorter: true,
+        sortOrder: (entityListQuery.sorterField === "type" && entityListQuery.sorterOrder) || null,
+        width: 140,
       },
       {
         title: "运行环境",
         dataIndex: "runtime",
         key: "runtime",
-        width: 120,
-        align: "center",
+        width: 140,
         sorter: true,
         sortOrder: (entityListQuery.sorterField === "runtime" && entityListQuery.sorterOrder) || null,
       },
@@ -127,8 +130,7 @@ const Component: FC<SharedContentProps> = (props) => {
         title: "创建时间",
         dataIndex: "createAt",
         key: "createAt",
-        width: 120,
-        align: "center",
+        width: 140,
         sorter: true,
         sortOrder: (entityListQuery.sorterField === "createAt" && entityListQuery.sorterOrder) || null,
       },
@@ -136,8 +138,7 @@ const Component: FC<SharedContentProps> = (props) => {
         title: "更新时间",
         dataIndex: "updateAt",
         key: "updateAt",
-        width: 120,
-        align: "center",
+        width: 140,
         sorter: true,
         sortOrder: (entityListQuery.sorterField === "updateAt" && entityListQuery.sorterOrder) || null,
       },
@@ -158,7 +159,7 @@ const Component: FC<SharedContentProps> = (props) => {
         },
       },
     ];
-  }, [entityListQuery]);
+  }, [entityListQuery, favoriteMap, onFavoriteChange, setQuery, fileNavigate, directoryNavigate, isMine, onRemove]);
 
   const pagination: TablePaginationConfig = useTablePagination(entityListSummary);
 
@@ -179,61 +180,6 @@ const Component: FC<SharedContentProps> = (props) => {
       {} as { [id: string]: boolean },
     );
   }, [entityList]);
-
-  const listTypeLinks = useMemo(() => {
-    const { dir, keyword } = entityListQuery;
-    const items: LinkItem[] = [
-      {
-        key: "all",
-        to: ".",
-        search: { dir, keyword, type: undefined },
-        className: !entityListQuery.type ? "on" : undefined,
-        children: (
-          <>
-            <FolderTree size={12} />
-            <span>目录</span>
-          </>
-        ),
-      },
-      {
-        key: "workflow",
-        to: ".",
-        search: { dir, keyword, type: "workflow" },
-        className: entityListQuery.type === "workflow" ? "on" : undefined,
-        children: (
-          <>
-            <IconEntity size={12} type="workflow" />
-            <span>流程</span>
-          </>
-        ),
-      },
-      {
-        key: "node",
-        to: ".",
-        search: { dir, keyword, type: "node" },
-        className: entityListQuery.type === "node" ? "on" : undefined,
-        children: (
-          <>
-            <IconEntity size={12} type="node" />
-            <span>节点</span>
-          </>
-        ),
-      },
-      {
-        key: "data",
-        to: ".",
-        search: { dir, keyword, type: "data" },
-        className: entityListQuery.type === "data" ? "on" : undefined,
-        children: (
-          <>
-            <IconEntity size={12} type="data" />
-            <span>数据</span>
-          </>
-        ),
-      },
-    ];
-    return items;
-  }, [entityListQuery]);
 
   useEffect(() => {
     setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
@@ -270,13 +216,14 @@ const Component: FC<SharedContentProps> = (props) => {
 
   return (
     <div className={`${styles.SharedContent} g-page`}>
-      <LoadingMask show={entityQuery.isFetching || entityDeleter.isPending || entityCreater.isPending} />
+      <LoadingMask show={entityQuery.isFetching || entityDeleter.isPending || entityCreater.isPending || favoriteLoading} />
       {entityListQuery.dir ? (
         <div className="hd">
           <Breadcrumb rootDir={shared.id} rootName={shared.name} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
           <div className="search">
-            <SearchInput value={entityListQuery.keyword} placeholder="当前目录下搜索..." onChange={onDirSearch} />
-            <LinkTab links={listTypeLinks} />
+            <SearchInput value={entityListQuery.keyword} placeholder="当前目录下搜索..." onChange={onKeywordChange} />
+            <QueryScope value={entityListQuery.scope} onChange={onScopeChange} />
+            <QueryEntity size={12} value={entityListQuery.type} onChange={onTypeChange} />
           </div>
         </div>
       ) : (
@@ -295,7 +242,7 @@ const Component: FC<SharedContentProps> = (props) => {
               ) : (
                 <div className="user">
                   <span>
-                    <UserRound size={12} className="anticon" strokeWidth={2.5} style={{ marginRight: "1px" }} />
+                    <UserRound size={12} className="g-vertical" strokeWidth={2.5} style={{ marginRight: "1px" }} />
                     {shared.createBy}
                   </span>
                 </div>
@@ -306,7 +253,7 @@ const Component: FC<SharedContentProps> = (props) => {
                 size="small"
                 color="danger"
                 variant="filled"
-                icon={<ListX size={13} strokeWidth={2.5} className="anticon" />}
+                icon={<ListX size={13} strokeWidth={2.5} />}
                 onClick={() => onRemove(selectedRows)}
               >
                 批量移除
@@ -342,7 +289,7 @@ const Component: FC<SharedContentProps> = (props) => {
         />
       </div>
       {showEntitySelector && (
-        <Modal open width={1200} onCancel={closeEntitySelector} footer={null} closable={false}>
+        <Modal open width={1250} onCancel={closeEntitySelector} footer={null} closable={false}>
           <EntitySelector
             query={{ dir: shared.spaceDir }}
             spaceName={shared.spaceType === "personal" ? "我的文档" : shared.spaceName}

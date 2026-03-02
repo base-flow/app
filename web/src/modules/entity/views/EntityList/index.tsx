@@ -4,25 +4,25 @@ import { useNavigate } from "@tanstack/react-router";
 import type { MenuProps, TablePaginationConfig, TableProps } from "antd";
 import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
 import dayjs from "dayjs";
-import { ChevronDown, Copy, FolderPlus, FolderSymlink, FolderTree, Trash2 } from "lucide-react";
+import { ChevronDown, Copy, FolderPlus, FolderSymlink, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Collect from "@/components/Collect";
 import FileTools, { type FileToolsAction } from "@/components/FileTools";
 import IconEntity from "@/components/IconEntity";
-import type { LinkItem } from "@/components/LinkTab";
-import LinkTab from "@/components/LinkTab";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import SharedEdit from "@/modules/shared/views/SharedEdit";
 import { useEntityNavigate, useEntityTableChange, useEvent, useMyFavoriteIds, useTablePagination } from "@/utils/hooks";
-import { debounce, showPath } from "@/utils/tools";
+import { debounce, normalizeEntityQuery, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
 import DataEdit from "../DataEdit";
 import DirectoryEdit from "../DirectoryEdit";
 import EntityCopy from "../EntityCopy";
 import NodeEdit from "../NodeEdit";
+import QueryEntity from "../QueryEntity";
+import QueryScope from "../QueryScope";
 import WorkflowEdit from "../WorkflowEdit";
 import styles from "./index.module.scss";
 
@@ -61,13 +61,13 @@ const Component: FC<EntityListProps> = (props) => {
     queryState[1](props.query);
   }, [props.query, queryState[1]]);
 
-  const setQuery = useEvent((query: _Entity.Query) => {
-    const { dir, page } = query;
-    navigate({ to: ".", search: { ...query, dir: dir === props.rootDir ? undefined : dir, page: page === 1 ? undefined : page } });
+  const setQuery = useEvent((newQuery: _Entity.Query) => {
+    navigate({ to: ".", search: normalizeEntityQuery(newQuery, {}, props.rootDir) });
   });
 
+  const { onTableChange, onKeywordChange, onTypeChange, onScopeChange } = useEntityTableChange(entityListQuery, setQuery);
+
   const { fileNavigate } = useEntityNavigate();
-  const { onTableChange, onDirSearch } = useEntityTableChange(entityListQuery, setQuery);
   const closeCurrentEdit = useEvent(() => setCurrentEdit(undefined));
   const closeBatchEdit = useEvent(() => setBatchEdit(undefined));
   const closeShared = useEvent(() => setShared(undefined));
@@ -278,61 +278,6 @@ const Component: FC<EntityListProps> = (props) => {
     [selectedRows],
   );
 
-  const listTypeLinks = useMemo(() => {
-    const { dir, keyword } = entityListQuery;
-    const items: LinkItem[] = [
-      {
-        key: "all",
-        to: ".",
-        search: { dir, keyword, type: undefined },
-        className: !entityListQuery.type ? "on" : undefined,
-        children: (
-          <>
-            <FolderTree size={12} />
-            <span>目录</span>
-          </>
-        ),
-      },
-      {
-        key: "workflow",
-        to: ".",
-        search: { dir, keyword, type: "workflow" },
-        className: entityListQuery.type === "workflow" ? "on" : undefined,
-        children: (
-          <>
-            <IconEntity size={12} type="workflow" />
-            <span>流程</span>
-          </>
-        ),
-      },
-      {
-        key: "node",
-        to: ".",
-        search: { dir, keyword, type: "node" },
-        className: entityListQuery.type === "node" ? "on" : undefined,
-        children: (
-          <>
-            <IconEntity size={12} type="node" />
-            <span>节点</span>
-          </>
-        ),
-      },
-      {
-        key: "data",
-        to: ".",
-        search: { dir, keyword, type: "data" },
-        className: entityListQuery.type === "data" ? "on" : undefined,
-        children: (
-          <>
-            <IconEntity size={12} type="data" />
-            <span>数据</span>
-          </>
-        ),
-      },
-    ];
-    return items;
-  }, [entityListQuery]);
-
   useEffect(() => {
     setTableScroll({ y: (scrollerRef.current?.offsetHeight || 0) - 130 });
     const onResize = debounce(() => {
@@ -372,11 +317,14 @@ const Component: FC<EntityListProps> = (props) => {
     <div className={`${styles.EntityList} g-page`}>
       <LoadingMask show={entityQuery.isFetching || entityDeleter.isPending || favoriteLoading} />
       <div className="hd">
-        <div className="row">
+        <div className={`${styles.EntityList}__search`}>
           <Breadcrumb rootDir={rootDir} rootName={rootName} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
-          <SearchInput value={entityListQuery.keyword} onChange={onDirSearch} placeholder="当前目录下搜索..." />
+          <div className="space">
+            <SearchInput value={entityListQuery.keyword} onChange={onKeywordChange} placeholder="当前目录下搜索..." />
+            <QueryScope value={entityListQuery.scope} onChange={onScopeChange} />
+          </div>
         </div>
-        <div className="row">
+        <div className={`${styles.EntityList}__filter`}>
           {!isMine ? (
             <div style={{ height: "32px" }} />
           ) : !selectedRows.length ? (
@@ -392,12 +340,12 @@ const Component: FC<EntityListProps> = (props) => {
             </Space>
           ) : (
             <Dropdown menu={batchMenu}>
-              <Button loading={entityDeleter.isPending} icon={<ChevronDown size={13} />} type="link" size="small" iconPlacement="end">
+              <Button loading={entityDeleter.isPending} icon={<ChevronDown size={13} />} iconPlacement="end">
                 批量操作
               </Button>
             </Dropdown>
           )}
-          <LinkTab links={listTypeLinks} />
+          <QueryEntity size={12} value={entityListQuery.type} onChange={onTypeChange} />
         </div>
       </div>
       <div className="bd" ref={scrollerRef}>

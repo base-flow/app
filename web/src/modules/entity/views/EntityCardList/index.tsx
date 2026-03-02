@@ -2,7 +2,6 @@ import { BaseWidgets } from "@baseflow/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Pagination, Result, Segmented, Select } from "antd";
-import { FolderTree, List } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo, useRef, useState } from "react";
 import type { SortField } from "@/components/FieldSorter";
@@ -12,19 +11,14 @@ import SearchInput from "@/components/SearchInput";
 import SkeletonCardList from "@/components/SkeletonCardList";
 import { NodeKindOptions, StoreOptions } from "@/const";
 import { ShowTotal, useEntityListChange, useEntityNavigate, useEvent, useMyFavoriteIds } from "@/utils/hooks";
+import { normalizeEntityQuery } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
 import EntityCard from "../EntityCard";
+import QueryScope from "../QueryScope";
 import styles from "./index.module.scss";
 
-type ListType = "dir" | "file";
-
 const SorterOptions: SortField[] = ["updateAt", "createAt", "likes"];
-
-const ListTypeOptions: { label: any; value: ListType; tooltip: string }[] = [
-  { label: <FolderTree className="g-vertical" size={14} />, value: "dir", tooltip: "目录层级" },
-  { label: <List className="g-vertical" size={14} />, value: "file", tooltip: "文件平铺" },
-];
 
 interface EntityCardListProps {
   rootName: string;
@@ -42,8 +36,6 @@ const Component: FC<EntityCardListProps> = (props) => {
   const entityQuery = useQuery(EntityAPI.queryList(query));
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  //const dir = query.dir || "";
-  const listType: ListType = query.type ? "file" : "dir";
   const entityList = entityQuery.data?.list;
   const entityListQuery = entityQuery.data?.query || query;
   const entityListSummary = entityQuery.data?.summary;
@@ -53,17 +45,16 @@ const Component: FC<EntityCardListProps> = (props) => {
     queryState[1](props.query);
   }, [props.query, queryState[1]]);
 
-  const setQuery = useEvent((query: _Entity.Query) => {
-    const { dir, page } = query;
+  const setQuery = useEvent((newQuery: _Entity.Query) => {
     navigate({
       to: ".",
-      search: { ...query, dir: dir === props.rootDir ? undefined : dir, page: page === 1 ? undefined : page },
+      search: normalizeEntityQuery(newQuery, {}, props.rootDir),
     });
   });
 
-  const { fileNavigate } = useEntityNavigate();
-  const { onPageChange, onSort, onKeywordSearch, onListTypeChange } = useEntityListChange(entityListQuery, setQuery, props.entity);
+  const { onPageChange, onSorterChange, onKeywordChange, onKindChange, onScopeChange } = useEntityListChange(entityListQuery, setQuery);
 
+  const { fileNavigate } = useEntityNavigate();
   const onItemClick = useEvent((item: _Entity.IEntity) => {
     if (item.type === "directory") {
       setQuery({ dir: item.id });
@@ -146,12 +137,12 @@ const Component: FC<EntityCardListProps> = (props) => {
           <Breadcrumb rootDir={rootDir} rootName={rootName} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
         </div>
         <div className="space">
-          <SearchInput variant="filled" onChange={onKeywordSearch} value={entityListQuery.keyword} placeholder="当前目录下搜索..." />
-          <Select value={entityListQuery.kind || ""} options={NodeKindOptions} />
-          <Segmented value={listType} options={ListTypeOptions} onChange={onListTypeChange} />
+          <SearchInput variant="filled" width="250px" onChange={onKeywordChange} value={entityListQuery.keyword} placeholder="当前目录下搜索..." />
+          <Select popupMatchSelectWidth={false} value={entityListQuery.kind || ""} options={NodeKindOptions} onChange={onKindChange} />
+          <QueryScope value={entityListQuery.scope} onChange={onScopeChange} />
           <div>
             <span style={{ marginRight: 2 }}>排序：</span>
-            <FieldSorter options={SorterOptions} value={entityListQuery} onChange={onSort} />
+            <FieldSorter options={SorterOptions} value={entityListQuery} onChange={onSorterChange} />
           </div>
         </div>
       </div>

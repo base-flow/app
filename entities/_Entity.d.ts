@@ -9,6 +9,8 @@ declare namespace _Entity {
     icon?: string;
     homepage?: string;
     likes?: number;
+    runtime?: _App.Runtime;
+    kind?: string;
     parentId: string;
     path: string;
     spaceId: string;
@@ -25,9 +27,8 @@ declare namespace _Entity {
 
   interface Query extends _Resource.IQuery {
     dir?: string;
-    //当type为directory时：特殊处理，忽略其它条件，列出当前目录下的目录
-    //当keyword不存在时：有type类型：列表子孙；无type类型：仅列表当前目录
-    //当keyword存在时：有type类型：搜索子孙后按type过滤；无type类型：搜索子孙后全部列表
+    scope?: "descendants";
+    //scope为descendants时，不展示目录，否则展示目录
     type?: _App.EntityType;
     kind?: string;
     runtime?: _App.Runtime;

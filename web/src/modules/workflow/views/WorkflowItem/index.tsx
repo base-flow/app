@@ -81,7 +81,7 @@ const WorkflowItem: FC<Props> = ({ item, graphData }) => {
         <Flow options={graphOptions} initialData={initGraphData} graphHooks={graphHooks} onInit={onInit} onShowCreater={setShowNodeCreater} />
       </div>
       {showNodeCreater && (
-        <Modal open={true} width={1200} title={null} footer={null} onCancel={closeNodeCreater}>
+        <Modal open={true} width={1250} title={null} footer={null} onCancel={closeNodeCreater}>
           <NodeSelector kind="executor" runtime={item.runtime} />
         </Modal>
       )}

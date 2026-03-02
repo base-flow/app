@@ -77,6 +77,12 @@ const Component: FC<NodeSelectorProps> = ({ kind, runtime }) => {
       });
       setMyProjectMenu({ ...myProjectOptions, selectedKeys: [sub] });
     } else if (cate === "favorite") {
+      setCateData({
+        cate,
+        sub,
+        rootDir: auth.dir,
+        rootName: "我的收藏",
+      });
     }
   });
 

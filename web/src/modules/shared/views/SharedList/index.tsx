@@ -117,7 +117,7 @@ const Component: FC<{ spaceName: string; query: _Shared.Query }> = (props) => {
           return (
             <div className="g-actions-cell">
               <a onClick={() => copyUrl(row.id)}>
-                <Link size={12} className="anticon" style={{ marginRight: "2px" }} />
+                <Link size={12} className="g-vertical" style={{ marginRight: "2px" }} />
                 复制链接
               </a>
               <a onClick={() => setCurrentEdit(row)}>设置</a>

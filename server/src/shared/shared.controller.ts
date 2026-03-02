@@ -95,8 +95,8 @@ export class SharedController {
   async getContent(
     @Request() { user, params, query }: { user: _App.AuthUser; params: { id: string }; query: _Entity.Query },
   ): Promise<_Entity.QueryResult> {
-    await sleep(1000);
-    query.page = Number(query.page) || 1;
+    await sleep(1001);
+
     const shared = SharedMap[params.id];
     if (!shared) {
       throw new NotFoundException();
@@ -120,39 +120,43 @@ export class SharedController {
         .sort((a, b) => b.length - a.length)
         .map(escapeRegExp);
       const pathReg = new RegExp(`^(?:${pathList.join("|")})`);
-      let showPath = false;
-      let list = folder.children!;
-      if (query.type) {
-        showPath = true;
+
+      query.page = Number(query.page) || 1;
+      const { dir, type, runtime, kind, keyword, scope, page } = query;
+      let list: _Entity.IEntity[];
+
+      if (scope) {
         list = Object.keys(EntityMap)
           .filter((id) => {
             const item = EntityMap[id];
             return (
               item.parentId &&
-              item.type === query.type &&
-              item.path.includes(`/${query.dir} `) &&
-              (query.keyword ? item.name.includes(query.keyword) : true)
+              item.path.includes(`/${dir} `) &&
+              item.type !== "directory" && //不展示目录
+              (type ? item.type === type : true) &&
+              (runtime ? item.runtime === runtime : true) &&
+              (kind ? item.kind === kind : true) &&
+              (keyword ? item.name.includes(keyword) : true)
             );
           })
           .map((id) => EntityMap[id]);
-      } else if (query.keyword) {
-        showPath = true;
-        list = Object.keys(EntityMap)
-          .filter((id) => {
-            const item = EntityMap[id];
-            return item.parentId && item.path.includes(`/${query.dir} `) && (query.keyword ? item.name.includes(query.keyword) : true);
-          })
-          .map((id) => EntityMap[id]);
+      } else {
+        list = folder.children!.filter((item) => {
+          return (
+            (item.type === "directory" ||
+              ((type ? item.type === type : true) && (runtime ? item.runtime === runtime : true) && (kind ? item.kind === kind : true))) &&
+            (keyword ? item.name.includes(keyword) : true)
+          );
+        });
       }
 
-      const { page = 1 } = query;
       const pageSize = 20;
       return {
         query,
         list: list.slice((page - 1) * pageSize, page * pageSize).map((item) => {
-          return { ...item, children: undefined, path: showPath ? `/${shared.id} ${shared.name}/${item.path.replace(pathReg, "")}` : "" };
+          return { ...item, children: undefined, path: scope ? `/${shared.id} ${shared.name}/${item.path.replace(pathReg, "")}` : "" };
         }),
-        summary: { total: list.length, page, pageSize, path: `/${shared.id} ${shared.name}/${folder.path.replace(pathReg, "")}` }, //spaceType, spaceId
+        summary: { total: list.length, page, pageSize, path: `/${shared.id} ${shared.name}/${folder.path.replace(pathReg, "")}` },
       };
     }
   }

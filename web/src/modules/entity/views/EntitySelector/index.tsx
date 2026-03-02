@@ -2,19 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import type { TablePaginationConfig, TableProps } from "antd";
 import { Button, Result, Skeleton, Table, Tooltip } from "antd";
 import classnames from "classnames";
-import { ArrowLeft, FolderSymlink, FolderTree, Star } from "lucide-react";
+import { ArrowLeft, FolderSymlink, Star } from "lucide-react";
 import type { FC } from "react";
 import { memo, useMemo, useState } from "react";
 import Collect from "@/components/Collect";
 import IconEntity from "@/components/IconEntity";
-import type { LinkItem } from "@/components/LinkTab";
-import LinkTab from "@/components/LinkTab";
+import LinkButton from "@/components/LinkButton";
 import LoadingMask from "@/components/LoadingMask";
 import SearchInput from "@/components/SearchInput";
 import { useEntityTableChange, useEvent, useMyFavoriteList, useTablePagination } from "@/utils/hooks";
-import { openFile, showPath } from "@/utils/tools";
+import { normalizeEntityQuery, openFile, showPath } from "@/utils/tools";
 import { EntityAPI } from "../../api";
 import Breadcrumb from "../Breadcrumb";
+import QueryEntity from "../QueryEntity";
+import QueryScope from "../QueryScope";
 import styles from "./index.module.scss";
 
 interface EntitySelectorProps {
@@ -56,14 +57,13 @@ const Component: FC<EntitySelectorProps> = (props) => {
   const entityListQuery = entityQuery.data?.query || query;
   const entityListSummary = entityQuery.data?.summary;
 
-  const setQuery = useEvent((query: _Entity.Query) => {
+  const setQuery = useEvent((newQuery: _Entity.Query) => {
     setSelectedRows(undefined);
     setShowFavs(false);
-    const { page } = query;
-    queryState[1]({ ...query, page: page === 1 ? undefined : page });
+    queryState[1](normalizeEntityQuery(newQuery, {}));
   });
 
-  const { onTableChange, onDirSearch } = useEntityTableChange(entityListQuery, setQuery);
+  const { onTableChange, onKeywordChange, onTypeChange, onScopeChange } = useEntityTableChange(entityListQuery, setQuery);
 
   const columns = useMemo<TableProps<_Entity.IEntity>["columns"]>(() => {
     return [
@@ -74,10 +74,10 @@ const Component: FC<EntitySelectorProps> = (props) => {
         render: (name, row) => (
           <div className="g-entity-cell">
             <IconEntity className="icon" type={row.type} />
-            {row.type === "directory" ? <a onClick={() => setQuery({ dir: row.id })}>{name}</a> : <a onClick={() => openFile(row)}>{name}</a>}
+            <a onClick={() => (row.type === "directory" ? setQuery({ dir: row.id }) : openFile(row))}>{name}</a>
             {row.path ? (
               <Tooltip placement="bottom" title={showPath(row.path)}>
-                <FolderSymlink className="dir anticon" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
+                <FolderSymlink className="dir" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
               </Tooltip>
             ) : null}
             <Collect id={row.id} value={favoriteMap[row.id]} onChange={onFavoriteChange} />
@@ -89,7 +89,6 @@ const Component: FC<EntitySelectorProps> = (props) => {
         dataIndex: "runtime",
         key: "runtime",
         width: 140,
-        align: "center",
         sorter: !showFavs,
         sortOrder: (entityListQuery.sorterField === "runtime" && entityListQuery.sorterOrder) || null,
       },
@@ -124,60 +123,6 @@ const Component: FC<EntitySelectorProps> = (props) => {
     }),
     [selectedRows, disabledItems],
   );
-
-  const onListTypeTo = useEvent((item: LinkItem) =>
-    setQuery({
-      dir: entityListQuery.dir,
-      keyword: entityListQuery.keyword,
-      type: item.key === "all" ? undefined : (item.key as _App.EntityFileType),
-    }),
-  );
-
-  const listTypeLinks = useMemo(() => {
-    const items: LinkItem[] = [
-      {
-        key: "all",
-        className: !entityListQuery.type ? "on" : undefined,
-        children: (
-          <>
-            <FolderTree size={12} />
-            <span>目录</span>
-          </>
-        ),
-      },
-      {
-        key: "workflow",
-        className: entityListQuery.type === "workflow" ? "on" : undefined,
-        children: (
-          <>
-            <IconEntity size={12} type="workflow" />
-            <span>流程</span>
-          </>
-        ),
-      },
-      {
-        key: "node",
-        className: entityListQuery.type === "node" ? "on" : undefined,
-        children: (
-          <>
-            <IconEntity size={12} type="node" />
-            <span>节点</span>
-          </>
-        ),
-      },
-      {
-        key: "data",
-        className: entityListQuery.type === "data" ? "on" : undefined,
-        children: (
-          <>
-            <IconEntity size={12} type="data" />
-            <span>数据</span>
-          </>
-        ),
-      },
-    ];
-    return <LinkTab links={items} onTo={onListTypeTo} />;
-  }, [entityListQuery, onListTypeTo]);
 
   const tableScroll = useMemo(() => {
     return showFavs ? { y: 500 } : { y: 460 };
@@ -221,22 +166,24 @@ const Component: FC<EntitySelectorProps> = (props) => {
         </div>
       ) : (
         <div className="hd">
-          <div className="row">
+          <div className={`${styles.EntitySelector}__search`}>
             <Breadcrumb rootDir={spaceDir} rootName={spaceName} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
-            <SearchInput value={entityListQuery.keyword} onChange={onDirSearch} placeholder="当前目录下搜索..." />
+            <div className="space">
+              <SearchInput value={entityListQuery.keyword} onChange={onKeywordChange} placeholder="当前目录下搜索..." />
+              <QueryScope value={entityListQuery.scope} onChange={onScopeChange} />
+            </div>
           </div>
-          <div className="row">
-            <div
-              className="use-favs"
+          <div className={`${styles.EntitySelector}__filter`}>
+            <LinkButton
+              icon={<Star size={12} className="g-vertical" />}
+              size={12}
+              label="我的收藏"
               onClick={() => {
                 setSelectedRows(undefined);
                 setShowFavs(true);
               }}
-            >
-              <Star size={12} className="anticon" style={{ marginRight: "3px" }} />
-              我的收藏
-            </div>
-            {listTypeLinks}
+            />
+            <QueryEntity size={12} value={entityListQuery.type} onChange={onTypeChange} />
           </div>
         </div>
       )}

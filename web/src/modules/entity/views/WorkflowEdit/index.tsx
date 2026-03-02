@@ -12,7 +12,7 @@ import { EntityAPI } from "../../api";
 const FormItem = Form.Item;
 const createrTitle = (
   <>
-    <Plus className="anticon" size={15} strokeWidth={3} />
+    <Plus className="g-vertical" size={15} strokeWidth={3} />
     <span>
       新建流程<small>(当前目录下)</small>
     </span>
@@ -20,7 +20,7 @@ const createrTitle = (
 );
 const modifyTitle = (
   <>
-    <FilePenLine className="anticon" size={14} strokeWidth={3} />
+    <FilePenLine className="g-vertical" size={14} strokeWidth={3} />
     <span>修改流程</span>
   </>
 );

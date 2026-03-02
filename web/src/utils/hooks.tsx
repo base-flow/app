@@ -104,37 +104,46 @@ export function useEntityTableChange<Q extends _Resource.IQuery>(query: Q, setQu
       }
     },
   );
-  const onDirSearch = useEvent((keyword?: string) => {
-    const { dir, type, kind, runtime } = query as _Entity.Query;
-    setQuery({ dir, type, keyword, kind, runtime } as any);
+  const onKeywordChange = useEvent((keyword?: string) => {
+    setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, keyword });
   });
-  return { onTableChange, onDirSearch };
+
+  const onKindChange = useEvent((kind?: string) => {
+    setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, kind });
+  });
+
+  const onTypeChange = useEvent((type?: _App.EntityType) => {
+    setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, type });
+  });
+
+  const onScopeChange = useEvent((scope?: "descendants") => {
+    setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, scope });
+  });
+  return { onTableChange, onKeywordChange, onKindChange, onTypeChange, onScopeChange };
 }
 
-export function useEntityListChange(query: _Entity.Query, setQuery: (query: _Entity.Query) => void, entityType: _App.EntityType) {
+export function useEntityListChange(query: _Entity.Query, setQuery: (query: _Entity.Query) => void) {
   const onPageChange = useEvent((page: number) => {
     setQuery({ ...query, page });
   });
 
-  const onSort = useEvent((sorter: { sorterField?: string; sorterOrder?: "ascend" | "descend" }) => {
+  const onSorterChange = useEvent((sorter: { sorterField?: string; sorterOrder?: "ascend" | "descend" }) => {
     setQuery({ ...query, page: undefined, ...sorter });
   });
 
-  const onKeywordSearch = useEvent((keyword?: string) => {
-    const { dir, type, kind, runtime } = query;
-    setQuery({ dir, type, kind, runtime, keyword });
+  const onKeywordChange = useEvent((keyword?: string) => {
+    setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, keyword });
   });
 
-  const onListTypeChange = useEvent((listType: "dir" | "file") => {
-    const { dir, kind, runtime, keyword } = query;
-    if (listType === "file") {
-      setQuery({ dir, kind, runtime, keyword, type: entityType });
-    } else {
-      setQuery({ dir, kind, runtime, keyword, type: undefined });
-    }
+  const onKindChange = useEvent((kind?: string) => {
+    setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, kind });
   });
 
-  return { onPageChange, onSort, onKeywordSearch, onListTypeChange };
+  const onScopeChange = useEvent((scope?: "descendants") => {
+    setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, scope });
+  });
+
+  return { onPageChange, onSorterChange, onKeywordChange, onKindChange, onScopeChange };
 }
 
 export function useMyFavoriteIds() {

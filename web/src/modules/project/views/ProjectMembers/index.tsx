@@ -18,7 +18,7 @@ type MemberOption = ValueType & _User.IUser;
 
 const UserFetchTitle = (
   <span className={`${styles.ProjectMembers}__fetch`}>
-    <Search size={13} className="anticon" />
+    <Search size={13} className="g-vertical" />
     <span> 用户搜索</span>
   </span>
 );
@@ -120,7 +120,7 @@ const Component: FC<Props> = ({ projectId }) => {
             <div key={item.id} className={classnames(`${styles.ProjectMembers}__item`, { cur: isCurrent })}>
               {!readonly && <CircleX className="remove" size={13} onClick={() => memberDeleter.mutate({ projectId, memberId: item.id })} />}
               <div className="label">
-                <CircleUserRound className="avatar anticon" size={13} />
+                <CircleUserRound className="avatar g-vertical" size={13} />
                 <span className="nickname">{item.nickname}</span>
                 <span className="username">{`(${item.username})`}</span>
               </div>
@@ -148,7 +148,7 @@ const Component: FC<Props> = ({ projectId }) => {
                   </Button>
                 </Dropdown>
               )}
-              <Info className="info anticon" size={13} onClick={() => BaseWidgets.message.info(Lang.projectRolesTips, "500px")} />
+              <Info className="info" size={13} onClick={() => BaseWidgets.message.info(Lang.projectRolesTips, "500px")} />
             </div>
           );
         })}

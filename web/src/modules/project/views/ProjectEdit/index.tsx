@@ -15,14 +15,14 @@ const FormItem = Form.Item;
 
 const createrTitle = (
   <>
-    <Plus className="anticon" size={15} strokeWidth={3} />
+    <Plus className="g-vertical" size={15} strokeWidth={3} />
     <span>创建新项目</span>
   </>
 );
 
 const modifyTitle = (
   <>
-    <Pencil className="anticon" size={13} strokeWidth={3} />
+    <Pencil className="g-vertical" size={13} strokeWidth={3} />
     <span>修改项目信息</span>
   </>
 );

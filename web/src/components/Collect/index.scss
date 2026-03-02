@@ -1,18 +1,9 @@
 .comp-Collect {
-  font-size: 14px;
   color: var(--bf-bd-input);
   cursor: pointer;
 
-  &:hover {
-    transform: scale(1.3);
-  }
-
   &.on {
     color: var(--bf-warn);
-  }
-
-  > svg {
-    pointer-events: none;
   }
 
   &.absolute {

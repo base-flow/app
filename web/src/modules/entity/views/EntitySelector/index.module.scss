@@ -9,26 +9,6 @@
       display: block;
       height: 76px;
       overflow: hidden;
-
-      > .row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        &:last-child {
-          padding-top: 14px;
-          font-size: 12px;
-        }
-      }
-
-      .use-favs {
-        margin-left: 2px;
-        cursor: pointer;
-
-        &:hover {
-          color: var(--bf-primary);
-        }
-      }
     }
 
     > .ft {
@@ -62,6 +42,24 @@
 
     .ant-table-pagination {
       margin-top: 30px !important;
+    }
+
+    &:global(__search) {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      > .space {
+        display: flex;
+        gap: 10px;
+      }
+    }
+
+    &:global(__filter) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 1px 0 2px;
     }
 
     &:global(__favs) {

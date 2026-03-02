@@ -17,14 +17,14 @@ const FormLayout = { labelCol: { span: 4 }, wrapperCol: { span: 20 } };
 
 const createrTitle = (
   <>
-    <Plus className="anticon" size={15} strokeWidth={3} />
+    <Plus className="g-vertical" size={15} strokeWidth={3} />
     <span>创建分享</span>
   </>
 );
 
 const modifyTitle = (
   <>
-    <Pen className="anticon" size={13} strokeWidth={3} />
+    <Pen className="g-vertical" size={13} strokeWidth={3} />
     <span>修改分享</span>
   </>
 );

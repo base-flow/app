@@ -92,7 +92,7 @@ const Component: FC<EntityCardProps> = ({ item, selector, favoriteMap, setCurEdi
             {item.type === "workflow" ? `v${item.version}` : item.updateAt}
             {item.homepage && (
               <a href={item.homepage} target="_blank">
-                <ExternalLink className="anticon" size={10} />
+                <ExternalLink className="g-vertical" size={10} />
               </a>
             )}
           </div>

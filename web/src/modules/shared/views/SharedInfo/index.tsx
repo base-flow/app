@@ -19,17 +19,17 @@ const Component: FC<{ info: _Shared.IShared }> = ({ info }) => {
           复制分享链接
         </li>
         <li>
-          <Clock size={11} className="anticon" />
+          <Clock size={11} className="g-vertical" />
           <span>创建时间：</span>
           <em>2026-03-21 12:12</em>
         </li>
         <li>
-          <Clock size={11} className="anticon" />
+          <Clock size={11} className="g-vertical" />
           <span>过期时间：</span>
           <em>2026-03-21 12:12</em>
         </li>
         <li>
-          <Clock size={11} className="anticon" />
+          <Clock size={11} className="g-vertical" />
           <span>剩余时间：</span>
           <em className="expires">24小时15分45秒</em>
         </li>

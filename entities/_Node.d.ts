@@ -3,7 +3,6 @@ declare namespace _Node {
 
   interface INode extends _Entity.BaseEntity {
     type: "node";
-    runtime: _App.Runtime;
     kind: Kind;
     npm?: string;
   }

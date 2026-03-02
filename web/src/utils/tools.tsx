@@ -224,3 +224,25 @@ export function showPath(path: string, keepSelf?: boolean): string {
 export function isPublicDir(path: string): boolean {
   return /^\/[^/]+\/public/.test(path.replace(/\/.+? /g, "/"));
 }
+
+export function normalizeEntityQuery(query: _Entity.Query, fixed: Partial<_Entity.Query>, paramDir?: string): _Entity.Query {
+  const newQuery = Object.keys(query).reduce((obj, key) => {
+    const prop = key as keyof _Entity.Query;
+    const val = query[prop] as any;
+    if (val) {
+      obj[prop] = val;
+    }
+    return obj;
+  }, {} as _Entity.Query);
+  if (newQuery.page === 1) {
+    delete newQuery.page;
+  }
+  if (fixed) {
+    Object.assign(newQuery, fixed);
+  }
+  // 用于dir体现在path中
+  if (paramDir && newQuery.dir === paramDir) {
+    delete newQuery.dir;
+  }
+  return newQuery;
+}

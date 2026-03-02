@@ -9,7 +9,7 @@ import ProjectMembers from "../ProjectMembers";
 
 const UsersTitle = (
   <>
-    <UserRoundPlus size={15} strokeWidth={2.5} className="anticon" style={{ marginLeft: "4px" }} />
+    <UserRoundPlus size={15} strokeWidth={2.5} className="g-vertical" style={{ marginLeft: "4px" }} />
     <span>用户与权限</span>
   </>
 );
@@ -19,7 +19,7 @@ const MenuItems: LinkProps[] = [
     href: "members",
     children: (
       <>
-        <UserRoundPlus size={13} />
+        <UserRoundPlus size={13} className="g-vertical" />
         <span>用户与权限</span>
       </>
     ),
