@@ -30,7 +30,7 @@ interface NodeSelectorProps {
 }
 
 const Component: FC<NodeSelectorProps> = ({ kind, runtime, rootDir, rootName, favoriteMap, onFavoriteChange }) => {
-  const queryState = useState<_Entity.Query>({ kind, runtime, dir: rootDir });
+  const queryState = useState<_Entity.Query>({ type: "node", withDirectory: "always", kind, runtime, dir: rootDir });
   const query = queryState[0];
   const entityQuery = useQuery(EntityAPI.queryList(query));
   const entityList = entityQuery.data?.list;
@@ -38,17 +38,13 @@ const Component: FC<NodeSelectorProps> = ({ kind, runtime, rootDir, rootName, fa
   const entityListSummary = entityQuery.data?.summary;
 
   const setQuery = useEvent((newQuery: _Entity.Query) => {
-    queryState[1](normalizeEntityQuery(newQuery, { kind, runtime }));
+    queryState[1](normalizeEntityQuery(newQuery, { type: "node", withDirectory: "always", kind, runtime }));
   });
 
   const { onPageChange, onSorterChange, onKeywordChange, onScopeChange } = useEntityListChange(entityListQuery, setQuery);
 
-  const onItemClick = useEvent((item: _Entity.IEntity) => {
-    if (item.type === "directory") {
-      setQuery({ dir: item.id });
-    } else {
-      openFile(item);
-    }
+  const dirNavigate = useEvent((dir: string) => {
+    setQuery({ dir });
   });
 
   if (entityQuery.isError) {
@@ -93,7 +89,8 @@ const Component: FC<NodeSelectorProps> = ({ kind, runtime, rootDir, rootName, fa
                 item={item}
                 favoriteMap={favoriteMap}
                 onFavoriteChange={onFavoriteChange}
-                onItemClick={onItemClick}
+                fileNavigate={openFile}
+                dirNavigate={dirNavigate}
               />
             );
           })}

@@ -210,7 +210,18 @@ a {
   > .dir {
     margin-left: 5px;
     vertical-align: middle;
-    color: var(--bf-tx-lesser);
+    color: var(--bf-tx-placeholder);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--bf-primary);
+    }
+  }
+
+  > .readme {
+    margin-left: 3px;
+    vertical-align: middle;
+    color: var(--bf-tx-placeholder);
     cursor: pointer;
 
     &:hover {

@@ -12,7 +12,7 @@ export class EntityController {
       throw new NotFoundException();
     }
     query.page = Number(query.page) || 1;
-    const { dir, type, runtime, kind, keyword, scope, page } = query;
+    const { dir, type, runtime, kind, keyword, scope, withDirectory, page } = query;
     const { spaceType, spaceId, path } = folder;
     let list: _Entity.IEntity[];
     if (scope) {
@@ -22,10 +22,9 @@ export class EntityController {
           return (
             item.parentId &&
             item.path.includes(`/${dir} `) &&
-            item.type !== "directory" && //不展示目录
-            (type ? item.type === type : true) &&
-            (runtime ? item.runtime === runtime : true) &&
-            (kind ? item.kind === kind : true) &&
+            // 如果是目录并且withDirectory，则不受type/runtime/kind的限制，始终返回
+            ((item.type === "directory" && withDirectory) ||
+              ((type ? item.type === type : true) && (runtime ? item.runtime === runtime : true) && (kind ? item.kind === kind : true))) &&
             (keyword ? item.name.includes(keyword) : true)
           );
         })
@@ -33,7 +32,8 @@ export class EntityController {
     } else {
       list = folder.children!.filter((item) => {
         return (
-          (item.type === "directory" ||
+          // 如果是目录并且withDirectory，则不受type/runtime/kind的限制，始终返回
+          ((item.type === "directory" && withDirectory) ||
             ((type ? item.type === type : true) && (runtime ? item.runtime === runtime : true) && (kind ? item.kind === kind : true))) &&
           (keyword ? item.name.includes(keyword) : true)
         );

@@ -27,11 +27,11 @@ declare namespace _Entity {
 
   interface Query extends _Resource.IQuery {
     dir?: string;
-    scope?: "descendants";
-    //scope为descendants时，不展示目录，否则展示目录
     type?: _App.EntityType;
     kind?: string;
     runtime?: _App.Runtime;
+    scope?: "descendants";
+    withDirectory?: "always";
   }
 
   interface QueryFile extends _Resource.IQuery {

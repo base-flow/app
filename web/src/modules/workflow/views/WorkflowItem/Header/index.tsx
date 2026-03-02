@@ -93,7 +93,7 @@ const WorkflowItemHeader: FC<Props> = ({ item, graph }) => {
           <IconRuntime showLabel className="kind" runtime={item.runtime} size={13} />)
         </span>
         <Edit className="edit" size={13} onClick={() => setCurrentEdit(true)} />
-        <Collect id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
+        <Collect className="fav" id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
         {favoriteLoading && <Spin size="small" />}
       </div>
       <div className="right">

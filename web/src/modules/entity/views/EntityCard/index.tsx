@@ -18,19 +18,26 @@ interface EntityCardProps {
   item: _Entity.IEntity;
   favoriteMap: { [id: string]: boolean };
   onFavoriteChange: (id: string, collected: boolean) => void;
-  onItemClick: (item: _Entity.IEntity) => void;
+  dirNavigate: (dir: string) => void;
+  fileNavigate: (entity: { id: string; type: _App.EntityFileType }) => void;
   selector?: boolean;
   setCurEdit?: (item: _Entity.IEntity) => void;
   onDelete?: (id: string, name: string) => void;
 }
 
-const Component: FC<EntityCardProps> = ({ item, selector, favoriteMap, setCurEdit, onDelete, onFavoriteChange, onItemClick }) => {
+const Component: FC<EntityCardProps> = ({ item, selector, favoriteMap, setCurEdit, onDelete, onFavoriteChange, dirNavigate, fileNavigate }) => {
   if (item.type === "directory") {
     return (
-      <div className={classnames(styles.EntityCard, { st: selector }, "g-card folder")} onClick={() => onItemClick(item)}>
+      <div className={classnames(styles.EntityCard, { st: selector }, "g-card folder")} onClick={() => dirNavigate(item.id)}>
         {item.path ? (
           <Tooltip placement="bottom" title={showPath(item.path)}>
-            <span className="path">
+            <span
+              className="path"
+              onClick={(e) => {
+                e.stopPropagation();
+                dirNavigate(item.parentId);
+              }}
+            >
               <FolderSymlink size={12} strokeWidth={2.5} />
             </span>
           </Tooltip>
@@ -53,7 +60,6 @@ const Component: FC<EntityCardProps> = ({ item, selector, favoriteMap, setCurEdi
               className="btn"
               onClick={(e) => {
                 e.stopPropagation();
-                e.preventDefault();
                 setCurEdit?.(item);
               }}
             >
@@ -64,7 +70,6 @@ const Component: FC<EntityCardProps> = ({ item, selector, favoriteMap, setCurEdi
               className="btn"
               onClick={(e) => {
                 e.stopPropagation();
-                e.preventDefault();
                 onDelete?.(item.id, item.name);
               }}
             >
@@ -76,10 +81,16 @@ const Component: FC<EntityCardProps> = ({ item, selector, favoriteMap, setCurEdi
     );
   } else {
     return (
-      <div className={classnames(styles.EntityCard, { st: selector }, "g-card")} onClick={() => onItemClick(item)}>
+      <div className={classnames(styles.EntityCard, { st: selector }, "g-card")} onClick={() => fileNavigate(item)}>
         {item.path ? (
           <Tooltip placement="bottom" title={showPath(item.path)}>
-            <span className="path">
+            <span
+              className="path"
+              onClick={(e) => {
+                e.stopPropagation();
+                dirNavigate(item.parentId);
+              }}
+            >
               <FolderSymlink size={12} strokeWidth={2.5} />
             </span>
           </Tooltip>
@@ -90,11 +101,9 @@ const Component: FC<EntityCardProps> = ({ item, selector, favoriteMap, setCurEdi
           <h4 className="title">{item.name}</h4>
           <div className={classnames("info", `${styles.EntityCard}__info`)}>
             {item.type === "workflow" ? `v${item.version}` : item.updateAt}
-            {item.homepage && (
-              <a href={item.homepage} target="_blank">
-                <ExternalLink className="g-vertical" size={10} />
-              </a>
-            )}
+            <a href={item.homepage} target="_blank">
+              <ExternalLink className="g-vertical" size={11} />
+            </a>
           </div>
         </div>
         <div className="summary" title={item.desc}>

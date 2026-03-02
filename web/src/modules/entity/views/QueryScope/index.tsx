@@ -5,7 +5,7 @@ import { memo } from "react";
 import { useEvent } from "@/utils/hooks";
 
 const ScropOptions: { label: any; value: string; tooltip: string }[] = [
-  { label: <FolderDown className="g-vertical" size={14} />, value: "", tooltip: "当前层级" },
+  { label: <FolderDown className="g-vertical" size={14} />, value: "", tooltip: "子级列表" },
   { label: <FolderTree className="g-vertical" size={14} />, value: "descendants", tooltip: "后代平铺" },
 ];
 

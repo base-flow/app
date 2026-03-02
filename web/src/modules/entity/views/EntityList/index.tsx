@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router";
 import type { MenuProps, TablePaginationConfig, TableProps } from "antd";
 import { Button, Dropdown, Result, Skeleton, Space, Table, Tooltip } from "antd";
 import dayjs from "dayjs";
-import { ChevronDown, Copy, FolderPlus, FolderSymlink, Trash2 } from "lucide-react";
+import { ChevronDown, Copy, FolderPlus, FolderSymlink, Info, Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import Collect from "@/components/Collect";
@@ -222,9 +222,10 @@ const Component: FC<EntityListProps> = (props) => {
             <div className="g-entity-cell">
               <IconEntity className="icon" type={row.type} />
               <a onClick={() => (row.type === "directory" ? setQuery({ dir: row.id }) : fileNavigate(row))}>{name}</a>
+              <Info className="readme" size={12} />
               {row.path ? (
                 <Tooltip placement="bottom" title={showPath(row.path)}>
-                  <FolderSymlink className="dir" type="directory" size={13} onClick={() => setQuery({ dir: row.parentId })} />
+                  <FolderSymlink className="dir" type="directory" size={12} onClick={() => setQuery({ dir: row.parentId })} />
                 </Tooltip>
               ) : null}
               <Collect id={row.id} value={favoriteMap[row.id]} onChange={onFavoriteChange} />

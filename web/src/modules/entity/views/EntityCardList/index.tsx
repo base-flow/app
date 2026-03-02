@@ -55,12 +55,9 @@ const Component: FC<EntityCardListProps> = (props) => {
   const { onPageChange, onSorterChange, onKeywordChange, onKindChange, onScopeChange } = useEntityListChange(entityListQuery, setQuery);
 
   const { fileNavigate } = useEntityNavigate();
-  const onItemClick = useEvent((item: _Entity.IEntity) => {
-    if (item.type === "directory") {
-      setQuery({ dir: item.id });
-    } else {
-      fileNavigate(item);
-    }
+
+  const dirNavigate = useEvent((dir: string) => {
+    setQuery({ dir });
   });
 
   const entityAlter = useMutation({
@@ -157,7 +154,8 @@ const Component: FC<EntityCardListProps> = (props) => {
                 onDelete={onDelete}
                 setCurEdit={setCurEdit}
                 onFavoriteChange={onFavoriteChange}
-                onItemClick={onItemClick}
+                fileNavigate={fileNavigate}
+                dirNavigate={dirNavigate}
               />
             );
           })}

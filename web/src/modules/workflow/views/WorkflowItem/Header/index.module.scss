@@ -32,6 +32,10 @@
         color: var(--bf-tx-summary);
       }
 
+      > .fav {
+        font-size: 14px;
+      }
+
       > .edit {
         margin-left: 3px;
         color: var(--bf-tx-placeholder);
