@@ -122,10 +122,10 @@ export class SharedController {
       const pathReg = new RegExp(`^(?:${pathList.join("|")})`);
 
       query.page = Number(query.page) || 1;
-      const { dir, type, runtime, kind, keyword, scope, page } = query;
+      const { dir, type, runtime, kind, keyword, descendants, page } = query;
       let list: _Entity.IEntity[];
 
-      if (scope) {
+      if (descendants) {
         list = Object.keys(EntityMap)
           .filter((id) => {
             const item = EntityMap[id];
@@ -154,7 +154,7 @@ export class SharedController {
       return {
         query,
         list: list.slice((page - 1) * pageSize, page * pageSize).map((item) => {
-          return { ...item, children: undefined, path: scope ? `/${shared.id} ${shared.name}/${item.path.replace(pathReg, "")}` : "" };
+          return { ...item, children: undefined, path: descendants ? `/${shared.id} ${shared.name}/${item.path.replace(pathReg, "")}` : "" };
         }),
         summary: { total: list.length, page, pageSize, path: `/${shared.id} ${shared.name}/${folder.path.replace(pathReg, "")}` },
       };

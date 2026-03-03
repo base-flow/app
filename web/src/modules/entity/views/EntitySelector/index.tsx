@@ -170,7 +170,7 @@ const Component: FC<EntitySelectorProps> = (props) => {
             <Breadcrumb rootDir={spaceDir} rootName={spaceName} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
             <div className="space">
               <SearchInput value={entityListQuery.keyword} onChange={onKeywordChange} placeholder="当前目录下搜索..." />
-              <QueryScope value={entityListQuery.scope} onChange={onScopeChange} />
+              <QueryScope value={entityListQuery.descendants} onChange={onScopeChange} />
             </div>
           </div>
           <div className={`${styles.EntitySelector}__filter`}>

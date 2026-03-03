@@ -11,6 +11,9 @@ export const Route = createFileRoute("/_auth/personal/$personalId/")({
     keyword: z.string().optional(),
     dir: z.string().optional(),
     type: z.enum(["directory", "workflow", "node", "data"]).optional(),
+    kind: z.string().optional(),
+    descendants: z.boolean().optional(),
+    keepDirectories: z.boolean().optional(),
   }),
 });
 

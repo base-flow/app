@@ -2,21 +2,19 @@ import { Segmented } from "antd";
 import { FolderDown, FolderTree } from "lucide-react";
 import type { FC } from "react";
 import { memo } from "react";
-import { useEvent } from "@/utils/hooks";
 
-const ScropOptions: { label: any; value: string; tooltip: string }[] = [
-  { label: <FolderDown className="g-vertical" size={14} />, value: "", tooltip: "子级列表" },
-  { label: <FolderTree className="g-vertical" size={14} />, value: "descendants", tooltip: "后代平铺" },
+const ScropOptions: { label: any; value: boolean; tooltip: string }[] = [
+  { label: <FolderDown className="g-vertical" size={14} />, value: false, tooltip: "子级列表" },
+  { label: <FolderTree className="g-vertical" size={14} />, value: true, tooltip: "后代平铺" },
 ];
 
 export interface QueryScopeProps {
-  value?: "descendants";
-  onChange: (value?: "descendants") => void;
+  value?: boolean;
+  onChange: (value?: boolean) => void;
 }
 
 const Component: FC<QueryScopeProps> = ({ value, onChange }) => {
-  const _onChange = useEvent((val: any) => onChange(val || undefined));
-  return <Segmented value={value || ""} options={ScropOptions} onChange={_onChange} />;
+  return <Segmented value={!!value} options={ScropOptions} onChange={onChange} />;
 };
 
 export default memo(Component);

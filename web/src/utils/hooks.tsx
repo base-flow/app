@@ -116,8 +116,8 @@ export function useEntityTableChange<Q extends _Resource.IQuery>(query: Q, setQu
     setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, type });
   });
 
-  const onScopeChange = useEvent((scope?: "descendants" | "directories") => {
-    setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, scope });
+  const onScopeChange = useEvent((descendants?: boolean) => {
+    setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, descendants });
   });
   return { onTableChange, onKeywordChange, onKindChange, onTypeChange, onScopeChange };
 }
@@ -139,8 +139,8 @@ export function useEntityListChange(query: _Entity.Query, setQuery: (query: _Ent
     setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, kind });
   });
 
-  const onScopeChange = useEvent((scope?: "descendants" | "directories") => {
-    setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, scope });
+  const onScopeChange = useEvent((descendants?: boolean) => {
+    setQuery({ ...query, page: undefined, sorterField: undefined, sorterOrder: undefined, descendants });
   });
 
   return { onPageChange, onSorterChange, onKeywordChange, onKindChange, onScopeChange };

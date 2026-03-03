@@ -12,10 +12,12 @@ export class EntityController {
       throw new NotFoundException();
     }
     query.page = Number(query.page) || 1;
-    const { dir, type, runtime, kind, keyword, scope, withDirectory, page } = query;
+    query.descendants = String(query.descendants) === "true" || undefined;
+    query.keepDirectories = String(query.keepDirectories) === "true" || undefined;
+    const { dir, type, runtime, kind, keyword, descendants, keepDirectories, page } = query;
     const { spaceType, spaceId, path } = folder;
     let list: _Entity.IEntity[];
-    if (scope) {
+    if (descendants) {
       list = Object.keys(EntityMap)
         .filter((id) => {
           const item = EntityMap[id];
@@ -23,7 +25,7 @@ export class EntityController {
             item.parentId &&
             item.path.includes(`/${dir} `) &&
             // 如果是目录并且withDirectory，则不受type/runtime/kind的限制，始终返回
-            ((item.type === "directory" && withDirectory) ||
+            ((item.type === "directory" && keepDirectories) ||
               ((type ? item.type === type : true) && (runtime ? item.runtime === runtime : true) && (kind ? item.kind === kind : true))) &&
             (keyword ? item.name.includes(keyword) : true)
           );
@@ -33,7 +35,7 @@ export class EntityController {
       list = folder.children!.filter((item) => {
         return (
           // 如果是目录并且withDirectory，则不受type/runtime/kind的限制，始终返回
-          ((item.type === "directory" && withDirectory) ||
+          ((item.type === "directory" && keepDirectories) ||
             ((type ? item.type === type : true) && (runtime ? item.runtime === runtime : true) && (kind ? item.kind === kind : true))) &&
           (keyword ? item.name.includes(keyword) : true)
         );
@@ -44,7 +46,7 @@ export class EntityController {
     return {
       query,
       list: list.slice((page - 1) * pageSize, page * pageSize).map((item) => {
-        return { ...item, children: undefined, path: scope || type === "directory" ? item.path : "" };
+        return { ...item, children: undefined, path: keepDirectories ? item.path : "" };
       }),
       summary: { total: list.length, page, pageSize, path }, //spaceType, spaceId
     };

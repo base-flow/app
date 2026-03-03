@@ -30,8 +30,8 @@ declare namespace _Entity {
     type?: _App.EntityType;
     kind?: string;
     runtime?: _App.Runtime;
-    scope?: "descendants";
-    withDirectory?: "always";
+    descendants?: boolean;
+    keepDirectories?: boolean;
   }
 
   interface QueryFile extends _Resource.IQuery {

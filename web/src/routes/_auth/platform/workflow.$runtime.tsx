@@ -10,6 +10,9 @@ export const Route = createFileRoute("/_auth/platform/workflow/$runtime")({
     page: z.number().optional(),
     keyword: z.string().optional(),
     dir: z.string().optional(),
+    kind: z.string().optional(),
+    descendants: z.boolean().optional(),
+    keepDirectories: z.boolean().optional(),
   }),
 });
 
@@ -17,6 +20,8 @@ function RouteComponent() {
   const runtime = Route.useParams().runtime as _App.Runtime;
   const search = Route.useSearch();
   const { config } = useConfig();
+
+  console.log(search);
   return (
     <EntityCardList
       entity="workflow"

@@ -10,6 +10,9 @@ export const Route = createFileRoute("/_auth/platform/node/$runtime")({
     page: z.number().optional(),
     keyword: z.string().optional(),
     dir: z.string().optional(),
+    kind: z.string().optional(),
+    descendants: z.boolean().optional(),
+    keepDirectories: z.boolean().optional(),
   }),
 });
 

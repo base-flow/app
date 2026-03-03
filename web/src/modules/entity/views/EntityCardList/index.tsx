@@ -136,7 +136,7 @@ const Component: FC<EntityCardListProps> = (props) => {
         <div className="space">
           <SearchInput variant="filled" width="250px" onChange={onKeywordChange} value={entityListQuery.keyword} placeholder="当前目录下搜索..." />
           <Select popupMatchSelectWidth={false} value={entityListQuery.kind || ""} options={NodeKindOptions} onChange={onKindChange} />
-          <QueryScope value={entityListQuery.scope} onChange={onScopeChange} />
+          <QueryScope value={entityListQuery.descendants} onChange={onScopeChange} />
           <div>
             <span style={{ marginRight: 2 }}>排序：</span>
             <FieldSorter options={SorterOptions} value={entityListQuery} onChange={onSorterChange} />

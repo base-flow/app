@@ -347,11 +347,7 @@ a {
   }
 
   &.folder {
-    background: linear-gradient(180deg, #eff5ff 0%, #fff 100%);
-
-    &:hover {
-      background: linear-gradient(160deg, #eff5ff 0%, #fff 100%);
-    }
+    background: linear-gradient(180deg, #fff 0%, #fff 20%, #eff5ff 100%);
 
     &::after {
       position: absolute;
@@ -366,7 +362,7 @@ a {
       color: #fff;
       text-align: center;
       content: "PACKAGE";
-      background: #8ebdff;
+      background: #b4d3ff;
       transform: rotate(-45deg);
     }
   }
@@ -378,6 +374,14 @@ a {
   //     background: linear-gradient(160deg, #f6fff0 0%, #fff 100%);
   //   }
   // }
+
+  > .comp-Collect {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+    font-size: 14px;
+  }
 
   > .head-icon {
     position: relative;

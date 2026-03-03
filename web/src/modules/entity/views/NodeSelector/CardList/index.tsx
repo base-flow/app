@@ -30,7 +30,7 @@ interface NodeSelectorProps {
 }
 
 const Component: FC<NodeSelectorProps> = ({ kind, runtime, rootDir, rootName, favoriteMap, onFavoriteChange }) => {
-  const queryState = useState<_Entity.Query>({ type: "node", withDirectory: "always", kind, runtime, dir: rootDir });
+  const queryState = useState<_Entity.Query>({ type: "node", keepDirectories: true, kind, runtime, dir: rootDir });
   const query = queryState[0];
   const entityQuery = useQuery(EntityAPI.queryList(query));
   const entityList = entityQuery.data?.list;
@@ -38,7 +38,7 @@ const Component: FC<NodeSelectorProps> = ({ kind, runtime, rootDir, rootName, fa
   const entityListSummary = entityQuery.data?.summary;
 
   const setQuery = useEvent((newQuery: _Entity.Query) => {
-    queryState[1](normalizeEntityQuery(newQuery, { type: "node", withDirectory: "always", kind, runtime }));
+    queryState[1](normalizeEntityQuery(newQuery, { type: "node", keepDirectories: true, kind, runtime }));
   });
 
   const { onPageChange, onSorterChange, onKeywordChange, onScopeChange } = useEntityListChange(entityListQuery, setQuery);
@@ -72,7 +72,7 @@ const Component: FC<NodeSelectorProps> = ({ kind, runtime, rootDir, rootName, fa
         </div>
         <div className="space">
           <SearchInput variant="filled" onChange={onKeywordChange} width="220px" value={entityListQuery.keyword} placeholder="当前目录下搜索..." />
-          <QueryScope value={entityListQuery.scope} onChange={onScopeChange} />
+          <QueryScope value={entityListQuery.descendants} onChange={onScopeChange} />
           <div>
             <span style={{ marginRight: 2 }}>排序：</span>
             <FieldSorter options={SorterOptions} value={entityListQuery} onChange={onSorterChange} />

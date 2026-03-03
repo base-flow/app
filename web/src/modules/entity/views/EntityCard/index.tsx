@@ -42,7 +42,7 @@ const Component: FC<EntityCardProps> = ({ item, selector, favoriteMap, setCurEdi
             </span>
           </Tooltip>
         ) : null}
-        <Collect absolute id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
+        <Collect id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
         <div className="head-icon">
           <IconFolder className="icon" size={32} />
           <h4 className="title">{item.name}</h4>
@@ -95,7 +95,7 @@ const Component: FC<EntityCardProps> = ({ item, selector, favoriteMap, setCurEdi
             </span>
           </Tooltip>
         ) : null}
-        <Collect absolute id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
+        <Collect id={item.id} value={favoriteMap[item.id]} onChange={onFavoriteChange} />
         <div className="head-icon">
           <img className="icon" alt="node" src={item.icon || DefaultIcon} />
           <h4 className="title">{item.name}</h4>

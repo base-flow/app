@@ -222,7 +222,7 @@ const Component: FC<SharedContentProps> = (props) => {
           <Breadcrumb rootDir={shared.id} rootName={shared.name} listPath={entityListSummary.path} query={entityListQuery} setQuery={setQuery} />
           <div className="search">
             <SearchInput value={entityListQuery.keyword} placeholder="当前目录下搜索..." onChange={onKeywordChange} />
-            <QueryScope value={entityListQuery.scope} onChange={onScopeChange} />
+            <QueryScope value={entityListQuery.descendants} onChange={onScopeChange} />
             <QueryEntity size={12} value={entityListQuery.type} onChange={onTypeChange} />
           </div>
         </div>
